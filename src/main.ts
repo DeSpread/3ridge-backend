@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { User } from './schema/user.schema';
+import { User } from './common/database/schema/user.schema';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

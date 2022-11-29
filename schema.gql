@@ -2,13 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type UserDocument {
-  _id: String!
-  name: String!
-  number: String!
-  email: String!
+type Mutation {
+  createUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
+  removeUser(username: String!): User!
+  updateUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
 }
 
 type Query {
-  users: [UserDocument!]!
+  user(username: String!): User!
+  users: [User!]!
+}
+
+type User {
+  address: String
+  discordId: String
+  email: String
+  role: String
+  twitterId: String
+  username: String!
 }
