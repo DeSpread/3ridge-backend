@@ -3,12 +3,23 @@
 # ------------------------------------------------------
 
 type Mutation {
+  createProject(description: String, logoUrl: String, managerList: [UserInput!], name: String, projectUrl: String): Project!
   createUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
+  removeProject(id: String!): Project!
   removeUser(username: String!): User!
   updateUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
 }
 
+type Project {
+  description: String
+  logoUrl: String
+  managerList: [User!]
+  name: String!
+  projectUrl: String
+}
+
 type Query {
+  projects: [Project!]!
   user(username: String!): User!
   users: [User!]!
 }
@@ -20,4 +31,13 @@ type User {
   role: String
   twitterId: String
   username: String!
+}
+
+input UserInput {
+  address: String
+  discordId: String
+  email: String
+  role: String
+  twitterId: String
+  username: String
 }

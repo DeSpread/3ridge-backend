@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UserController } from '../controllers/user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../common/database/schema/user.schema';
-import { UserResolver } from '../common/graphql/resolver/user.resolver';
-import { UserService } from '../service/user.service';
+import { User, UserSchema } from '../infra/schema/user.schema';
+import { UserResolver } from '../infra/graphql/resolver/user.resolver';
+import { UserService } from '../infra/database/service/user.service';
 
 @Module({
   imports: [
@@ -12,6 +11,5 @@ import { UserService } from '../service/user.service';
     ConfigModule,
   ],
   providers: [UserResolver, UserService],
-  controllers: [UserController],
 })
 export class UserModule {}

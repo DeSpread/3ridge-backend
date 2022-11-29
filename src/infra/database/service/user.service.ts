@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '../common/database/schema/user.schema';
-import { UserInput } from '../common/graphql/schema/user.schema';
+import { User } from '../../schema/user.schema';
+import { UserInput } from '../../graphql/dto/user.dto';
 
 @Injectable()
 export class UserService {
