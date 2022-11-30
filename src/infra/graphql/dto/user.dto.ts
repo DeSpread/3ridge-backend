@@ -1,5 +1,6 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { Role } from '../../../constant/role';
+import { RoleType } from '../../../constant/roleType';
+import { ProjectInput } from './project.dto';
 
 @ArgsType()
 @InputType()
@@ -20,5 +21,11 @@ export class UserInput {
   discordId: string;
 
   @Field({ nullable: true })
-  role: Role;
+  role: RoleType;
+
+  @Field(() => [ProjectInput], { nullable: true })
+  managedProjects: ProjectInput[];
+
+  @Field(() => [ProjectInput], { nullable: true })
+  participatedProjects: ProjectInput[];
 }

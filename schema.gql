@@ -4,10 +4,13 @@
 
 type Mutation {
   createProject(description: String, logoUrl: String, managerList: [UserInput!], name: String, projectUrl: String): Project!
-  createUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
+  createTicket(event: String, participant: String!): Ticket!
+  createUser(address: String, discordId: String, email: String, managedProjects: [ProjectInput!], participatedProjects: [ProjectInput!], role: String, twitterId: String, username: String): User!
+  removeById(id: String!): Ticket!
   removeProject(id: String!): Project!
   removeUser(username: String!): User!
-  updateUser(address: String, discordId: String, email: String, role: String, twitterId: String, username: String): User!
+  updateTicket(event: String, participant: String!): Ticket!
+  updateUser(address: String, discordId: String, email: String, managedProjects: [ProjectInput!], participatedProjects: [ProjectInput!], role: String, twitterId: String, username: String): User!
 }
 
 type Project {
@@ -18,16 +21,34 @@ type Project {
   projectUrl: String
 }
 
+input ProjectInput {
+  description: String
+  logoUrl: String
+  managerList: [UserInput!]
+  name: String
+  projectUrl: String
+}
+
 type Query {
   projects: [Project!]!
+  ticketById(id: String!): Ticket!
+  ticketByParticipant(username: String!): Ticket!
+  tickets: [Ticket!]!
   user(username: String!): User!
   users: [User!]!
+}
+
+type Ticket {
+  event: String
+  participant: String!
 }
 
 type User {
   address: String
   discordId: String
   email: String
+  managedProjects: [Project!]
+  participatedProjects: [Project!]
   role: String
   twitterId: String
   username: String!
@@ -37,6 +58,8 @@ input UserInput {
   address: String
   discordId: String
   email: String
+  managedProjects: [ProjectInput!]
+  participatedProjects: [ProjectInput!]
   role: String
   twitterId: String
   username: String

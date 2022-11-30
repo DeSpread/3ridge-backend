@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Role } from '../../constant/role';
+import { RoleType } from '../../constant/roleType';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Project } from './project.schema';
 
 @Schema({ timestamps: true })
 @ObjectType()
@@ -31,7 +32,15 @@ export class User {
 
   @Prop()
   @Field({ nullable: true })
-  role: Role;
+  role: RoleType;
+
+  @Prop()
+  @Field(() => [Project], { nullable: true })
+  managedProjects: Project[];
+
+  @Prop()
+  @Field(() => [Project], { nullable: true })
+  participatedProjects: Project[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

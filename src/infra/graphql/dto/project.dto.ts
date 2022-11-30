@@ -1,7 +1,8 @@
-import { ArgsType, Field } from '@nestjs/graphql';
+import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { UserInput } from './user.dto';
 
 @ArgsType()
+@InputType()
 export class ProjectInput {
   @Field({ nullable: true })
   name: string;
