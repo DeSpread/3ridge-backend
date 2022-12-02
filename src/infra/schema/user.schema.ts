@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { RoleType } from '../../constant/roleType';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Project } from './project.schema';
+import * as mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 @ObjectType()
@@ -11,7 +12,7 @@ export class User {
     unique: true,
     index: true,
   })
-  @Field()
+  @Field({ nullable: false })
   username: string;
 
   @Prop()
@@ -34,11 +35,11 @@ export class User {
   @Field({ nullable: true })
   role: RoleType;
 
-  @Prop()
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] })
   @Field(() => [Project], { nullable: true })
   managedProjects: Project[];
 
-  @Prop()
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] })
   @Field(() => [Project], { nullable: true })
   participatedProjects: Project[];
 }

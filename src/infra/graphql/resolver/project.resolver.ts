@@ -12,6 +12,11 @@ export class ProjectResolver {
     return this.projectService.findAll();
   }
 
+  @Query(() => [Project])
+  async project(@Args('name') name: string) {
+    return this.projectService.findAllByName(name);
+  }
+
   @Mutation(() => Project)
   async createProject(@Args() projectInput: ProjectInput) {
     return this.projectService.create(projectInput);

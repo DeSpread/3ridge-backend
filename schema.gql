@@ -16,7 +16,7 @@ type Mutation {
 type Project {
   description: String
   logoUrl: String
-  managerList: [User!]
+  managedUsers: [User!]
   name: String!
   projectUrl: String
 }
@@ -30,6 +30,7 @@ input ProjectInput {
 }
 
 type Query {
+  project(name: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
   ticketByParticipant(username: String!): Ticket!
@@ -40,7 +41,7 @@ type Query {
 
 type Ticket {
   event: String
-  participant: String!
+  participatedUser: User!
 }
 
 type User {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
+import mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 @ObjectType()
@@ -21,9 +22,9 @@ export class Project {
   @Field({ nullable: true })
   projectUrl: string;
 
-  @Prop()
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })
-  managerList: User[];
+  managedUsers: User[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
