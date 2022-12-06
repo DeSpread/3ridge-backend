@@ -28,12 +28,12 @@ export class TicketResolver {
   }
 
   @Mutation(() => Ticket)
-  async updateTicket(id: string, @Args() ticketInput: TicketInput) {
+  async updateTicketById(id: string, @Args() ticketInput: TicketInput) {
     return this.ticketService.update(id, ticketInput);
   }
 
   @Mutation(() => Ticket)
-  async removeById(@Args('id') id: string) {
+  async removeTicketById(@Args('id') id: string) {
     return this.ticketService.removeById(id);
   }
 }

@@ -12,11 +12,14 @@ export class TicketService {
   ) {}
 
   async findAll(): Promise<Ticket[]> {
-    return await this.ticketModel.find().exec();
+    return await this.ticketModel.find().populate('participatedUser').exec();
   }
 
   async findById(id): Promise<Ticket> {
-    return await this.ticketModel.findOne({ _id: id }).exec();
+    return await this.ticketModel
+      .findOne({ _id: id })
+      .populate('participatedUser')
+      .exec();
   }
 
   async findByParticipant(participant): Promise<Ticket[]> {

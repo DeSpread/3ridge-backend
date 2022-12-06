@@ -13,8 +13,8 @@ export class ProjectResolver {
   }
 
   @Query(() => [Project])
-  async project(@Args('name') name: string) {
-    return this.projectService.findAllByName(name);
+  async project(@Args('projectName') projectName: string) {
+    return this.projectService.findAllByName(projectName);
   }
 
   @Mutation(() => Project)
@@ -28,7 +28,7 @@ export class ProjectResolver {
   // }
 
   @Mutation(() => Project)
-  async removeProject(@Args('id') id: string) {
-    return this.projectService.remove(id);
+  async removeProject(@Args('projectId') projectId: string) {
+    return this.projectService.remove(projectId);
   }
 }

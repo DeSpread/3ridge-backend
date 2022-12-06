@@ -13,7 +13,7 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  async user(@Args('username') username: string) {
+  async userByUsername(@Args('username') username: string) {
     return this.userService.findByUsername(username);
   }
 
@@ -23,12 +23,12 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async updateUser(username: string, @Args() userInput: UserInput) {
+  async updateUserByUsername(username: string, @Args() userInput: UserInput) {
     return this.userService.update(username, userInput);
   }
 
   @Mutation(() => User)
-  async removeUser(@Args('username') username: string) {
+  async removeUserByUsername(@Args('username') username: string) {
     return this.userService.remove(username);
   }
 }
