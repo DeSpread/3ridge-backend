@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - sakura-backend:/app/
+    command: [ "sh", "-c", "yarn start:local" ]
+    restart: unless-stopped
+
+volumes:
+  sakura-backend:
+    name: sakura-backend
