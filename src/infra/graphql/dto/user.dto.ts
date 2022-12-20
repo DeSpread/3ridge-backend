@@ -1,31 +1,27 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { RoleType } from '../../../constant/roleType';
-import { ProjectInput } from './project.dto';
 
 @ArgsType()
 @InputType()
-export class UserInput {
+class UserWalletInput {
   @Field({ nullable: true })
-  username: string;
+  chain: string;
 
   @Field({ nullable: true })
   address: string;
+}
 
+@ArgsType()
+@InputType()
+export class UserUpdateInput {
   @Field({ nullable: true })
   email: string;
 
   @Field({ nullable: true })
-  twitterId: string;
+  gmail: string;
+
+  @Field(() => UserWalletInput, { nullable: true })
+  wallet: UserWalletInput;
 
   @Field({ nullable: true })
-  discordId: string;
-
-  @Field({ nullable: true })
-  role: RoleType;
-
-  @Field(() => [ProjectInput], { nullable: true })
-  managedProjects: ProjectInput[];
-
-  @Field(() => [ProjectInput], { nullable: true })
-  participatedProjects: ProjectInput[];
+  profileImageUrl: string;
 }

@@ -3,65 +3,76 @@
 # ------------------------------------------------------
 
 type Mutation {
-  createProject(description: String, logoUrl: String, managerList: [UserInput!], name: String, projectUrl: String): Project!
+  createProject(description: String, logoUrl: String, managerList: [UserUpdateInput!], name: String, projectUrl: String): Project!
   createTicket(event: String, participant: String!): Ticket!
-  createUser(address: String, discordId: String, email: String, managedProjects: [ProjectInput!], participatedProjects: [ProjectInput!], role: String, twitterId: String, username: String): User!
+  createUserByEmail(email: String!): User!
+  createUserByGmail(gmail: String!): User!
+  createUserByWallet(walletAddress: String!): User!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
-  removeUserByUsername(username: String!): User!
+  removeUserByName(name: String!): User!
   updateTicketById(event: String, participant: String!): Ticket!
-  updateUserByUsername(address: String, discordId: String, email: String, managedProjects: [ProjectInput!], participatedProjects: [ProjectInput!], role: String, twitterId: String, username: String): User!
+  updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
 }
 
 type Project {
   description: String
-  logoUrl: String
   managedUsers: [User!]
   name: String!
-  projectUrl: String
-}
-
-input ProjectInput {
-  description: String
-  logoUrl: String
-  managerList: [UserInput!]
-  name: String
-  projectUrl: String
+  thumbnailUrl: String
+  tickets: [Ticket!]
 }
 
 type Query {
+  findUserByName(name: String!): User!
   project(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
   ticketByParticipant(username: String!): Ticket!
   tickets: [Ticket!]!
-  userByUsername(username: String!): User!
   users: [User!]!
 }
 
+type Quest {
+  completedUsers: [User!]
+  description: String
+  questPolicy: String
+  title: String!
+}
+
 type Ticket {
-  event: String
-  participatedUser: User!
+  completed: Boolean
+  participants: [User!]
+  quests: [Quest!]
+  rewardPolicy: String
+  winners: [User!]
 }
 
 type User {
-  address: String
   discordId: String
   email: String
+  gmail: String
   managedProjects: [Project!]
-  participatedProjects: [Project!]
-  role: String
+  name: String!
+  profileImageUrl: String
+  tickets: [Ticket!]
   twitterId: String
-  username: String!
+  wallet: [UserWallet!]
 }
 
-input UserInput {
-  address: String
-  discordId: String
+input UserUpdateInput {
   email: String
-  managedProjects: [ProjectInput!]
-  participatedProjects: [ProjectInput!]
-  role: String
-  twitterId: String
-  username: String
+  gmail: String
+  profileImageUrl: String
+  wallet: UserWalletInput
+}
+
+type UserWallet {
+  address: String!
+  chain: String!
+}
+
+input UserWalletInput {
+  address: String
+  chain: String
 }

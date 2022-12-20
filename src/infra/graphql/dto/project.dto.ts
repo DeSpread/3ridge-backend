@@ -1,5 +1,5 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { UserInput } from './user.dto';
+import { UserUpdateInput } from './user.dto';
 
 @ArgsType()
 @InputType()
@@ -16,8 +16,8 @@ export class ProjectInput {
   @Field({ nullable: true })
   projectUrl: string;
 
-  @Field(() => [UserInput], {
+  @Field(() => [UserUpdateInput], {
     nullable: true,
   })
-  managerList: UserInput[];
+  managerList: UserUpdateInput[];
 }
