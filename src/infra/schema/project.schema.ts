@@ -3,6 +3,7 @@ import { User } from './user.schema';
 import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
+import { CategoryType } from '../../constant/category.enum';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -21,9 +22,9 @@ export class Project {
   @Field({ nullable: true })
   thumbnailUrl: string;
 
-  // @Prop({ type: [{ type: mongoose.Schema.Types.String }] })
-  // @Field({ nullable: true })
-  // categories: string[];
+  @Prop({ type: [String], enum: CategoryType })
+  @Field(() => [CategoryType], { nullable: true })
+  categories: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })

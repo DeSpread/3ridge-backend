@@ -1,9 +1,11 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { UserUpdateInput } from './user.dto';
+import { CategoryType } from '../../../constant/category.enum';
+import { User } from '../../schema/user.schema';
+import { Ticket } from '../../schema/ticket.schema';
 
 @ArgsType()
 @InputType()
-export class ProjectInput {
+export class ProjectCreateInput {
   @Field({ nullable: true })
   name: string;
 
@@ -11,13 +13,14 @@ export class ProjectInput {
   description: string;
 
   @Field({ nullable: true })
-  logoUrl: string;
+  thumbnailUrl: string;
 
-  @Field({ nullable: true })
-  projectUrl: string;
+  @Field(() => [CategoryType], { nullable: true })
+  categories: CategoryType[];
 
-  @Field(() => [UserUpdateInput], {
-    nullable: true,
-  })
-  managerList: UserUpdateInput[];
+  @Field(() => [User], { nullable: true })
+  managedUsers: User[];
+
+  @Field(() => [Ticket], { nullable: true })
+  tickets: Ticket[];
 }

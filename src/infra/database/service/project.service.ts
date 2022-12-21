@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from '../../schema/project.schema';
-import { ProjectInput } from '../../graphql/dto/project.dto';
+import { ProjectCreateInput } from '../../graphql/dto/project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -22,12 +22,12 @@ export class ProjectService {
       .exec();
   }
 
-  async create(projectInput: ProjectInput): Promise<Project> {
-    const projectModel = new this.projectModel(projectInput);
+  async create(projectCreateInput: ProjectCreateInput): Promise<Project> {
+    const projectModel = new this.projectModel(projectCreateInput);
     return projectModel.save();
   }
 
-  async update(id: string, projectInput: ProjectInput) {
+  async update(id: string, projectInput: ProjectCreateInput) {
     const existingProject = await this.projectModel
       .findOneAndUpdate({ _id: id }, { $set: projectInput }, { new: true })
       .exec();

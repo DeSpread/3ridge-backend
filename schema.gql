@@ -2,8 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum CategoryType {
+  Defi
+  Nft
+}
+
 type Mutation {
-  createProject(description: String, logoUrl: String, managerList: [UserUpdateInput!], name: String, projectUrl: String): Project!
+  createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   createTicket(description: String, rewardPolicy: String, title: String): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!): User!
@@ -16,6 +21,7 @@ type Mutation {
 }
 
 type Project {
+  categories: [CategoryType!]
   description: String
   managedUsers: [User!]
   name: String!
@@ -24,6 +30,7 @@ type Project {
 }
 
 input ProjectInputType {
+  categories: [CategoryType!]
   description: String
   managedUsers: [UserInputType!]
   name: String!
@@ -34,7 +41,7 @@ input ProjectInputType {
 type Query {
   completedTickets: [Ticket!]!
   inCompletedTickets: [Ticket!]!
-  project(projectName: String!): [Project!]!
+  projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
   tickets: [Ticket!]!

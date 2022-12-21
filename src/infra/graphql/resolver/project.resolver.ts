@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProjectService } from '../../database/service/project.service';
 import { Project } from '../../schema/project.schema';
-import { ProjectInput } from '../dto/project.dto';
+import { ProjectCreateInput } from '../dto/project.dto';
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -13,13 +13,13 @@ export class ProjectResolver {
   }
 
   @Query(() => [Project])
-  async project(@Args('projectName') projectName: string) {
+  async projectByName(@Args('projectName') projectName: string) {
     return this.projectService.findAllByName(projectName);
   }
 
   @Mutation(() => Project)
-  async createProject(@Args() projectInput: ProjectInput) {
-    return this.projectService.create(projectInput);
+  async createProject(@Args() projectCreateInput: ProjectCreateInput) {
+    return this.projectService.create(projectCreateInput);
   }
 
   // @Mutation(() => Project)
