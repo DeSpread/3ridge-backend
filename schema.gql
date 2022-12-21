@@ -24,12 +24,15 @@ type Project {
 }
 
 type Query {
-  findUserByName(name: String!): User!
   project(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
   ticketByParticipant(username: String!): Ticket!
   tickets: [Ticket!]!
+  userByEmail(email: String!): User!
+  userByGmail(gmail: String!): User!
+  userByName(name: String!): User!
+  userByWalletAddress(walletAddress: String!): User!
   users: [User!]!
 }
 

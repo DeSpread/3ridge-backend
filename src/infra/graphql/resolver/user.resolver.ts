@@ -41,7 +41,22 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  async findUserByName(@Args('name') name: string) {
+  async userByName(@Args('name') name: string) {
     return this.userService.findByName(name);
+  }
+
+  @Query(() => User)
+  async userByGmail(@Args('gmail') gmail: string) {
+    return this.userService.findByGmail(gmail);
+  }
+
+  @Query(() => User)
+  async userByEmail(@Args('email') email: string) {
+    return this.userService.findByEmail(email);
+  }
+
+  @Query(() => User)
+  async userByWalletAddress(@Args('walletAddress') walletAddress: string) {
+    return this.userService.findByWalletAddress(walletAddress);
   }
 }
