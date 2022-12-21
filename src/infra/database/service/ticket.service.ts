@@ -2,7 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
-import { TicketInput } from '../../graphql/dto/ticket.dto';
+import {
+  TicketCreateInput,
+  TicketUpdateInput,
+} from '../../graphql/dto/ticket.dto';
 
 @Injectable()
 export class TicketService {
@@ -12,26 +15,42 @@ export class TicketService {
   ) {}
 
   async findAll(): Promise<Ticket[]> {
-    return await this.ticketModel.find().populate('participatedUser').exec();
-  }
-
-  async findById(id): Promise<Ticket> {
     return await this.ticketModel
-      .findOne({ _id: id })
-      .populate('participatedUser')
+      .find()
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
       .exec();
   }
 
-  async findByParticipant(participant): Promise<Ticket[]> {
-    return await this.ticketModel.find({ participant: participant }).exec();
+  async findCompletedTickets(): Promise<Ticket[]> {
+    return await this.ticketModel
+      .find({ completed: true })
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .exec();
   }
 
-  async create(ticketInput: TicketInput): Promise<Ticket> {
-    const ticketModel = new this.ticketModel(ticketInput);
+  async findInCompletedTickets(): Promise<Ticket[]> {
+    return await this.ticketModel
+      .find({ completed: false })
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .exec();
+  }
+
+  async findById(id: string): Promise<Ticket> {
+    return await this.ticketModel.findById(id).exec();
+  }
+
+  async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
+    const ticketModel = new this.ticketModel(ticketCreateInput);
     return ticketModel.save();
   }
 
-  async update(id: string, ticketInput: TicketInput) {
+  async update(id: string, ticketInput: TicketUpdateInput) {
     const existingTicket = await this.ticketModel
       .findOneAndUpdate({ _id: id }, { $set: ticketInput }, { new: true })
       .exec();

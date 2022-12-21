@@ -4,14 +4,14 @@
 
 type Mutation {
   createProject(description: String, logoUrl: String, managerList: [UserUpdateInput!], name: String, projectUrl: String): Project!
-  createTicket(event: String, participant: String!): Ticket!
+  createTicket(description: String, rewardPolicy: String, title: String): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!): User!
   createUserByWallet(walletAddress: String!): User!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!
-  updateTicketById(event: String, participant: String!): Ticket!
+  updateTicketById(completed: Boolean, description: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
 }
 
@@ -23,11 +23,20 @@ type Project {
   tickets: [Ticket!]
 }
 
+input ProjectInputType {
+  description: String
+  managedUsers: [UserInputType!]
+  name: String!
+  thumbnailUrl: String
+  tickets: [TicketInputType!]
+}
+
 type Query {
+  completedTickets: [Ticket!]!
+  inCompletedTickets: [Ticket!]!
   project(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
-  ticketByParticipant(username: String!): Ticket!
   tickets: [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
@@ -40,15 +49,34 @@ type Quest {
   completedUsers: [User!]
   description: String
   questPolicy: String
-  title: String!
+  title: String
+}
+
+input QuestInputType {
+  completedUsers: [UserInputType!]
+  description: String
+  questPolicy: String
+  title: String
 }
 
 type Ticket {
   completed: Boolean
+  description: String
   participants: [User!]
   quests: [Quest!]
   rewardPolicy: String
+  title: String
   winners: [User!]
+}
+
+input TicketInputType {
+  completed: Boolean
+  description: String
+  participants: [UserInputType!]
+  quests: [QuestInputType!]
+  rewardPolicy: String
+  title: String
+  winners: [UserInputType!]
 }
 
 type User {
@@ -61,6 +89,18 @@ type User {
   tickets: [Ticket!]
   twitterId: String
   wallet: [UserWallet!]
+}
+
+input UserInputType {
+  discordId: String
+  email: String
+  gmail: String
+  managedProjects: [ProjectInputType!]
+  name: String!
+  profileImageUrl: String
+  tickets: [TicketInputType!]
+  twitterId: String
+  wallet: [UserWalletInputType!]
 }
 
 input UserUpdateInput {
@@ -78,4 +118,9 @@ type UserWallet {
 input UserWalletInput {
   address: String
   chain: String
+}
+
+input UserWalletInputType {
+  address: String!
+  chain: String!
 }

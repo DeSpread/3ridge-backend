@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { TicketService } from '../../database/service/ticket.service';
-import { TicketInput } from '../dto/ticket.dto';
+import { TicketCreateInput, TicketUpdateInput } from '../dto/ticket.dto';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
@@ -13,23 +13,31 @@ export class TicketResolver {
   }
 
   @Query(() => Ticket)
-  async ticketByParticipant(@Args('username') username: string) {
-    return this.ticketService.findByParticipant(username);
-  }
-
-  @Query(() => Ticket)
   async ticketById(@Args('id') id: string) {
     return this.ticketService.findById(id);
   }
 
-  @Mutation(() => Ticket)
-  async createTicket(@Args() ticketInput: TicketInput) {
-    return this.ticketService.create(ticketInput);
+  @Query(() => [Ticket])
+  async completedTickets() {
+    return this.ticketService.findCompletedTickets();
+  }
+
+  @Query(() => [Ticket])
+  async inCompletedTickets() {
+    return this.ticketService.findInCompletedTickets();
   }
 
   @Mutation(() => Ticket)
-  async updateTicketById(id: string, @Args() ticketInput: TicketInput) {
-    return this.ticketService.update(id, ticketInput);
+  async createTicket(@Args() ticketCreateInput: TicketCreateInput) {
+    return this.ticketService.create(ticketCreateInput);
+  }
+
+  @Mutation(() => Ticket)
+  async updateTicketById(
+    id: string,
+    @Args() ticketUpdateInput: TicketUpdateInput,
+  ) {
+    return this.ticketService.update(id, ticketUpdateInput);
   }
 
   @Mutation(() => Ticket)

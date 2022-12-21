@@ -1,13 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { User } from './user.schema';
 
 @Schema({ timestamps: true })
+@ArgsType()
+@InputType('QuestInputType', { isAbstract: true })
 @ObjectType()
 export class Quest {
   @Prop()
-  @Field()
+  @Field({ nullable: true })
   title: string;
 
   @Prop()

@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Project } from './project.schema';
 import * as mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
 
 @Schema()
+@ArgsType()
+@InputType('UserWalletInputType', { isAbstract: true })
 @ObjectType()
 export class UserWallet {
   @Prop()
@@ -17,6 +19,8 @@ export class UserWallet {
 }
 
 @Schema({ timestamps: true })
+@ArgsType()
+@InputType('UserInputType', { isAbstract: true })
 @ObjectType()
 export class User {
   @Prop({

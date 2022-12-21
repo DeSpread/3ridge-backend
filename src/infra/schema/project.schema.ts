@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from './user.schema';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
 
 @Schema({ timestamps: true })
+@ArgsType()
+@InputType('ProjectInputType', { isAbstract: true })
 @ObjectType()
 export class Project {
   @Prop()

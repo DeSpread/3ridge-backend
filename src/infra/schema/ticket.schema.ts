@@ -1,12 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { Quest } from './quest.schema';
 import { User } from './user.schema';
 
 @Schema({ timestamps: true })
+@ArgsType()
+@InputType('TicketInputType', { isAbstract: true })
 @ObjectType()
 export class Ticket {
+  @Prop()
+  @Field({ nullable: true })
+  title: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  description: string;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quest' }] })
   @Field(() => [Quest], { nullable: true })
   quests: Quest[];
