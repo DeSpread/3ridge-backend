@@ -6,7 +6,7 @@ import { Ticket } from '../../schema/ticket.schema';
 @ArgsType()
 @InputType()
 export class ProjectCreateInput {
-  @Field({ nullable: true })
+  @Field()
   name: string;
 
   @Field({ nullable: true })

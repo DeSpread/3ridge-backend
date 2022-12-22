@@ -9,12 +9,16 @@ enum CategoryType {
   NFT
 }
 
+enum ChainType {
+  EVM
+}
+
 type Mutation {
-  createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
+  createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   createTicket(description: String, rewardPolicy: String, title: String): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
-  createUserByWallet(walletAddress: String!): User!
+  createUserByWallet(address: String!, chainType: ChainType!): User!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!
@@ -121,7 +125,7 @@ input UserUpdateInput {
 
 type UserWallet {
   address: String!
-  chain: String!
+  chainType: ChainType!
 }
 
 input UserWalletInput {
@@ -131,5 +135,5 @@ input UserWalletInput {
 
 input UserWalletInputType {
   address: String!
-  chain: String!
+  chainType: ChainType!
 }

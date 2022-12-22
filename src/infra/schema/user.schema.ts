@@ -3,18 +3,19 @@ import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Project } from './project.schema';
 import * as mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
+import { ChainType } from '../../constant/chain.type';
 
 @Schema()
 @ArgsType()
 @InputType('UserWalletInputType', { isAbstract: true })
 @ObjectType()
 export class UserWallet {
-  @Prop()
-  @Field({ nullable: false })
-  chain: string;
+  @Prop({ type: [String], enum: ChainType })
+  @Field(() => ChainType)
+  chainType: ChainType;
 
   @Prop()
-  @Field({ nullable: false })
+  @Field()
   address: string;
 }
 
@@ -35,9 +36,9 @@ export class User {
   @Field({ nullable: true })
   profileImageUrl: string;
 
-  @Prop({ type: UserWallet })
+  @Prop()
   @Field(() => [UserWallet], { nullable: true })
-  wallet: UserWallet;
+  wallet: [UserWallet];
 
   @Prop()
   @Field({ nullable: true })

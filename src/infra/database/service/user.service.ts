@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '../../schema/user.schema';
+import { User, UserWallet } from '../../schema/user.schema';
 import {
   UserCreateByGmailInput,
   UserUpdateInput,
@@ -17,20 +17,18 @@ export class UserService {
     private readonly projectModel: Model<Project>,
   ) {}
 
-  async createByWalletAddress(walletAddress: string): Promise<User> {
-    const isExist = await this.userModel.exists({
-      wallet: {
-        address: walletAddress,
-      },
+  async createByWallet(wallet: UserWallet): Promise<User> {
+    const isExist = await this.userModel.find({
+      wallet: { $in: [wallet.address] },
     });
 
     if (isExist) {
-      return Promise.reject(new Error('Already exist wallet address'));
+      return Promise.reject(new Error('Already registered by wallet address'));
     }
 
     const userModel = new this.userModel({
-      walletAddress: walletAddress,
-      name: walletAddress,
+      wallet: wallet,
+      name: wallet.address,
     });
     return userModel.save();
   }
@@ -43,7 +41,7 @@ export class UserService {
     });
 
     if (isExist) {
-      return Promise.reject(new Error('Already exist gmail'));
+      return Promise.reject(new Error('Already registered by gmail'));
     }
 
     const userModel = new this.userModel({
@@ -60,7 +58,7 @@ export class UserService {
     });
 
     if (isExist) {
-      return Promise.reject(new Error('Already exist gmail'));
+      return Promise.reject(new Error('Already registered by email'));
     }
 
     const userModel = new this.userModel({

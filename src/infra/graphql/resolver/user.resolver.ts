@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../../database/service/user.service';
-import { User } from '../../schema/user.schema';
+import { User, UserWallet } from '../../schema/user.schema';
 import { UserCreateByGmailInput, UserUpdateInput } from '../dto/user.dto';
 
 @Resolver(() => User)
@@ -8,8 +8,8 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  async createUserByWallet(@Args('walletAddress') walletAddress: string) {
-    return this.userService.createByWalletAddress(walletAddress);
+  async createUserByWallet(@Args() wallet: UserWallet) {
+    return this.userService.createByWallet(wallet);
   }
 
   @Mutation(() => User)
