@@ -17,18 +17,18 @@ export class UserService {
     private readonly projectModel: Model<Project>,
   ) {}
 
-  async createByWallet(wallet: UserWallet): Promise<User> {
-    const isExist = await this.userModel.find({
-      wallet: { $in: [wallet.address] },
+  async createByWallet(walletInput: UserWallet): Promise<User> {
+    const user = await this.userModel.find({
+      wallet: { $in: [walletInput] },
     });
 
-    if (isExist) {
+    if (user.length > 0) {
       return Promise.reject(new Error('Already registered by wallet address'));
     }
 
     const userModel = new this.userModel({
-      wallet: wallet,
-      name: wallet.address,
+      wallet: walletInput,
+      name: walletInput.address,
     });
     return userModel.save();
   }
