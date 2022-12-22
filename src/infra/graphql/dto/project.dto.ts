@@ -1,4 +1,4 @@
-import { ArgsType, Field, InputType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, PartialType } from '@nestjs/graphql';
 import { CategoryType } from '../../../constant/category.enum';
 import { User } from '../../schema/user.schema';
 import { Ticket } from '../../schema/ticket.schema';
@@ -24,3 +24,7 @@ export class ProjectCreateInput {
   @Field(() => [Ticket], { nullable: true })
   tickets: Ticket[];
 }
+
+@ArgsType()
+@InputType()
+export class ProjectUpdateInput extends PartialType(ProjectCreateInput) {}
