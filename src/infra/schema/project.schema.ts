@@ -24,7 +24,7 @@ export class Project {
 
   @Prop({ type: [String], enum: CategoryType })
   @Field(() => [CategoryType], { nullable: true })
-  categories: string;
+  categories: [CategoryType];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })

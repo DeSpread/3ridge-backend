@@ -3,8 +3,10 @@
 # ------------------------------------------------------
 
 enum CategoryType {
-  Defi
-  Nft
+  DEFI
+  LAYER1
+  LAYER2
+  NFT
 }
 
 type Mutation {
