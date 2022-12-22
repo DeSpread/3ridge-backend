@@ -25,3 +25,13 @@ export class UserUpdateInput {
   @Field({ nullable: true })
   profileImageUrl: string;
 }
+
+@ArgsType()
+@InputType()
+export class UserCreateByGmailInput {
+  @Field()
+  gmail: string;
+
+  @Field({ nullable: true })
+  profileImageUrl: string;
+}

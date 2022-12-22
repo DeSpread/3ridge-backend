@@ -2,7 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../schema/user.schema';
-import { UserUpdateInput } from '../../graphql/dto/user.dto';
+import {
+  UserCreateByGmailInput,
+  UserUpdateInput,
+} from '../../graphql/dto/user.dto';
 import { Project } from '../../schema/project.schema';
 
 @Injectable()
@@ -32,9 +35,11 @@ export class UserService {
     return userModel.save();
   }
 
-  async createByGmail(gmail: string): Promise<User> {
+  async createByGmail(
+    userCreateByGmailInput: UserCreateByGmailInput,
+  ): Promise<User> {
     const isExist = await this.userModel.exists({
-      gmail: gmail,
+      gmail: userCreateByGmailInput.gmail,
     });
 
     if (isExist) {
@@ -42,8 +47,9 @@ export class UserService {
     }
 
     const userModel = new this.userModel({
-      gmail: gmail,
-      name: gmail,
+      gmail: userCreateByGmailInput.gmail,
+      name: userCreateByGmailInput.gmail,
+      profileImageUrl: userCreateByGmailInput.profileImageUrl,
     });
     return userModel.save();
   }

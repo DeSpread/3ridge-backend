@@ -12,13 +12,18 @@ export class ProjectService {
   ) {}
 
   async findAll(): Promise<Project[]> {
-    return await this.projectModel.find().populate('managedUsers').exec();
+    return await this.projectModel
+      .find()
+      .populate('managedUsers')
+      .populate('tickets')
+      .exec();
   }
 
   async findAllByName(name): Promise<Project[]> {
     return await this.projectModel
       .find({ name: name })
       .populate('managedUsers')
+      .populate('tickets')
       .exec();
   }
 

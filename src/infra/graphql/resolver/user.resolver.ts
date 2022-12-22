@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../../database/service/user.service';
 import { User } from '../../schema/user.schema';
-import { UserUpdateInput } from '../dto/user.dto';
+import { UserCreateByGmailInput, UserUpdateInput } from '../dto/user.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -13,8 +13,10 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async createUserByGmail(@Args('gmail') gmail: string) {
-    return this.userService.createByGmail(gmail);
+  async createUserByGmail(
+    @Args() userCreateByGmailInput: UserCreateByGmailInput,
+  ) {
+    return this.userService.createByGmail(userCreateByGmailInput);
   }
 
   @Mutation(() => User)

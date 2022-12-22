@@ -13,7 +13,7 @@ type Mutation {
   createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   createTicket(description: String, rewardPolicy: String, title: String): Ticket!
   createUserByEmail(email: String!): User!
-  createUserByGmail(gmail: String!): User!
+  createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(walletAddress: String!): User!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
