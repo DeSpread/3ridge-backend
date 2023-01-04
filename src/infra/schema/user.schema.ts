@@ -29,8 +29,11 @@ export class User {
     unique: true,
     index: true,
   })
-  @Field({ nullable: false })
+  @Field()
   name: string;
+
+  @Field()
+  password: string;
 
   @Prop()
   @Field({ nullable: true })

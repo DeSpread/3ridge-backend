@@ -1,3 +1,6 @@
 database:
   mongodb:
     endpoint: mongodb+srv://despread:tz33NSLcyu3ncFin@sakura-dev.rnnfkhn.mongodb.net/?retryWrites=true&w=majority
+auth:
+  jwt:
+    secret: secret_key

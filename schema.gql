@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponse {
+  accessToken: String
+}
+
 enum CategoryType {
   DEFI
   LAYER1
@@ -48,6 +52,7 @@ input ProjectInputType {
 type Query {
   completedTickets: [Ticket!]!
   inCompletedTickets: [Ticket!]!
+  login(username: String!): AuthResponse!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
@@ -99,6 +104,7 @@ type User {
   gmail: String
   managedProjects: [Project!]
   name: String!
+  password: String!
   profileImageUrl: String
   tickets: [Ticket!]
   twitterId: String
@@ -111,6 +117,7 @@ input UserInputType {
   gmail: String
   managedProjects: [ProjectInputType!]
   name: String!
+  password: String!
   profileImageUrl: String
   tickets: [TicketInputType!]
   twitterId: String

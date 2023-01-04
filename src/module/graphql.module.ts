@@ -10,6 +10,14 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       sortSchema: true,
       debug: true,
       playground: true,
+      context: ({ req, connection }) => {
+        if (req) {
+          const user = req.headers.authorization;
+          return { ...req, user };
+        } else {
+          return connection;
+        }
+      },
     }),
   ],
 })

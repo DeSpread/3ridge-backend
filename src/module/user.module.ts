@@ -15,5 +15,6 @@ import { Project, ProjectSchema } from '../infra/schema/project.schema';
     ConfigModule,
   ],
   providers: [UserResolver, UserService],
+  exports: [UserService],
 })
 export class UserModule {}

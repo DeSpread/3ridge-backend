@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserWallet } from '../../schema/user.schema';
@@ -93,11 +98,17 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userModel
+    const user = await this.userModel
       .findOne({ email: email })
       .populate('managedProjects')
       .populate('tickets')
       .exec();
+
+    if (!user) {
+      throw new HttpException('Not exist user', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 
   async findByName(name: string): Promise<User> {
