@@ -4,6 +4,7 @@ import { UserService } from '../infra/database/service/user.service';
 import { AuthResponse } from '../model/auth.model';
 import { ObjectUtil } from '../util/object.util';
 import { ApolloError } from 'apollo-server-express';
+import { ErrorCode } from '../constant/error.constant';
 
 @Injectable()
 export class AuthService {
@@ -19,12 +20,12 @@ export class AuthService {
       exist = await this.userService.isExistById(userId);
     } catch (e) {
       if (e instanceof BadRequestException) {
-        throw new ApolloError(e.message, 'BAD_REQUEST');
+        throw ErrorCode.BAD_REQUEST_USER_ID;
       }
     }
 
     if (ObjectUtil.isNull(exist)) {
-      throw new ApolloError('Does not exist user', 'NOT_EXIST_USER');
+      throw ErrorCode.NOT_FOUND_USER;
     }
 
     const authResponse: AuthResponse = new AuthResponse();

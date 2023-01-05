@@ -6,6 +6,7 @@ import {
   TicketCreateInput,
   TicketUpdateInput,
 } from '../../graphql/dto/ticket.dto';
+import { ErrorCode } from '../../../constant/error.constant';
 
 @Injectable()
 export class TicketService {
@@ -56,7 +57,7 @@ export class TicketService {
       .exec();
 
     if (!existingTicket) {
-      throw new NotFoundException(`Ticket ${id} not found`);
+      throw ErrorCode.NOT_FOUND_PROJECT;
     }
     return existingTicket;
   }

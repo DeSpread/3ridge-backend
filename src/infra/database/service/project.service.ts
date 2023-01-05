@@ -6,6 +6,7 @@ import {
   ProjectCreateInput,
   ProjectUpdateInput,
 } from '../../graphql/dto/project.dto';
+import { ErrorCode } from '../../../constant/error.constant';
 
 @Injectable()
 export class ProjectService {
@@ -45,7 +46,7 @@ export class ProjectService {
       .exec();
 
     if (!existingProject) {
-      throw new NotFoundException(`Project ${id} not found`);
+      throw ErrorCode.NOT_FOUND_PROJECT;
     }
     return existingProject;
   }

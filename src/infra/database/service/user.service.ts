@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User, UserWallet } from '../../schema/user.schema';
@@ -13,6 +7,7 @@ import {
   UserUpdateInput,
 } from '../../graphql/dto/user.dto';
 import { Project } from '../../schema/project.schema';
+import { ErrorCode } from '../../../constant/error.constant';
 
 const { ObjectId } = mongoose.Types;
 
@@ -108,7 +103,7 @@ export class UserService {
       .exec();
 
     if (!user) {
-      throw new HttpException('Not exist user', HttpStatus.NOT_FOUND);
+      throw ErrorCode.NOT_FOUND_USER;
     }
 
     return user;
@@ -124,7 +119,7 @@ export class UserService {
 
   async isExistById(userId: string): Promise<any> {
     if (!ObjectId.isValid(userId)) {
-      throw new BadRequestException('userId is not valid');
+      throw ErrorCode.NOT_FOUND_USER;
     }
     return await this.userModel.findById(userId).exec();
   }
@@ -143,7 +138,7 @@ export class UserService {
       .exec();
 
     if (!existingUser) {
-      throw new NotFoundException(`User ${name} not found`);
+      throw ErrorCode.NOT_FOUND_USER;
     }
     return existingUser;
   }
