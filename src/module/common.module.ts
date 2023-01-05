@@ -4,6 +4,7 @@ import { HealthModule } from './healthModule';
 import { DatabaseModule } from './database.module';
 import { CustomConfigModule } from './custom.config.module';
 import { AuthModule } from './auth.module';
+import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AuthModule } from './auth.module';
     DatabaseModule,
     GraphqlModule,
     AuthModule,
+    LoggerModule,
   ],
   exports: [
     CustomConfigModule,
@@ -19,6 +21,7 @@ import { AuthModule } from './auth.module';
     DatabaseModule,
     GraphqlModule,
     AuthModule,
+    LoggerModule,
   ],
 })
 export class CommonModule {}

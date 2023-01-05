@@ -8,7 +8,7 @@ export const ErrorCode = {
     'BAD_REQUEST_USER_ID',
   ),
   NOT_FOUND_PROJECT: new ApolloError(
-    'projec id is not found',
+    'project id is not found',
     'NOT_FOUND_PROJECT',
   ),
 } as const;

@@ -35,12 +35,14 @@
     "graphql": "^16.6.0",
     "graphql-tools": "^8.3.12",
     "mongoose": "^6.7.3",
+    "nest-winston": "^1.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.1.5",
