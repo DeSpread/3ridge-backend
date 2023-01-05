@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../infra/database/service/user.service';
 import { AuthResponse } from '../model/auth.model';
 import { ObjectUtil } from '../util/object.util';
+import { ApolloError } from 'apollo-server-express';
 
 @Injectable()
 export class AuthService {
@@ -11,15 +12,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string): Promise<any> {
-    const user = await this.userService.findByName(username);
-    const authResponse: AuthResponse = new AuthResponse();
+  async getAccessToken(userId: string): Promise<any> {
+    let exist;
 
-    if (ObjectUtil.isNull(user)) {
-      return authResponse;
+    try {
+      exist = await this.userService.isExistById(userId);
+    } catch (e) {
+      if (e instanceof BadRequestException) {
+        throw new ApolloError(e.message, 'BAD_REQUEST');
+      }
     }
 
-    const payload = { username: user.name };
+    if (ObjectUtil.isNull(exist)) {
+      throw new ApolloError('Does not exist user', 'NOT_EXIST_USER');
+    }
+
+    const authResponse: AuthResponse = new AuthResponse();
+    const payload = { userId: userId };
     authResponse.accessToken = this.jwtService.sign(payload);
 
     return authResponse;

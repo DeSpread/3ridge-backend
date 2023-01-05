@@ -12,12 +12,7 @@ export class AuthResolver {
   }
 
   @Query(() => AuthResponse)
-  async login(@Args('username') username: string) {
-    try {
-      return this.authService.validateUser(username);
-    } catch (e) {
-      this.logger.error(e);
-      return false;
-    }
+  async auth(@Args('userId') userId: string) {
+    return this.authService.getAccessToken(userId);
   }
 }

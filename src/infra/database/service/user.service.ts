@@ -1,17 +1,20 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User, UserWallet } from '../../schema/user.schema';
 import {
   UserCreateByGmailInput,
   UserUpdateInput,
 } from '../../graphql/dto/user.dto';
 import { Project } from '../../schema/project.schema';
+
+const { ObjectId } = mongoose.Types;
 
 @Injectable()
 export class UserService {
@@ -117,6 +120,13 @@ export class UserService {
       .populate('managedProjects')
       .populate('tickets')
       .exec();
+  }
+
+  async isExistById(userId: string): Promise<any> {
+    if (!ObjectId.isValid(userId)) {
+      throw new BadRequestException('userId is not valid');
+    }
+    return await this.userModel.findById(userId).exec();
   }
 
   async update(name: string, userUpdateInput: UserUpdateInput) {
