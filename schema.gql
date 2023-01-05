@@ -104,7 +104,6 @@ type User {
   gmail: String
   managedProjects: [Project!]
   name: String!
-  password: String!
   profileImageUrl: String
   tickets: [Ticket!]
   twitterId: String
@@ -117,7 +116,6 @@ input UserInputType {
   gmail: String
   managedProjects: [ProjectInputType!]
   name: String!
-  password: String!
   profileImageUrl: String
   tickets: [TicketInputType!]
   twitterId: String

@@ -32,9 +32,6 @@ export class User {
   @Field()
   name: string;
 
-  @Field()
-  password: string;
-
   @Prop()
   @Field({ nullable: true })
   profileImageUrl: string;
