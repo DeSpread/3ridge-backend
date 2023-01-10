@@ -11,4 +11,5 @@ export const ErrorCode = {
     'project id is not found',
     'NOT_FOUND_PROJECT',
   ),
+  BAD_REQUEST_QUEST: new ApolloError('quest is not valid', 'BAD_REQUEST_QUEST'),
 } as const;

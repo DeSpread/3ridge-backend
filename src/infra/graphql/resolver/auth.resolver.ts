@@ -13,7 +13,6 @@ export class AuthResolver {
 
   @Query(() => AuthResponse)
   async auth(@Args('userId') userId: string) {
-    this.logger.debug('test');
     return this.authService.getAccessToken(userId);
   }
 }

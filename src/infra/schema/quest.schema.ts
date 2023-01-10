@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { User } from './user.schema';
+import { QuestPolicy } from '../graphql/dto/policy.dto';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -17,8 +18,8 @@ export class Quest {
   description: string;
 
   @Prop()
-  @Field({ nullable: true })
-  questPolicy: string;
+  @Field(() => QuestPolicy, { nullable: true })
+  questPolicy: QuestPolicy;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })

@@ -39,7 +39,7 @@ export class UserResolver {
     return this.userService.update(name, userUpdateInput);
   }
 
-  @UseGuards(GqlAuthGuard)
+  // @UseGuards(GqlAuthGuard)
   @Query(() => [User])
   async users() {
     return this.userService.findAll();

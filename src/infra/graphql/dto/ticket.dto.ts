@@ -1,6 +1,7 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
 import { User } from '../../schema/user.schema';
+import { RewardPolicy } from './policy.dto';
 
 @ArgsType()
 @InputType()
@@ -11,11 +12,11 @@ export class TicketCreateInput {
   @Field({ nullable: true })
   description: string;
 
-  // @Field(() => [Quest], { nullable: true })
-  // quests: Quest[];
+  @Field(() => [Quest])
+  quests: Quest[];
 
   @Field({ nullable: true })
-  rewardPolicy: string;
+  rewardPolicy: RewardPolicy;
 }
 
 @ArgsType()
