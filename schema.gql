@@ -129,6 +129,7 @@ input TicketInputType {
 }
 
 type User {
+  _id: String
   discordId: String
   email: String
   gmail: String
@@ -141,6 +142,7 @@ type User {
 }
 
 input UserInputType {
+  _id: String
   discordId: String
   email: String
   gmail: String

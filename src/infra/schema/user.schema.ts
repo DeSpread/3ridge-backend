@@ -24,6 +24,9 @@ export class UserWallet {
 @InputType('UserInputType', { isAbstract: true })
 @ObjectType()
 export class User {
+  @Field({ nullable: true })
+  _id: string;
+
   @Prop({
     required: true,
     unique: true,
