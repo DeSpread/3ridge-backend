@@ -5,6 +5,7 @@ import { TicketResolver } from '../infra/graphql/resolver/ticket.resolver';
 import { TicketService } from '../infra/database/service/ticket.service';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
+import { QuestService } from '../infra/database/service/quest.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { Quest, QuestSchema } from '../infra/schema/quest.schema';
     ]),
     ConfigModule,
   ],
-  providers: [TicketResolver, TicketService],
+  providers: [TicketResolver, TicketService, QuestService],
 })
 export class TicketModule {}
