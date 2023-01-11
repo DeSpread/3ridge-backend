@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
@@ -8,10 +8,15 @@ import {
 } from '../../graphql/dto/ticket.dto';
 import { ErrorCode } from '../../../constant/error.constant';
 import { Quest } from '../../schema/quest.schema';
+import { QuestPolicy } from '../../graphql/dto/policy.dto';
+import { QuestPolicyType } from '../../../constant/rewardPolicyType';
+import { QuizQuestInput } from '../../../model/quest.model';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class TicketService {
   constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
@@ -56,6 +61,9 @@ export class TicketService {
 
     const questList: Quest[] = [];
     for (const quest of ticketCreateInput.quests) {
+      if (await this.isInvalidQuest(quest.questPolicy)) {
+        throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+      }
       const questModel = new this.questModel(quest);
       questList.push(await questModel.save());
     }
@@ -81,5 +89,20 @@ export class TicketService {
 
   async removeById(id: string) {
     return this.ticketModel.findByIdAndRemove(id);
+  }
+
+  async isInvalidQuest(questPolicy: QuestPolicy) {
+    try {
+      switch (questPolicy.questPolicy) {
+        case QuestPolicyType.QUIZ:
+          const quizQuestInput: QuizQuestInput = JSON.parse(
+            questPolicy.context,
+          );
+          return false;
+      }
+    } catch (e) {
+      this.logger.error(`Requested quest is invalid. error: [${e.message}]`);
+      return true;
+    }
   }
 }

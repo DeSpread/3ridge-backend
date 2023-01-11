@@ -12,4 +12,8 @@ export const ErrorCode = {
     'NOT_FOUND_PROJECT',
   ),
   BAD_REQUEST_QUEST: new ApolloError('quest is not valid', 'BAD_REQUEST_QUEST'),
+  BAD_REQUEST_QUIZ_QUEST_COLLECTION: new ApolloError(
+    'quiz quest collection is not valid',
+    'BAD_REQUEST_QUIZ_QUEST_COLLECTION',
+  ),
 } as const;
