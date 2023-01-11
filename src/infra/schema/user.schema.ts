@@ -41,7 +41,7 @@ export class User {
 
   @Prop()
   @Field(() => [UserWallet], { nullable: true })
-  wallet: [UserWallet];
+  wallets: [UserWallet];
 
   @Prop()
   @Field({ nullable: true })

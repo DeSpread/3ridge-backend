@@ -140,7 +140,7 @@ type User {
   profileImageUrl: String
   tickets: [Ticket!]
   twitterId: String
-  wallet: [UserWallet!]
+  wallets: [UserWallet!]
 }
 
 input UserInputType {
@@ -153,7 +153,7 @@ input UserInputType {
   profileImageUrl: String
   tickets: [TicketInputType!]
   twitterId: String
-  wallet: [UserWalletInputType!]
+  wallets: [UserWalletInputType!]
 }
 
 input UserUpdateInput {

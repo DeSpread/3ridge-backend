@@ -22,7 +22,7 @@ export class UserService {
 
   async createByWallet(walletInput: UserWallet): Promise<User> {
     const user = await this.userModel.find({
-      wallet: { $in: [walletInput] },
+      wallets: { $in: [walletInput] },
     });
 
     if (user.length > 0) {
