@@ -9,9 +9,9 @@ import {
 import { ErrorCode } from '../../../constant/error.constant';
 import { Quest } from '../../schema/quest.schema';
 import { QuestPolicy } from '../../graphql/dto/policy.dto';
-import { QuestPolicyType } from '../../../constant/rewardPolicyType';
-import { QuizQuestInput } from '../../../model/quest.model';
+import { QuizQuestInput } from '../../../model/quiz.quest.model';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { QuestPolicyType } from '../../../constant/quest.policy';
 
 @Injectable()
 export class TicketService {

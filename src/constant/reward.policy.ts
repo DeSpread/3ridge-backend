@@ -6,10 +6,3 @@ export enum RewardPolicyType {
 }
 
 registerEnumType(RewardPolicyType, { name: 'RewardPolicyType' });
-
-export enum QuestPolicyType {
-  QUIZ = 'QUIZ',
-  VERIFY = 'VERIFY',
-}
-
-registerEnumType(QuestPolicyType, { name: 'QuestPolicyType' });

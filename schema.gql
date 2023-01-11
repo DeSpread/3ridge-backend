@@ -90,7 +90,9 @@ input QuestPolicyInputType {
 
 enum QuestPolicyType {
   QUIZ
-  VERIFY
+  VERIFY_CONTRACT
+  VERIFY_DISCORD
+  VERIFY_TWITTER
 }
 
 type RewardPolicy {
