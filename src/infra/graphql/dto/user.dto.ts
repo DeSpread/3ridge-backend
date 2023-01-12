@@ -19,8 +19,8 @@ export class UserUpdateInput {
   @Field({ nullable: true })
   gmail: string;
 
-  @Field(() => UserWalletInput, { nullable: true })
-  wallet: UserWalletInput;
+  @Field(() => [UserWalletInput], { nullable: true })
+  wallets: [UserWalletInput];
 
   @Field({ nullable: true })
   profileImageUrl: string;

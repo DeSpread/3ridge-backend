@@ -125,8 +125,6 @@ export class UserService {
   }
 
   async update(name: string, userUpdateInput: UserUpdateInput) {
-    console.log(userUpdateInput);
-
     const existingUser = await this.userModel
       .findOneAndUpdate(
         { name: name },

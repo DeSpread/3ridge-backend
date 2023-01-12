@@ -160,7 +160,7 @@ input UserUpdateInput {
   email: String
   gmail: String
   profileImageUrl: String
-  wallet: UserWalletInput
+  wallets: [UserWalletInput!]
 }
 
 type UserWallet {
