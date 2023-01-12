@@ -12,7 +12,7 @@ import { ChainType } from '../../constant/chain.type';
 export class UserWallet {
   @Prop({ type: [String], enum: ChainType })
   @Field(() => ChainType)
-  chainType: ChainType;
+  chain: ChainType;
 
   @Prop()
   @Field()

@@ -1,14 +1,5 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-
-@ArgsType()
-@InputType()
-class UserWalletInput {
-  @Field({ nullable: true })
-  chain: string;
-
-  @Field({ nullable: true })
-  address: string;
-}
+import { UserWallet } from '../../schema/user.schema';
 
 @ArgsType()
 @InputType()
@@ -19,8 +10,8 @@ export class UserUpdateInput {
   @Field({ nullable: true })
   gmail: string;
 
-  @Field(() => [UserWalletInput], { nullable: true })
-  wallets: [UserWalletInput];
+  @Field(() => [UserWallet], { nullable: true })
+  wallets: [UserWallet];
 
   @Field({ nullable: true })
   profileImageUrl: string;

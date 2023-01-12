@@ -54,17 +54,14 @@ export class TicketService {
   }
 
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
-    if (!ticketCreateInput.quests) {
-      throw ErrorCode.BAD_REQUEST_QUEST;
-    }
+    await this.validateMandatory(ticketCreateInput);
 
     const ticketModel = new this.ticketModel(ticketCreateInput);
     ticketModel.quests = await this.questService.getQuestList(
       ticketCreateInput.quests,
     );
 
-    console.log(ticketCreateInput);
-
+    this.logger.log(ticketCreateInput);
     return ticketModel.save();
   }
 
@@ -81,5 +78,11 @@ export class TicketService {
 
   async removeById(id: string) {
     return this.ticketModel.findByIdAndRemove(id);
+  }
+
+  async validateMandatory(ticketCreateInput: TicketCreateInput) {
+    if (!ticketCreateInput.quests) {
+      throw ErrorCode.BAD_REQUEST_QUEST;
+    }
   }
 }

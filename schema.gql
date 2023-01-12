@@ -22,7 +22,7 @@ type Mutation {
   createTicket(description: String, quests: [QuestInputType!]!, rewardPolicy: RewardPolicyInputType, title: String): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
-  createUserByWallet(address: String!, chainType: ChainType!): User!
+  createUserByWallet(address: String!, chain: ChainType!): User!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!
@@ -160,20 +160,15 @@ input UserUpdateInput {
   email: String
   gmail: String
   profileImageUrl: String
-  wallets: [UserWalletInput!]
+  wallets: [UserWalletInputType!]
 }
 
 type UserWallet {
   address: String!
-  chainType: ChainType!
-}
-
-input UserWalletInput {
-  address: String
-  chain: String
+  chain: ChainType!
 }
 
 input UserWalletInputType {
   address: String!
-  chainType: ChainType!
+  chain: ChainType!
 }
