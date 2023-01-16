@@ -81,7 +81,13 @@ export class UserService {
 
   async findByWalletAddress(walletAddress: string): Promise<User> {
     return await this.userModel
-      .findOne({ walletAddress: walletAddress })
+      .findOne({
+        wallets: {
+          $elemMatch: {
+            address: walletAddress,
+          },
+        },
+      })
       .populate('managedProjects')
       .populate('tickets')
       .exec();
