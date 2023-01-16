@@ -14,4 +14,12 @@ export class ObjectUtil {
 
     return false;
   }
+
+  static isAnyNull(...args: any[]) {
+    for (const value of args) {
+      if (this.isNull(value)) {
+        return true;
+      }
+    }
+  }
 }

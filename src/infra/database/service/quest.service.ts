@@ -1,11 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
-import {
-  TicketCreateInput,
-  TicketUpdateInput,
-} from '../../graphql/dto/ticket.dto';
 import { ErrorCode } from '../../../constant/error.constant';
 import { Quest } from '../../schema/quest.schema';
 import { QuestPolicy } from '../../graphql/dto/policy.dto';
@@ -17,50 +12,11 @@ import { QuestPolicyType } from '../../../constant/quest.policy';
 export class QuestService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
-    @InjectModel(Ticket.name)
-    private readonly ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
   ) {}
 
-  async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
-    if (!ticketCreateInput.quests) {
-      throw ErrorCode.BAD_REQUEST_QUEST;
-    }
-
-    const questList: Quest[] = [];
-    for (const quest of ticketCreateInput.quests) {
-      if (await this.isInvalidQuest(quest.questPolicy)) {
-        throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
-      }
-      const questModel = new this.questModel(quest);
-      questList.push(await questModel.save());
-    }
-
-    const ticketModel = new this.ticketModel(ticketCreateInput);
-    ticketModel.quests = questList;
-
-    console.log(ticketModel);
-
-    return ticketModel.save();
-  }
-
-  async update(id: string, ticketInput: TicketUpdateInput) {
-    const existingTicket = await this.ticketModel
-      .findOneAndUpdate({ _id: id }, { $set: ticketInput }, { new: true })
-      .exec();
-
-    if (!existingTicket) {
-      throw ErrorCode.NOT_FOUND_PROJECT;
-    }
-    return existingTicket;
-  }
-
-  async removeById(id: string) {
-    return this.ticketModel.findByIdAndRemove(id);
-  }
-
-  async isInvalidQuest(questPolicy: QuestPolicy) {
+  async isInvalidQuest(questPolicy: QuestPolicy): Promise<boolean> {
     try {
       switch (questPolicy.questPolicy) {
         case QuestPolicyType.QUIZ:
@@ -75,7 +31,7 @@ export class QuestService {
     }
   }
 
-  async getQuestList(quests: Quest[]) {
+  async getQuestList(quests: Quest[]): Promise<Quest[]> {
     const questList: Quest[] = [];
     for (const quest of quests) {
       if (await this.isInvalidQuest(quest.questPolicy)) {

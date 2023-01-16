@@ -16,4 +16,8 @@ export const ErrorCode = {
     'quiz quest collection is not valid',
     'BAD_REQUEST_QUIZ_QUEST_COLLECTION',
   ),
+  BAD_REQUEST_TICKET_MANDATORY: new ApolloError(
+    'ticket needs to have mandatory fields',
+    'BAD_REQUEST_TICKET_MANDATORY',
+  ),
 } as const;

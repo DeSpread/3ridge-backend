@@ -10,16 +10,19 @@ import { ErrorCode } from '../../../constant/error.constant';
 import { Quest } from '../../schema/quest.schema';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
+import { RewardService } from './reward.service';
+import { ObjectUtil } from '../../../util/object.util';
 
 @Injectable()
 export class TicketService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     @InjectModel(Ticket.name)
-    private readonly ticketModel: Model<Ticket>,
+    private ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
-    private readonly questModel: Model<Quest>,
-    private readonly questService: QuestService,
+    private questModel: Model<Quest>,
+    private questService: QuestService,
+    private rewardService: RewardService,
   ) {}
 
   async findAll(): Promise<Ticket[]> {
@@ -56,6 +59,8 @@ export class TicketService {
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
     await this.validateMandatory(ticketCreateInput);
 
+    await this.rewardService.isInvalidReward(ticketCreateInput.rewardPolicy);
+
     const ticketModel = new this.ticketModel(ticketCreateInput);
     ticketModel.quests = await this.questService.getQuestList(
       ticketCreateInput.quests,
@@ -81,8 +86,13 @@ export class TicketService {
   }
 
   async validateMandatory(ticketCreateInput: TicketCreateInput) {
-    if (!ticketCreateInput.quests) {
-      throw ErrorCode.BAD_REQUEST_QUEST;
+    if (
+      ObjectUtil.isAnyNull(
+        ticketCreateInput.quests,
+        ticketCreateInput.rewardPolicy,
+      )
+    ) {
+      throw ErrorCode.BAD_REQUEST_TICKET_MANDATORY;
     }
   }
 }
