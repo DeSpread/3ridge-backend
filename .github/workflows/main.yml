@@ -13,4 +13,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: 22
-        script: /home/ec2-user/scripts/echo.sh
+        script: /home/ec2-user/scripts/execute_github_action.sh
