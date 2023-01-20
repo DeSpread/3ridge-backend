@@ -12,6 +12,9 @@ export class TicketCreateInput {
   @Field({ nullable: true })
   description: string;
 
+  @Field({ nullable: true })
+  imageUrl: string;
+
   @Field(() => [Quest])
   quests: Quest[];
 
@@ -27,6 +30,9 @@ export class TicketUpdateInput {
 
   @Field({ nullable: true })
   description: string;
+
+  @Field({ nullable: true })
+  imageUrl: string;
 
   // @Field(() => [Quest], { nullable: true })
   // quests: Quest[];

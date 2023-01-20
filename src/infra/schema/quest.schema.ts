@@ -9,6 +9,9 @@ import { QuestPolicy } from '../graphql/dto/policy.dto';
 @InputType('QuestInputType', { isAbstract: true })
 @ObjectType()
 export class Quest {
+  @Field({ nullable: true })
+  _id: string;
+
   @Prop()
   @Field({ nullable: true })
   title: string;

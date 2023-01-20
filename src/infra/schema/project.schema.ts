@@ -10,6 +10,9 @@ import { CategoryType } from '../../constant/category.enum';
 @InputType('ProjectInputType', { isAbstract: true })
 @ObjectType()
 export class Project {
+  @Field({ nullable: true })
+  _id: string;
+
   @Prop()
   @Field()
   name: string;

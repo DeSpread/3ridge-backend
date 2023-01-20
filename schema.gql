@@ -19,7 +19,7 @@ enum ChainType {
 
 type Mutation {
   createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
-  createTicket(description: String, quests: [QuestInputType!]!, rewardPolicy: RewardPolicyInputType, title: String): Ticket!
+  createTicket(description: String, imageUrl: String, quests: [QuestInputType!]!, rewardPolicy: RewardPolicyInputType, title: String): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(address: String!, chain: ChainType!): User!
@@ -27,11 +27,12 @@ type Mutation {
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!
   updateProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, projectId: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
-  updateTicketById(completed: Boolean, description: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
+  updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
 }
 
 type Project {
+  _id: String
   categories: [CategoryType!]
   description: String
   managedUsers: [User!]
@@ -41,6 +42,7 @@ type Project {
 }
 
 input ProjectInputType {
+  _id: String
   categories: [CategoryType!]
   description: String
   managedUsers: [UserInputType!]
@@ -65,6 +67,7 @@ type Query {
 }
 
 type Quest {
+  _id: String
   completedUsers: [User!]
   description: String
   questPolicy: QuestPolicy
@@ -72,6 +75,7 @@ type Quest {
 }
 
 input QuestInputType {
+  _id: String
   completedUsers: [UserInputType!]
   description: String
   questPolicy: QuestPolicyInputType
@@ -111,8 +115,10 @@ enum RewardPolicyType {
 }
 
 type Ticket {
+  _id: String
   completed: Boolean
   description: String
+  imageUrl: String
   participants: [User!]
   quests: [Quest!]
   rewardPolicy: RewardPolicy
@@ -121,8 +127,10 @@ type Ticket {
 }
 
 input TicketInputType {
+  _id: String
   completed: Boolean
   description: String
+  imageUrl: String
   participants: [UserInputType!]
   quests: [QuestInputType!]
   rewardPolicy: RewardPolicyInputType

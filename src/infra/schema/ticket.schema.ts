@@ -10,6 +10,9 @@ import { RewardPolicy } from '../graphql/dto/policy.dto';
 @InputType('TicketInputType', { isAbstract: true })
 @ObjectType()
 export class Ticket {
+  @Field({ nullable: true })
+  _id: string;
+
   @Prop()
   @Field({ nullable: true })
   title: string;
@@ -17,6 +20,10 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   description: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  imageUrl: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quest' }] })
   @Field(() => [Quest], { nullable: true })
