@@ -44,10 +44,6 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   completed: boolean;
-
-  @Prop()
-  @Field({ nullable: true })
-  rewardPoint: number;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);

@@ -66,6 +66,10 @@ export class User {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] })
   @Field(() => [Project], { nullable: true })
   managedProjects: Project[];
+
+  @Prop()
+  @Field({ nullable: true })
+  rewardPoint: number;
 }
 
 export const UserWalletSchema = SchemaFactory.createForClass(UserWallet);

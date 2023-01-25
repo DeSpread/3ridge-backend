@@ -123,7 +123,6 @@ type Ticket {
   imageUrl: String
   participants: [User!]
   quests: [Quest!]
-  rewardPoint: Float
   rewardPolicy: RewardPolicy
   title: String
   winners: [User!]
@@ -136,7 +135,6 @@ input TicketInputType {
   imageUrl: String
   participants: [UserInputType!]
   quests: [QuestInputType!]
-  rewardPoint: Float
   rewardPolicy: RewardPolicyInputType
   title: String
   winners: [UserInputType!]
@@ -150,6 +148,7 @@ type User {
   managedProjects: [Project!]
   name: String!
   profileImageUrl: String
+  rewardPoint: Float
   tickets: [Ticket!]
   twitterId: String
   wallets: [UserWallet!]
@@ -163,6 +162,7 @@ input UserInputType {
   managedProjects: [ProjectInputType!]
   name: String!
   profileImageUrl: String
+  rewardPoint: Float
   tickets: [TicketInputType!]
   twitterId: String
   wallets: [UserWalletInputType!]
