@@ -9,11 +9,15 @@ import { RewardPolicyType } from '../../../constant/reward.policy';
 @ObjectType()
 export class RewardPolicy {
   @Prop({ type: String, enum: RewardPolicyType })
-  @Field(() => RewardPolicyType, { nullable: true })
+  @Field(() => RewardPolicyType)
   rewardPolicyType: RewardPolicyType;
 
   @Prop()
-  @Field({ nullable: true })
+  @Field()
+  rewardPoint: number;
+
+  @Prop()
+  @Field()
   context: string;
 }
 
@@ -23,10 +27,10 @@ export class RewardPolicy {
 @ObjectType()
 export class QuestPolicy {
   @Prop({ type: String, enum: QuestPolicyType })
-  @Field(() => QuestPolicyType, { nullable: true })
+  @Field(() => QuestPolicyType)
   questPolicy: QuestPolicyType;
 
   @Prop()
-  @Field({ nullable: true })
+  @Field()
   context: string;
 }

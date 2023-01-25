@@ -83,13 +83,13 @@ input QuestInputType {
 }
 
 type QuestPolicy {
-  context: String
-  questPolicy: QuestPolicyType
+  context: String!
+  questPolicy: QuestPolicyType!
 }
 
 input QuestPolicyInputType {
-  context: String
-  questPolicy: QuestPolicyType
+  context: String!
+  questPolicy: QuestPolicyType!
 }
 
 enum QuestPolicyType {
@@ -100,13 +100,15 @@ enum QuestPolicyType {
 }
 
 type RewardPolicy {
-  context: String
-  rewardPolicyType: RewardPolicyType
+  context: String!
+  rewardPoint: Float!
+  rewardPolicyType: RewardPolicyType!
 }
 
 input RewardPolicyInputType {
-  context: String
-  rewardPolicyType: RewardPolicyType
+  context: String!
+  rewardPoint: Float!
+  rewardPolicyType: RewardPolicyType!
 }
 
 enum RewardPolicyType {
@@ -121,6 +123,7 @@ type Ticket {
   imageUrl: String
   participants: [User!]
   quests: [Quest!]
+  rewardPoint: Float
   rewardPolicy: RewardPolicy
   title: String
   winners: [User!]
@@ -133,6 +136,7 @@ input TicketInputType {
   imageUrl: String
   participants: [UserInputType!]
   quests: [QuestInputType!]
+  rewardPoint: Float
   rewardPolicy: RewardPolicyInputType
   title: String
   winners: [UserInputType!]
@@ -168,6 +172,7 @@ input UserUpdateInput {
   email: String
   gmail: String
   profileImageUrl: String
+  rewardPoint: Float
   wallets: [UserWalletInputType!]
 }
 

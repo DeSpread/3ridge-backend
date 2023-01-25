@@ -15,6 +15,9 @@ export class UserUpdateInput {
 
   @Field({ nullable: true })
   profileImageUrl: string;
+
+  @Field({ nullable: true })
+  rewardPoint: number;
 }
 
 @ArgsType()
