@@ -45,6 +45,11 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
+  @Query(() => [User])
+  async usersOrderByRewardPointDesc() {
+    return this.userService.findAllOrderByRewardPointDesc();
+  }
+
   @Query(() => User)
   async userByName(@Args('name') name: string) {
     return this.userService.findByName(name);

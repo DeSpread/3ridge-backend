@@ -79,6 +79,15 @@ export class UserService {
       .exec();
   }
 
+  async findAllOrderByRewardPointDesc(): Promise<User[]> {
+    return await this.userModel
+      .find()
+      .sort({ rewardPoint: -1 })
+      .populate('managedProjects')
+      .populate('tickets')
+      .exec();
+  }
+
   async findByWalletAddress(walletAddress: string): Promise<User> {
     return await this.userModel
       .findOne({

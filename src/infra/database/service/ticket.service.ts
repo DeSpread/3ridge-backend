@@ -53,7 +53,12 @@ export class TicketService {
   }
 
   async findById(id: string): Promise<Ticket> {
-    return await this.ticketModel.findById(id).exec();
+    return await this.ticketModel
+      .findById(id)
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .exec();
   }
 
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {

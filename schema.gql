@@ -64,6 +64,7 @@ type Query {
   userByName(name: String!): User!
   userByWalletAddress(walletAddress: String!): User!
   users: [User!]!
+  usersOrderByRewardPointDesc: [User!]!
 }
 
 type Quest {
