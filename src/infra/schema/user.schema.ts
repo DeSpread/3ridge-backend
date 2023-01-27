@@ -32,7 +32,7 @@ export class User {
     unique: true,
     index: true,
   })
-  @Field()
+  @Field({ nullable: true })
   name: string;
 
   @Prop()

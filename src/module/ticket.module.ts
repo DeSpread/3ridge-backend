@@ -7,6 +7,9 @@ import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
 import { QuestService } from '../infra/database/service/quest.service';
 import { RewardService } from '../infra/database/service/reward.service';
+import { QuestModule } from './quest.module';
+import { UserModule } from './user.module';
+import { ProjectModule } from './project.module';
 
 @Module({
   imports: [
@@ -15,7 +18,10 @@ import { RewardService } from '../infra/database/service/reward.service';
       { name: Quest.name, schema: QuestSchema },
     ]),
     ConfigModule,
+    UserModule,
+    ProjectModule,
+    QuestModule,
   ],
-  providers: [TicketResolver, TicketService, QuestService, RewardService],
+  providers: [TicketResolver, TicketService, RewardService],
 })
 export class TicketModule {}

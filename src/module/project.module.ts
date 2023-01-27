@@ -15,5 +15,6 @@ import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
     ConfigModule,
   ],
   providers: [ProjectResolver, ProjectService],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

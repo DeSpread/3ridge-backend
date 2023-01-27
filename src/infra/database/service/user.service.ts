@@ -159,4 +159,12 @@ export class UserService {
   async remove(name: string) {
     return this.userModel.findOneAndRemove({ name: name });
   }
+
+  async findUserById(userId: string): Promise<User> {
+    return await this.userModel
+      .findById({ _id: userId })
+      .populate('managedProjects')
+      .populate('tickets')
+      .exec();
+  }
 }

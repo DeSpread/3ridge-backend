@@ -18,6 +18,7 @@ enum ChainType {
 }
 
 type Mutation {
+  completeQuestOfUser(questId: String!, userId: String!): Quest!
   createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   createTicket(description: String, imageUrl: String, quests: [QuestInputType!]!, rewardPolicy: RewardPolicyInputType, title: String): Ticket!
   createUserByEmail(email: String!): User!
@@ -147,7 +148,7 @@ type User {
   email: String
   gmail: String
   managedProjects: [Project!]
-  name: String!
+  name: String
   profileImageUrl: String
   rewardPoint: Float
   tickets: [Ticket!]
@@ -161,7 +162,7 @@ input UserInputType {
   email: String
   gmail: String
   managedProjects: [ProjectInputType!]
-  name: String!
+  name: String
   profileImageUrl: String
   rewardPoint: Float
   tickets: [TicketInputType!]
