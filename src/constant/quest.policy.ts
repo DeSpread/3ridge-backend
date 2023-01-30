@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 export enum QuestPolicyType {
   QUIZ = 'QUIZ',
-  VERIFY_TWITTER = 'VERIFY_TWITTER',
+  VERIFY_TWITTER_FOLLOW = 'VERIFY_TWITTER_FOLLOW',
   VERIFY_DISCORD = 'VERIFY_DISCORD',
   VERIFY_CONTRACT = 'VERIFY_CONTRACT',
 }

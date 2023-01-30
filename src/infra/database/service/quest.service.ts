@@ -9,6 +9,9 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../../../constant/quest.policy';
 import { UserService } from './user.service';
 import { User } from '../../schema/user.schema';
+import { VerifyTwitterFollowQuest } from '../../../model/verify.quest.model';
+import { VerifierService } from './verifier.service';
+import { ObjectUtil } from '../../../util/object.util';
 
 @Injectable()
 export class QuestService {
@@ -17,6 +20,7 @@ export class QuestService {
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
     private userService: UserService,
+    private verifierService: VerifierService,
   ) {}
 
   async isInvalidQuest(questPolicy: QuestPolicy): Promise<boolean> {
@@ -24,6 +28,11 @@ export class QuestService {
       switch (questPolicy.questPolicy) {
         case QuestPolicyType.QUIZ:
           const quizQuestInput: QuizQuestInput = JSON.parse(
+            questPolicy.context,
+          );
+          return false;
+        case QuestPolicyType.VERIFY_TWITTER_FOLLOW:
+          const verifyTwitterQuest: VerifyTwitterFollowQuest = JSON.parse(
             questPolicy.context,
           );
           return false;
@@ -57,6 +66,39 @@ export class QuestService {
       },
       { new: true },
     );
+    return quest;
+  }
+
+  async verifyTwitterFollowQuest(questId: string, userId: string) {
+    const quest: Quest = await this.questModel.findById(questId);
+
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const verifyTwitterQuest: VerifyTwitterFollowQuest = JSON.parse(
+      quest.questPolicy.context,
+    );
+
+    const user: User = await this.verifierService.isFollowTwitterByUserId(
+      userId,
+      verifyTwitterQuest.username,
+    );
+
+    if (ObjectUtil.isNull(user)) {
+      return false;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
     return quest;
   }
 }

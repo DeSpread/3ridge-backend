@@ -30,6 +30,7 @@ type Mutation {
   updateProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, projectId: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
+  verifyTwitterFollowQuest(questId: String!, userId: String!): Quest!
 }
 
 type Project {
@@ -99,7 +100,7 @@ enum QuestPolicyType {
   QUIZ
   VERIFY_CONTRACT
   VERIFY_DISCORD
-  VERIFY_TWITTER
+  VERIFY_TWITTER_FOLLOW
 }
 
 type RewardPolicy {

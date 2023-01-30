@@ -7,6 +7,7 @@ import { QuestResolver } from '../infra/graphql/resolver/quest.resolver';
 import { User, UserSchema } from '../infra/schema/user.schema';
 import { UserModule } from './user.module';
 import { Project, ProjectSchema } from '../infra/schema/project.schema';
+import { VerifierModule } from './verifier.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Project, ProjectSchema } from '../infra/schema/project.schema';
     ]),
     ConfigModule,
     UserModule,
+    VerifierModule,
   ],
   providers: [QuestResolver, QuestService],
   exports: [QuestService],
