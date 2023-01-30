@@ -163,6 +163,7 @@ export class UserService {
   async findUserById(userId: string): Promise<User> {
     return await this.userModel
       .findById({ _id: userId })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();

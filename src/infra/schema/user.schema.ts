@@ -19,6 +19,16 @@ export class UserWallet {
   address: string;
 }
 
+@Schema()
+@ArgsType()
+@InputType('UserSocialInputType', { isAbstract: true })
+@ObjectType()
+export class UserSocial {
+  @Prop()
+  @Field({ nullable: true })
+  twitterId: string;
+}
+
 @Schema({ timestamps: true })
 @ArgsType()
 @InputType('UserInputType', { isAbstract: true })
@@ -53,11 +63,7 @@ export class User {
 
   @Prop()
   @Field({ nullable: true })
-  twitterId: string;
-
-  @Prop()
-  @Field({ nullable: true })
-  discordId: string;
+  userSocial: UserSocial;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }] })
   @Field(() => [Ticket], { nullable: true })
