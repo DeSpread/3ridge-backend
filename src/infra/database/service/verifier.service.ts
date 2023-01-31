@@ -75,15 +75,22 @@ export class VerifierService {
       sourceTwitterUsername,
     );
 
-    const followingList = await this.readOnlyClient.v2.following(
+    const followingPaginated = await this.readOnlyClient.v2.following(
       source.data.id,
+      { asPaginator: true },
     );
 
-    for (const following of followingList.data) {
-      const followingUsername = following['username'];
-      if (StringUtil.trimAndEqual(followingUsername, targetTwitterUsername)) {
-        return true;
+    let paginatorIdx = 0;
+    while (!followingPaginated.done) {
+      this.logger.debug(`paginator index: ${paginatorIdx}`);
+      for (const following of followingPaginated) {
+        const followingUsername = following.username;
+        if (StringUtil.trimAndEqual(followingUsername, targetTwitterUsername)) {
+          return true;
+        }
       }
+      await followingPaginated.fetchNext();
+      paginatorIdx++;
     }
 
     return false;
@@ -100,13 +107,16 @@ export class VerifierService {
       },
     );
 
+    let paginatorIdx = 0;
     while (!usersPaginated.done) {
+      this.logger.debug(`paginator index: ${paginatorIdx}`);
       for (const user of usersPaginated) {
         if (StringUtil.trimAndEqual(user.username, sourceTwitterUsername)) {
           return true;
         }
       }
       await usersPaginated.fetchNext();
+      paginatorIdx++;
     }
 
     return false;

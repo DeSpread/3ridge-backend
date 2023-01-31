@@ -58,7 +58,7 @@ type Query {
   auth(userId: String!): AuthResponse!
   completedTickets: [Ticket!]!
   inCompletedTickets: [Ticket!]!
-  isFollowTwitterByUsername(targetTwitterUsername: String!, userId: String!): User!
+  isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
