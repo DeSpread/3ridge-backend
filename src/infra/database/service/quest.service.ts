@@ -16,6 +16,7 @@ import {
   VerifyTwitterRetweetQuest,
 } from '../../../model/verify.quest.model';
 import { StringUtil } from '../../../util/string.util';
+import { IsCompletedQuestByUserIdResponse } from '../../graphql/dto/response.dto';
 
 @Injectable()
 export class QuestService {
@@ -33,6 +34,28 @@ export class QuestService {
       .populate('questPolicy')
       .populate('completedUsers')
       .exec();
+  }
+
+  async isCompletedQuestByUserId(
+    questId: string,
+    userId: string,
+  ): Promise<IsCompletedQuestByUserIdResponse> {
+    const quest = await this.questModel
+      .findById(questId)
+      .populate('questPolicy')
+      .populate('completedUsers')
+      .exec();
+    const user: User = await quest.completedUsers.find((x: User) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    return {
+      isCompleted: true,
+    } as IsCompletedQuestByUserIdResponse;
   }
 
   async isInvalidQuest(questPolicy: QuestPolicy): Promise<boolean> {

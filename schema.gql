@@ -17,6 +17,10 @@ enum ChainType {
   EVM
 }
 
+type IsCompletedQuestByUserIdResponse {
+  isCompleted: Boolean!
+}
+
 type Mutation {
   completeQuestOfUser(questId: String!, userId: String!): Quest!
   createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
@@ -59,6 +63,7 @@ type Query {
   completedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
   inCompletedTickets: [Ticket!]!
+  isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   projectByName(projectName: String!): [Project!]!

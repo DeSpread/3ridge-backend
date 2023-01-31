@@ -1,6 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
 import { QuestService } from '../../database/service/quest.service';
+import { IsCompletedQuestByUserIdResponse } from '../dto/response.dto';
 
 @Resolver(() => Quest)
 export class QuestResolver {
@@ -9,6 +10,14 @@ export class QuestResolver {
   @Query(() => Quest)
   async findQuestById(@Args('questId') questId: string) {
     return this.questService.findQuestById(questId);
+  }
+
+  @Query(() => IsCompletedQuestByUserIdResponse)
+  async isCompletedQuestByUserId(
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.isCompletedQuestByUserId(questId, userId);
   }
 
   @Mutation(() => Quest)
