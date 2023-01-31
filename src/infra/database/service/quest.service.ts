@@ -9,7 +9,7 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../../../constant/quest.policy';
 import { UserService } from './user.service';
 import { User } from '../../schema/user.schema';
-import { VerifyTwitterFollowQuest } from '../../../model/verify.quest.model';
+import { VerifySocialQuest } from '../../../model/verify.quest.model';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 
@@ -32,7 +32,7 @@ export class QuestService {
           );
           return false;
         case QuestPolicyType.VERIFY_TWITTER_FOLLOW:
-          const verifyTwitterQuest: VerifyTwitterFollowQuest = JSON.parse(
+          const verifyTwitterQuest: VerifySocialQuest = JSON.parse(
             questPolicy.context,
           );
           return false;
@@ -76,17 +76,19 @@ export class QuestService {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }
 
-    const verifyTwitterQuest: VerifyTwitterFollowQuest = JSON.parse(
+    const verifyTwitterQuest: VerifySocialQuest = JSON.parse(
       quest.questPolicy.context,
     );
+    const targetTwitterUsername: string =
+      verifyTwitterQuest.verifyTwitterFollowQuest.username;
 
     const user: User = await this.verifierService.isFollowTwitterByUserId(
       userId,
-      verifyTwitterQuest.username,
+      targetTwitterUsername,
     );
 
     if (ObjectUtil.isNull(user)) {
-      return false;
+      throw ErrorCode.NOT_FOUND_USER;
     }
 
     await this.questModel.findByIdAndUpdate(
@@ -97,6 +99,10 @@ export class QuestService {
         },
       },
       { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify twitter follow questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
     );
 
     return quest;
