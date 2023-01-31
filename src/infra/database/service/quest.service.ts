@@ -15,6 +15,7 @@ import {
   VerifyTwitterFollowQuest,
   VerifyTwitterRetweetQuest,
 } from '../../../model/verify.quest.model';
+import { StringUtil } from '../../../util/string.util';
 
 @Injectable()
 export class QuestService {
@@ -75,7 +76,29 @@ export class QuestService {
     return quest;
   }
 
+  async getCompletedUsers(questId: string): Promise<User[]> {
+    const quest: Quest = await this.questModel.findById(questId);
+    return quest.completedUsers;
+  }
+
+  async isAlreadyCompletedUser(
+    questId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const completedUsers = await this.getCompletedUsers(questId);
+    for (const user of completedUsers) {
+      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   async verifyTwitterFollowQuest(questId: string, userId: string) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
     const quest: Quest = await this.questModel.findById(questId);
 
     if (await this.isInvalidQuest(quest.questPolicy)) {
@@ -107,47 +130,50 @@ export class QuestService {
     );
 
     this.logger.debug(
-      `Successful to verify twitter follow questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
+      `Successful to verify twitter follow. questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
     );
 
     return quest;
   }
 
-  // async verifyTwitterRetweetQuest(questId: string, userId: string) {
-  //   const quest: Quest = await this.questModel.findById(questId);
-  //
-  //   if (await this.isInvalidQuest(quest.questPolicy)) {
-  //     throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
-  //   }
-  //
-  //   const verifyTwitterRetweetQuest1: VerifyTwitterRetweetQuest = JSON.parse(
-  //     quest.questPolicy.context,
-  //   );
-  //   const targetRetweetId: string = verifyTwitterRetweetQuest1.tweetId;
-  //
-  //   const user: User = await this.verifierService.isFollowTwitterByUserId(
-  //     userId,
-  //     targetTwitterUsername,
-  //   );
-  //
-  //   if (ObjectUtil.isNull(user)) {
-  //     throw ErrorCode.NOT_FOUND_USER;
-  //   }
-  //
-  //   await this.questModel.findByIdAndUpdate(
-  //     { _id: questId },
-  //     {
-  //       $push: {
-  //         completedUsers: user,
-  //       },
-  //     },
-  //     { new: true },
-  //   );
-  //
-  //   this.logger.debug(
-  //     `Successful to verify twitter follow questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
-  //   );
-  //
-  //   return quest;
-  // }
+  async verifyTwitterRetweetQuest(questId: string, userId: string) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
+    const quest: Quest = await this.questModel.findById(questId);
+
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const verifyTwitterRetweetQuest1: VerifyTwitterRetweetQuest = JSON.parse(
+      quest.questPolicy.context,
+    );
+    const targetRetweetId = verifyTwitterRetweetQuest1.tweetId;
+    const user: User = await this.verifierService.isRetweetedTwitterByUserId(
+      userId,
+      targetRetweetId,
+    );
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify twitter retweet. questId: ${questId}, userId: ${userId}, targetRetweetId: ${targetRetweetId}`,
+    );
+
+    return quest;
+  }
 }

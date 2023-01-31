@@ -21,4 +21,12 @@ export class QuestResolver {
   ) {
     return this.questService.verifyTwitterFollowQuest(questId, userId);
   }
+
+  @Mutation(() => Quest)
+  async verifyTwitterRetweetQuest(
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verifyTwitterRetweetQuest(questId, userId);
+  }
 }

@@ -93,29 +93,20 @@ export class VerifierService {
     sourceTwitterUsername: string,
     targetTweetId: string,
   ): Promise<boolean> {
-    const source = await this.readOnlyClient.v2.userByUsername(
-      sourceTwitterUsername,
+    const usersPaginated = await this.readOnlyClient.v2.tweetRetweetedBy(
+      targetTweetId,
+      {
+        asPaginator: true,
+      },
     );
 
-    const userTimeline = await this.readOnlyClient.v2.userTimeline(
-      source.data.id,
-    );
-
-    while (!userTimeline.done) {
-      for (const fetchedTweet of userTimeline) {
-        console.log(fetchedTweet);
-
-        const tweetId = fetchedTweet['id'];
-        const tweetText = fetchedTweet['text'];
-
-        if (
-          tweetText.toUpperCase().startsWith('RT') &&
-          StringUtil.trimAndEqual(tweetId, targetTweetId)
-        ) {
+    while (!usersPaginated.done) {
+      for (const user of usersPaginated) {
+        if (StringUtil.trimAndEqual(user.username, sourceTwitterUsername)) {
           return true;
         }
       }
-      await userTimeline.fetchNext();
+      await usersPaginated.fetchNext();
     }
 
     return false;

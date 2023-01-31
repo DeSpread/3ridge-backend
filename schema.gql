@@ -31,6 +31,7 @@ type Mutation {
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
   verifyTwitterFollowQuest(questId: String!, userId: String!): Quest!
+  verifyTwitterRetweetQuest(questId: String!, userId: String!): Quest!
 }
 
 type Project {

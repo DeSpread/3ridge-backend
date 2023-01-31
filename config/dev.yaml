@@ -5,4 +5,4 @@ auth:
   jwt:
     secret: secret_key
 twitter:
-  bearer: AAAAAAAAAAAAAAAAAAAAAFsalgEAAAAAwaDGZtcFzWEfk42a%2Fx3ASEuaqNA%3DGFhDiKeG7QM4N1HmeWincFGW0ueie0TZVVVVJq8lag2EsQSj8a
+  bearer: AAAAAAAAAAAAAAAAAAAAAE0algEAAAAAKfqol3JJRm84hTMYfn%2BtXrF15zg%3DJN3Pil9wFIedlifI5HApJt3Z5yPBBc4VQ3rEQqXLQsaeovdr0R
