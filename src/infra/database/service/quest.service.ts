@@ -9,9 +9,12 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../../../constant/quest.policy';
 import { UserService } from './user.service';
 import { User } from '../../schema/user.schema';
-import { VerifySocialQuest } from '../../../model/verify.quest.model';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
+import {
+  VerifyTwitterFollowQuest,
+  VerifyTwitterRetweetQuest,
+} from '../../../model/verify.quest.model';
 
 @Injectable()
 export class QuestService {
@@ -32,9 +35,12 @@ export class QuestService {
           );
           return false;
         case QuestPolicyType.VERIFY_TWITTER_FOLLOW:
-          const verifyTwitterQuest: VerifySocialQuest = JSON.parse(
-            questPolicy.context,
-          );
+          const verifyTwitterFollowQuest1: VerifyTwitterFollowQuest =
+            JSON.parse(questPolicy.context);
+          return false;
+        case QuestPolicyType.VERIFY_TWITTER_RETWEET:
+          const verifyTwitterRetweetQuest1: VerifyTwitterRetweetQuest =
+            JSON.parse(questPolicy.context);
           return false;
       }
     } catch (e) {
@@ -76,11 +82,10 @@ export class QuestService {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }
 
-    const verifyTwitterQuest: VerifySocialQuest = JSON.parse(
+    const verifyTwitterQuest: VerifyTwitterFollowQuest = JSON.parse(
       quest.questPolicy.context,
     );
-    const targetTwitterUsername: string =
-      verifyTwitterQuest.verifyTwitterFollowQuest.username;
+    const targetTwitterUsername: string = verifyTwitterQuest.username;
 
     const user: User = await this.verifierService.isFollowTwitterByUserId(
       userId,
@@ -107,4 +112,42 @@ export class QuestService {
 
     return quest;
   }
+
+  // async verifyTwitterRetweetQuest(questId: string, userId: string) {
+  //   const quest: Quest = await this.questModel.findById(questId);
+  //
+  //   if (await this.isInvalidQuest(quest.questPolicy)) {
+  //     throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+  //   }
+  //
+  //   const verifyTwitterRetweetQuest1: VerifyTwitterRetweetQuest = JSON.parse(
+  //     quest.questPolicy.context,
+  //   );
+  //   const targetRetweetId: string = verifyTwitterRetweetQuest1.tweetId;
+  //
+  //   const user: User = await this.verifierService.isFollowTwitterByUserId(
+  //     userId,
+  //     targetTwitterUsername,
+  //   );
+  //
+  //   if (ObjectUtil.isNull(user)) {
+  //     throw ErrorCode.NOT_FOUND_USER;
+  //   }
+  //
+  //   await this.questModel.findByIdAndUpdate(
+  //     { _id: questId },
+  //     {
+  //       $push: {
+  //         completedUsers: user,
+  //       },
+  //     },
+  //     { new: true },
+  //   );
+  //
+  //   this.logger.debug(
+  //     `Successful to verify twitter follow questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
+  //   );
+  //
+  //   return quest;
+  // }
 }

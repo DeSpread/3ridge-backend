@@ -58,6 +58,7 @@ type Query {
   completedTickets: [Ticket!]!
   inCompletedTickets: [Ticket!]!
   isFollowTwitterByUsername(targetTwitterUsername: String!, userId: String!): User!
+  isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(id: String!): Ticket!
@@ -101,6 +102,7 @@ enum QuestPolicyType {
   VERIFY_CONTRACT
   VERIFY_DISCORD
   VERIFY_TWITTER_FOLLOW
+  VERIFY_TWITTER_RETWEET
 }
 
 type RewardPolicy {

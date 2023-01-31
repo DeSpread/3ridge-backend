@@ -5,6 +5,7 @@ import { StringUtil } from '../../../util/string.util';
 import { UserService } from './user.service';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
+import { ErrorCode } from '../../../constant/error.constant';
 
 @Injectable()
 export class VerifierService {
@@ -36,6 +37,33 @@ export class VerifierService {
     this.logger.debug(
       `userId: ${userId} -> targetTwitterUsername: ${targetTwitterUsername}, isFollow: ${isFollow}`,
     );
+
+    if (!isFollow) {
+      throw ErrorCode.DOES_NOT_TWITTER_FOLLOW;
+    }
+
+    return user;
+  }
+
+  async isRetweetedTwitterByUserId(
+    userId: string,
+    targetTweetId: string,
+  ): Promise<User> {
+    const user: User = await this.userService.findUserById(userId);
+    const sourceTwitterUsername = user.userSocial.twitterId;
+    const isRetweeted = await this.isRetweetedTwitterByUsername(
+      sourceTwitterUsername,
+      targetTweetId,
+    );
+
+    this.logger.debug(
+      `userId: ${userId} -> targetTweetId: ${targetTweetId}, isRetweeted: ${isRetweeted}`,
+    );
+
+    if (!isRetweeted) {
+      throw ErrorCode.DOES_NOT_TWITTER_RETWEET;
+    }
+
     return user;
   }
 
@@ -56,6 +84,38 @@ export class VerifierService {
       if (StringUtil.trimAndEqual(followingUsername, targetTwitterUsername)) {
         return true;
       }
+    }
+
+    return false;
+  }
+
+  private async isRetweetedTwitterByUsername(
+    sourceTwitterUsername: string,
+    targetTweetId: string,
+  ): Promise<boolean> {
+    const source = await this.readOnlyClient.v2.userByUsername(
+      sourceTwitterUsername,
+    );
+
+    const userTimeline = await this.readOnlyClient.v2.userTimeline(
+      source.data.id,
+    );
+
+    while (!userTimeline.done) {
+      for (const fetchedTweet of userTimeline) {
+        console.log(fetchedTweet);
+
+        const tweetId = fetchedTweet['id'];
+        const tweetText = fetchedTweet['text'];
+
+        if (
+          tweetText.toUpperCase().startsWith('RT') &&
+          StringUtil.trimAndEqual(tweetId, targetTweetId)
+        ) {
+          return true;
+        }
+      }
+      await userTimeline.fetchNext();
     }
 
     return false;

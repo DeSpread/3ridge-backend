@@ -16,4 +16,15 @@ export class VerifierResolver {
       targetTwitterUsername,
     );
   }
+
+  @Query(() => User)
+  async isRetweetedTwitterByUserId(
+    @Args('userId') userId: string,
+    @Args('targetTweetId') targetTweetId: string,
+  ) {
+    return this.verifierService.isRetweetedTwitterByUserId(
+      userId,
+      targetTweetId,
+    );
+  }
 }

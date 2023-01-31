@@ -20,4 +20,12 @@ export const ErrorCode = {
     'ticket needs to have mandatory fields',
     'BAD_REQUEST_TICKET_MANDATORY',
   ),
+  DOES_NOT_TWITTER_FOLLOW: new ApolloError(
+    'user does not follow twitter',
+    'DOES_NOT_TWITTER_FOLLOW',
+  ),
+  DOES_NOT_TWITTER_RETWEET: new ApolloError(
+    'user does not retweet twitter',
+    'DOES_NOT_TWITTER_RETWEET',
+  ),
 } as const;
