@@ -1,6 +1,7 @@
 export interface VerifyTwitterRetweetQuest {
   tweetId: string;
   twitterUrl: string;
+  username: string;
 }
 
 export interface VerifyTwitterFollowQuest {

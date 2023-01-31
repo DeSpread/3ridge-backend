@@ -74,6 +74,7 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.userModel
       .find()
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
@@ -83,6 +84,7 @@ export class UserService {
     return await this.userModel
       .find()
       .sort({ rewardPoint: -1 })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
@@ -97,6 +99,7 @@ export class UserService {
           },
         },
       })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
@@ -105,6 +108,7 @@ export class UserService {
   async findByGmail(gmail: string): Promise<User> {
     return await this.userModel
       .findOne({ gmail: gmail })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
@@ -113,6 +117,7 @@ export class UserService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.userModel
       .findOne({ email: email })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
@@ -127,6 +132,7 @@ export class UserService {
   async findByName(name: string): Promise<User> {
     return await this.userModel
       .findOne({ name: name })
+      .populate('userSocial')
       .populate('managedProjects')
       .populate('tickets')
       .exec();
