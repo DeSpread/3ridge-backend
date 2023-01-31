@@ -1,13 +1,11 @@
-export interface VerifyDiscordQuest {
-  targetDiscordChannelId: string;
-}
-
 export interface VerifyTwitterRetweetQuest {
   tweetId: string;
+  twitterUrl: string;
 }
 
 export interface VerifyTwitterFollowQuest {
   username: string;
+  twitterUrl: string;
 }
 
 export interface VerifyQuestInput {
