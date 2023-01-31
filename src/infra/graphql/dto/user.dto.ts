@@ -1,5 +1,5 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { UserWallet } from '../../schema/user.schema';
+import { UserSocial, UserWallet } from '../../schema/user.schema';
 
 @ArgsType()
 @InputType()
@@ -18,6 +18,9 @@ export class UserUpdateInput {
 
   @Field({ nullable: true })
   rewardPoint: number;
+
+  @Field({ nullable: true })
+  userSocial: UserSocial;
 }
 
 @ArgsType()

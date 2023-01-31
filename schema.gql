@@ -192,6 +192,7 @@ input UserUpdateInput {
   gmail: String
   profileImageUrl: String
   rewardPoint: Float
+  userSocial: UserSocialInputType
   wallets: [UserWalletInputType!]
 }
 
