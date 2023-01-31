@@ -27,6 +27,14 @@ export class QuestService {
     private verifierService: VerifierService,
   ) {}
 
+  async findQuestById(questId: string): Promise<Quest> {
+    return await this.questModel
+      .findById(questId)
+      .populate('questPolicy')
+      .populate('completedUsers')
+      .exec();
+  }
+
   async isInvalidQuest(questPolicy: QuestPolicy): Promise<boolean> {
     try {
       switch (questPolicy.questPolicy) {
