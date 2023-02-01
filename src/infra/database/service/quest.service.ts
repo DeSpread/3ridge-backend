@@ -45,6 +45,11 @@ export class QuestService {
       .populate('questPolicy')
       .populate('completedUsers')
       .exec();
+
+    if (ObjectUtil.isNull(quest)) {
+      throw ErrorCode.NOT_FOUND_QUEST;
+    }
+
     const user: User = await quest.completedUsers.find((x: User) =>
       StringUtil.trimAndEqual(String(x._id), userId),
     );

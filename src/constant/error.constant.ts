@@ -3,6 +3,10 @@ import { ApolloError } from 'apollo-server-express';
 export const ErrorCode = {
   // User
   NOT_FOUND_USER: new ApolloError('Does not exist user', 'NOT_FOUND_USER'),
+  NOT_FOUND_COMPLETED_QUEST_USER: new ApolloError(
+    'Does not exist completed quest user',
+    'NOT_FOUND_COMPLETED_QUEST_USER',
+  ),
   BAD_REQUEST_USER_ID: new ApolloError(
     'user id is not valid',
     'BAD_REQUEST_USER_ID',
@@ -32,4 +36,5 @@ export const ErrorCode = {
     'user already has verification',
     'ALREADY_VERIFIED_USER',
   ),
+  NOT_FOUND_QUEST: new ApolloError('Does not exist quest', 'NOT_FOUND_QUEST'),
 } as const;
