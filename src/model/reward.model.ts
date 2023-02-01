@@ -10,6 +10,7 @@ export class FcfsRewardInput {
   rewardUnit: RewardUnitType;
   rewardAmount: number;
 
+  treasuryAddress: string;
   nftImageUrl: string;
   collectionName: string;
   tokenName: string;
