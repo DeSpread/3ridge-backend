@@ -19,6 +19,7 @@ enum ChainType {
 
 type IsCompletedQuestByUserIdResponse {
   isCompleted: Boolean!
+  questId: String!
 }
 
 type Mutation {

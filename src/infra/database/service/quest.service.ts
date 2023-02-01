@@ -59,6 +59,7 @@ export class QuestService {
     }
 
     return {
+      questId: questId,
       isCompleted: true,
     } as IsCompletedQuestByUserIdResponse;
   }
