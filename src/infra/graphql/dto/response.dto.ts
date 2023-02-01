@@ -14,3 +14,9 @@ export class AptosRequestClaimNFTResponse {
   @Field()
   txHash: string;
 }
+
+@ObjectType()
+export class ParticipateTicketOfUserResponse {
+  @Field()
+  isParticipated: boolean;
+}

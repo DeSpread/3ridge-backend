@@ -12,6 +12,11 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../../../util/object.util';
+import { Args } from '@nestjs/graphql';
+import { ParticipateTicketOfUserResponse } from '../../graphql/dto/response.dto';
+import { User } from '../../schema/user.schema';
+import { UserService } from './user.service';
+import { StringUtil } from '../../../util/string.util';
 
 @Injectable()
 export class TicketService {
@@ -23,6 +28,7 @@ export class TicketService {
     private questModel: Model<Quest>,
     private questService: QuestService,
     private rewardService: RewardService,
+    private userService: UserService,
   ) {}
 
   async findAll(): Promise<Ticket[]> {
@@ -99,5 +105,53 @@ export class TicketService {
     ) {
       throw ErrorCode.BAD_REQUEST_TICKET_MANDATORY;
     }
+  }
+
+  async participateTicketOfUser(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyParticiaptedUser: User = await ticket.participants.find(
+      (x) => StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    console.log(isAlreadyParticiaptedUser);
+    if (!ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
+      throw ErrorCode.ALREADY_PARTICIPATED_USER;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $push: {
+          participants: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
   }
 }

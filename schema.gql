@@ -34,6 +34,7 @@ type Mutation {
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(address: String!, chain: ChainType!): User!
+  participateTicketOfUser(ticketId: String!, userId: String!): Ticket!
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!

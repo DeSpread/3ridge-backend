@@ -37,4 +37,12 @@ export const ErrorCode = {
     'ALREADY_VERIFIED_USER',
   ),
   NOT_FOUND_QUEST: new ApolloError('Does not exist quest', 'NOT_FOUND_QUEST'),
+  NOT_FOUND_TICKET: new ApolloError(
+    'Does not exist ticket',
+    'NOT_FOUND_TICKET',
+  ),
+  ALREADY_PARTICIPATED_USER: new ApolloError(
+    'user already participated ticket',
+    'ALREADY_PARTICIPATED_USER',
+  ),
 } as const;

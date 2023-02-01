@@ -2,9 +2,6 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { TicketService } from '../../database/service/ticket.service';
 import { TicketCreateInput, TicketUpdateInput } from '../dto/ticket.dto';
-import { FcfsRewardInput } from '../../../model/reward.model';
-import { ChainType } from '../../../constant/chain.type';
-import { RewardUnitType } from '../../../constant/reward.type';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
@@ -46,5 +43,13 @@ export class TicketResolver {
   @Mutation(() => Ticket)
   async removeTicketById(@Args('id') id: string) {
     return this.ticketService.removeById(id);
+  }
+
+  @Mutation(() => Ticket)
+  async participateTicketOfUser(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.ticketService.participateTicketOfUser(ticketId, userId);
   }
 }
