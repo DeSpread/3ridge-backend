@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^9.2.0",
     "@nestjs/terminus": "^9.1.4",
     "apollo-server-express": "^3.11.1",
+    "aptos": "^1.6.0",
     "graphql": "^16.6.0",
     "graphql-tools": "^8.3.12",
     "mongoose": "^6.7.3",

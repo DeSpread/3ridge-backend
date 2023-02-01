@@ -5,6 +5,7 @@ import { ProjectModule } from './module/project.module';
 import { TicketModule } from './module/ticket.module';
 import { QuestModule } from './module/quest.module';
 import { VerifierModule } from './module/verifier.module';
+import { AptosModule } from './module/aptos.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { VerifierModule } from './module/verifier.module';
     TicketModule,
     QuestModule,
     VerifierModule,
+    AptosModule,
   ],
 })
 export class AppModule {}

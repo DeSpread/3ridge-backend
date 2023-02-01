@@ -8,3 +8,9 @@ export class IsCompletedQuestByUserIdResponse {
   @Field()
   isCompleted: boolean;
 }
+
+@ObjectType()
+export class AptosRequestClaimNFTResponse {
+  @Field()
+  txHash: string;
+}
