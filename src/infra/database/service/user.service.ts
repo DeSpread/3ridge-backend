@@ -30,7 +30,7 @@ export class UserService {
     }
 
     const userModel = new this.userModel({
-      wallet: walletInput,
+      wallets: walletInput,
       name: walletInput.address,
     });
     return userModel.save();
