@@ -1,7 +1,7 @@
 import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema } from '@nestjs/mongoose';
 import { QuestPolicyType } from '../../../constant/quest.policy';
-import { RewardPolicyType } from '../../../constant/reward.policy';
+import { RewardPolicyType } from '../../../constant/reward.type';
 
 @Schema({ timestamps: true })
 @ArgsType()

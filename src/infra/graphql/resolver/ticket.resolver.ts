@@ -2,6 +2,9 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { TicketService } from '../../database/service/ticket.service';
 import { TicketCreateInput, TicketUpdateInput } from '../dto/ticket.dto';
+import { FcfsRewardInput } from '../../../model/reward.model';
+import { ChainType } from '../../../constant/chain.type';
+import { RewardUnitType } from '../../../constant/reward.type';
 
 @Resolver(() => Ticket)
 export class TicketResolver {

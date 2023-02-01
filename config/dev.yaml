@@ -8,7 +8,7 @@ twitter:
   bearer: AAAAAAAAAAAAAAAAAAAAAFsalgEAAAAAwaDGZtcFzWEfk42a%2Fx3ASEuaqNA%3DGFhDiKeG7QM4N1HmeWincFGW0ueie0TZVVVVJq8lag2EsQSj8a
 aptos:
   privateKey: "0xb95914417838f2feb1d64413aaa2ead275f851c5896a2ba7e2da8ae1e797942d"
-  collectionName: "3ridge-testnet-2"
-  nftTokenName: "aptos-seoul-hack-2023-testnet-2"
+  collectionName: "3ridge-seoul-hack-2023"
+  nftTokenName: "aptos-seoul-hack-2023-testnet-1"
   nodeUrl: "https://fullnode.testnet.aptoslabs.com"
   faucetUrl: "https://faucet.testnet.aptoslabs.com"
