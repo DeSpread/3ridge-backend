@@ -5,6 +5,7 @@ import {
   AptosAccount,
   AptosClient,
   CoinClient,
+  FaucetClient,
   HexString,
   TokenClient,
 } from 'aptos';
@@ -32,7 +33,8 @@ export class AptosService {
       this.configService.get<string>('aptos.nodeUrl'),
     );
 
-    this.faucetClient = new AptosClient(
+    this.faucetClient = new FaucetClient(
+      this.configService.get<string>('aptos.nodeUrl'),
       this.configService.get<string>('aptos.faucetUrl'),
     );
 
@@ -54,6 +56,9 @@ export class AptosService {
         0,
       );
       await this.client.waitForTransaction(txnHash, { checkSuccess: true });
+
+      this.faucetClient.fundAccount(receiverAddress, 100_000_000);
+
       return {
         txHash: txnHash,
       } as AptosRequestClaimNFTResponse;
