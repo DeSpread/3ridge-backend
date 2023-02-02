@@ -38,7 +38,7 @@ type Mutation {
   removeProject(projectId: String!): Project!
   removeTicketById(id: String!): Ticket!
   removeUserByName(name: String!): User!
-  requestClaimNFT(receiverAddress: String!): AptosRequestClaimNFTResponse!
+  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!): AptosRequestClaimNFTResponse!
   updateProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, projectId: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!

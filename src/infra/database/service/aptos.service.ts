@@ -43,6 +43,8 @@ export class AptosService {
   }
 
   async requestClaimNFT(
+    collectionName: string,
+    nftTokenName: string,
     receiverAddress: string,
   ): Promise<AptosRequestClaimNFTResponse> {
     try {
@@ -50,8 +52,8 @@ export class AptosService {
         this.nftCreator,
         receiverAddress,
         this.nftCreator.address(),
-        this.configService.get<string>('aptos.collectionName'),
-        this.configService.get<string>('aptos.nftTokenName'),
+        collectionName,
+        nftTokenName,
         1,
         0,
       );

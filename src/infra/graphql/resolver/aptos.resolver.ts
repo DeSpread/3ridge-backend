@@ -7,7 +7,15 @@ export class AptosResolver {
   constructor(private aptosService: AptosService) {}
 
   @Mutation(() => AptosRequestClaimNFTResponse)
-  async requestClaimNFT(@Args('receiverAddress') receiverAddress: string) {
-    return this.aptosService.requestClaimNFT(receiverAddress);
+  async requestClaimNFT(
+    @Args('collectionName') collectionName: string,
+    @Args('nftTokenName') nftTokenName: string,
+    @Args('receiverAddress') receiverAddress: string,
+  ) {
+    return this.aptosService.requestClaimNFT(
+      collectionName,
+      nftTokenName,
+      receiverAddress,
+    );
   }
 }
