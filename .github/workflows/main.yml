@@ -9,15 +9,7 @@ jobs:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: ${{ secrets.HOST1 }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: 22
-        script: /home/ec2-user/scripts/execute_github_action.sh
-    - name: executing remote ssh commands using ssh key
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST2 }}
+        host: ${{ secrets.DEV_HOST1 }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: 22
