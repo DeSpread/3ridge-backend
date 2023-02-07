@@ -1,3 +1,12 @@
 database:
   mongodb:
-    endpoint: mongodb+srv://despread:tz33NSLcyu3ncFin@sakura-dev.rnnfkhn.mongodb.net/?retryWrites=true&w=majority
+    endpoint: ${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
+auth:
+  jwt:
+    secret: ${{ secrets.BETA_AUTH_JWT_SECRET }}
+twitter:
+  bearer: ${{ secrets.BETA_TWITTER_BEARER }}
+aptos:
+  privateKey: ${{ secrets.BETA_APTOS_PRIVATE_KEY }}
+  nodeUrl: "https://fullnode.testnet.aptoslabs.com"
+  faucetUrl: "https://faucet.testnet.aptoslabs.com"
