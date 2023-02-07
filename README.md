@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://beta.3ridge.xyz" target="blank"><img src="https://3ridge.s3.ap-northeast-2.amazonaws.com/logo/01_png/3ridge_logo_standard_white_background.png" width="200" alt="3ridge Logo" /></a>
+  <a href="https://beta.3ridge.xyz" target="blank"><img src="https://3ridge.s3.ap-northeast-2.amazonaws.com/logo/01_png/3ridge_logo_standard_white_background.png" width="600" alt="3ridge Logo" /></a>
 </p>
 
 ## Abstraction 
