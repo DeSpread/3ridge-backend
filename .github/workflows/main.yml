@@ -7,6 +7,7 @@ on:
 env:
   VERSION: ${{ github.sha }}
   DOCKER_IMAGE_NAME: 3ridge-backend
+  DOCKER_IMAGE_TAG: develop
   DATABASE_MONGODB_ENDPOINT: ${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
   AUTH_JWT_SECRET: ${{ secrets.BETA_AUTH_JWT_SECRET }}
   TWITTER_BEARER: ${{ secrets.BETA_TWITTER_BEARER }}
@@ -37,7 +38,7 @@ jobs:
         with:
           push: true
           file: ./Dockerfile.dev
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:develop
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -53,5 +54,5 @@ jobs:
           script: |
             docker stop $(docker ps -a -q) 
             docker rm $(docker ps -a -q) 
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:develop
-            docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+            docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
