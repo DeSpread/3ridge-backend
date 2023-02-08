@@ -29,7 +29,7 @@ jobs:
         with:
           push: true
           file: ./Dockerfile.dev
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:develop
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -43,9 +43,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd sakura-backend
-            docker system prune -a --volumes -f
-            docker-compose down
-            docker-compose pull -q
-            docker-compose up --force-recreate --build -d --quiet-pull 2>log.out
-            cat log.out
+            docker stop $(docker ps -a -q) 
+            docker rm $(docker ps -a -q) 
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:develop
+            docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
