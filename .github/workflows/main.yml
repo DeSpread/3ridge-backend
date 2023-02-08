@@ -8,22 +8,25 @@ env:
   VERSION: ${{ github.sha }}
   DOCKER_IMAGE_NAME: 3ridge-backend
   DOCKER_IMAGE_TAG: develop
-  DATABASE_MONGODB_ENDPOINT: ${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
-  AUTH_JWT_SECRET: ${{ secrets.BETA_AUTH_JWT_SECRET }}
-  TWITTER_BEARER: ${{ secrets.BETA_TWITTER_BEARER }}
-  APTOS_PRIVATE_KEY: ${{ secrets.BETA_APTOS_PRIVATE_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Generate Environment Variables File for Production
+      - name: Generate Environment Variables File
+        env:
+          DATABASE_MONGODB_ENDPOINT: ${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
+          AUTH_JWT_SECRET: ${{ secrets.BETA_AUTH_JWT_SECRET }}
+          TWITTER_BEARER: ${{ secrets.BETA_TWITTER_BEARER }}
+          APTOS_PRIVATE_KEY: ${{ secrets.BETA_APTOS_PRIVATE_KEY }}
         run: |
-          echo "DATABASE_MONGODB_ENDPOINT=${{ env.DATABASE_MONGODB_ENDPOINT }}" >> .env.dev
-          echo "AUTH_JWT_SECRET=${{ env.AUTH_JWT_SECRET }}" >> .env.dev
-          echo "TWITTER_BEARER=${{ env.TWITTER_BEARER }}" >> .env.dev
-          echo "APTOS_PRIVATE_KEY=${{ env.APTOS_PRIVATE_KEY }}" >> .env.dev
+          touch .env.dev
+          echo "DATABASE_MONGODB_ENDPOINT=$DATABASE_MONGODB_ENDPOINT" >> .env.dev
+          echo "AUTH_JWT_SECRET=$AUTH_JWT_SECRET" >> .env.dev
+          echo "TWITTER_BEARER=$TWITTER_BEARER" >> .env.dev
+          echo "APTOS_PRIVATE_KEY=$APTOS_PRIVATE_KEY" >> .env.dev
+          cat .env.dev
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
