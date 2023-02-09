@@ -12,14 +12,6 @@ jobs:
   dotenv:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Environment Variables File (.env)
-        run: |
-          touch .env.dev
-          echo "DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}" >> .env.dev
-          echo "AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}" >> .env.dev
-          echo "TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}" >> .env.dev
-          echo "APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}" >> .env.dev
-          cat .env.dev
 
   build:
     runs-on: ubuntu-latest
@@ -28,7 +20,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
+      - name: Create dotenv
+        run: |
+          touch .env.dev
+          echo "DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}" >> .env.dev
+          echo "AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}" >> .env.dev
+          echo "TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}" >> .env.dev
+          echo "APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}" >> .env.dev
+          cat .env.dev
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
