@@ -9,7 +9,6 @@ COPY yarn.lock /usr/src/app
 RUN yarn
 
 COPY . /usr/src/app
-COPY .env.dev /usr/src/app
 
 RUN yarn build
 
