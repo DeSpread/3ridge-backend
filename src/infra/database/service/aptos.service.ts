@@ -26,16 +26,16 @@ export class AptosService {
   ) {
     this.nftCreator = new AptosAccount(
       HexString.ensure(
-        this.configService.get<string>('aptos.privateKey') as string,
+        this.configService.get<string>('APTOS_PRIVATE_KEY') as string,
       ).toUint8Array(),
     );
     this.client = new AptosClient(
-      this.configService.get<string>('aptos.nodeUrl'),
+      this.configService.get<string>('global.aptos.nodeUrl'),
     );
 
     this.faucetClient = new FaucetClient(
-      this.configService.get<string>('aptos.nodeUrl'),
-      this.configService.get<string>('aptos.faucetUrl'),
+      this.configService.get<string>('global.aptos.nodeUrl'),
+      this.configService.get<string>('global.aptos.faucetUrl'),
     );
 
     this.tokenClient = new TokenClient(this.client);

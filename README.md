@@ -2,8 +2,8 @@
   <a href="https://beta.3ridge.xyz" target="blank"><img src="https://3ridge.s3.ap-northeast-2.amazonaws.com/logo/01_png/3ridge_logo_standard_white_background.png" width="600" alt="3ridge Logo" /></a>
 </p>
 
-## Abstraction 
-Our project is On-boarding platform of web3 project 
+## Abstraction
+Our project is On-boarding platform of web3 project
 
 First, It supports aptos chain
 Current, Wallet is supported by petra wallet
@@ -24,7 +24,7 @@ yarn start:dev
 ```
 
 ### Production
-it supports CI/CD powered by vercel 
+it supports CI/CD powered by vercel
 if you push to main branch, it will work CI/CD
 ```bash
 yarn run build

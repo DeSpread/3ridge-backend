@@ -17,7 +17,7 @@ export class VerifierService {
     private configService: ConfigService,
     private userService: UserService,
   ) {
-    const bearer = configService.get<string>('twitter.bearer');
+    const bearer = configService.get<string>('TWITTER_BEARER');
 
     this.twitterClient = new TwitterApi(bearer);
     this.readOnlyClient = this.twitterClient.readOnly;

@@ -1,0 +1,3 @@
+aptos:
+  nodeUrl: "https://fullnode.testnet.aptoslabs.com"
+  faucetUrl: "https://faucet.testnet.aptoslabs.com"
