@@ -29,11 +29,11 @@ jobs:
           file: ./Dockerfile.dev
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
           build-args: |
-            DATABASE_MONGODB_ENDPOINT=${{ secrets.DATABASE_MONGODB_ENDPOINT }}
-            AUTH_JWT_SECRET=${{ secrets.AUTH_JWT_SECRET }}
-            TWITTER_BEARER=${{ secrets.TWITTER_BEARER }}
-            AUTH_JWT_SECRET=${{ secrets.AUTH_JWT_SECRET }}
-            APTOS_PRIVATE_KEY=${{ secrets.APTOS_PRIVATE_KEY }}
+            DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
+            AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
+            TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}
+            AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
+            APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
