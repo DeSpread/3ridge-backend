@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
@@ -26,6 +26,7 @@ export class TicketService {
     private ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private questModel: Model<Quest>,
+    @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
     private rewardService: RewardService,
     private userService: UserService,

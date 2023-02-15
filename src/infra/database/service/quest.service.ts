@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ErrorCode } from '../../../constant/error.constant';
@@ -17,6 +17,7 @@ import {
 } from '../../../model/verify.quest.model';
 import { StringUtil } from '../../../util/string.util';
 import { IsCompletedQuestByUserIdResponse } from '../../graphql/dto/response.dto';
+import { TicketService } from './ticket.service';
 
 @Injectable()
 export class QuestService {
@@ -26,6 +27,8 @@ export class QuestService {
     private readonly questModel: Model<Quest>,
     private userService: UserService,
     private verifierService: VerifierService,
+    @Inject(forwardRef(() => TicketService))
+    private ticketService: TicketService,
   ) {}
 
   async findQuestById(questId: string): Promise<Quest> {
@@ -99,7 +102,7 @@ export class QuestService {
     return questList;
   }
 
-  async completeQuestOfUser(questId: string, userId: string) {
+  async completeQuestOfUser(ticketId: string, questId: string, userId: string) {
     const user: User = await this.userService.findUserById(userId);
     const quest: Quest = await this.questModel.findByIdAndUpdate(
       { _id: questId },
@@ -110,6 +113,9 @@ export class QuestService {
       },
       { new: true },
     );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
     return quest;
   }
 
@@ -131,7 +137,11 @@ export class QuestService {
     return false;
   }
 
-  async verifyTwitterFollowQuest(questId: string, userId: string) {
+  async verifyTwitterFollowQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
     if (await this.isAlreadyCompletedUser(questId, userId)) {
       throw ErrorCode.ALREADY_VERIFIED_USER;
     }
@@ -170,10 +180,16 @@ export class QuestService {
       `Successful to verify twitter follow. questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
     );
 
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
     return quest;
   }
 
-  async verifyTwitterRetweetQuest(questId: string, userId: string) {
+  async verifyTwitterRetweetQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
     if (await this.isAlreadyCompletedUser(questId, userId)) {
       throw ErrorCode.ALREADY_VERIFIED_USER;
     }
@@ -210,6 +226,8 @@ export class QuestService {
     this.logger.debug(
       `Successful to verify twitter retweet. questId: ${questId}, userId: ${userId}, targetRetweetId: ${targetRetweetId}`,
     );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
 
     return quest;
   }

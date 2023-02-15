@@ -10,9 +10,9 @@ import { AptosModule } from './module/aptos.module';
 @Module({
   imports: [
     CommonModule,
+    TicketModule,
     UserModule,
     ProjectModule,
-    TicketModule,
     QuestModule,
     VerifierModule,
     AptosModule,
