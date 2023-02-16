@@ -32,6 +32,10 @@ export const ErrorCode = {
     'user does not retweet twitter',
     'DOES_NOT_TWITTER_RETWEET',
   ),
+  DOES_NOT_TWITTER_LIKING: new ApolloError(
+    'user does not like twitter',
+    'DOES_NOT_TWITTER_LIKING',
+  ),
   ALREADY_VERIFIED_USER: new ApolloError(
     'user already has verification',
     'ALREADY_VERIFIED_USER',

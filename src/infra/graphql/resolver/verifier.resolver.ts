@@ -7,6 +7,14 @@ export class VerifierResolver {
   constructor(private verifierService: VerifierService) {}
 
   @Query(() => User)
+  async isLikingTweetByUserId(
+    @Args('userId') userId: string,
+    @Args('targetTweetId') targetTweetId: string,
+  ) {
+    return this.verifierService.isLikingTweetByUserId(userId, targetTweetId);
+  }
+
+  @Query(() => User)
   async isFollowTwitterByUserId(
     @Args('userId') userId: string,
     @Args('targetTwitterUsername') targetTwitterUsername: string,

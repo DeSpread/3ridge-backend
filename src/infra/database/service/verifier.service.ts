@@ -23,6 +23,28 @@ export class VerifierService {
     this.readOnlyClient = this.twitterClient.readOnly;
   }
 
+  async isLikingTweetByUserId(
+    userId: string,
+    targetTweetId: string,
+  ): Promise<User> {
+    const user: User = await this.userService.findUserById(userId);
+    const sourceTwitterUsername = user.userSocial.twitterId;
+    const isLikingTweet = await this.isLikingTweetByUsername(
+      sourceTwitterUsername,
+      targetTweetId,
+    );
+
+    this.logger.debug(
+      `userId: ${userId} -> targetTweetId: ${targetTweetId}, isLiking: ${isLikingTweet}`,
+    );
+
+    if (!isLikingTweet) {
+      throw ErrorCode.DOES_NOT_TWITTER_LIKING;
+    }
+
+    return user;
+  }
+
   async isFollowTwitterByUserId(
     userId: string,
     targetTwitterUsername: string,
@@ -65,6 +87,32 @@ export class VerifierService {
     }
 
     return user;
+  }
+
+  private async isLikingTweetByUsername(
+    sourceTwitterUsername: string,
+    targetTweetId: string,
+  ): Promise<boolean> {
+    const usersPaginated = await this.readOnlyClient.v2.tweetLikedBy(
+      targetTweetId,
+      {
+        asPaginator: true,
+      },
+    );
+
+    let paginatorIdx = 0;
+    while (!usersPaginated.done) {
+      this.logger.debug(`paginator index: ${paginatorIdx}`);
+      for (const user of usersPaginated) {
+        if (StringUtil.trimAndEqual(user.username, sourceTwitterUsername)) {
+          return true;
+        }
+      }
+      await usersPaginated.fetchNext();
+      paginatorIdx++;
+    }
+
+    return false;
   }
 
   private async isFollowTwitterByUsername(

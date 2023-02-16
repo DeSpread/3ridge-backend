@@ -54,4 +54,17 @@ export class QuestResolver {
       userId,
     );
   }
+
+  @Mutation(() => Quest)
+  async verifyTwitterLikingQuest(
+    @Args('ticketId') ticketId: string,
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verifyTwitterLikingQuest(
+      ticketId,
+      questId,
+      userId,
+    );
+  }
 }
