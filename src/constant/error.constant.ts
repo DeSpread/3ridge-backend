@@ -45,4 +45,8 @@ export const ErrorCode = {
     'user already participated ticket',
     'ALREADY_PARTICIPATED_USER',
   ),
+  ALREADY_EXIST_PROJECT: new ApolloError(
+    'project already exist',
+    'ALREADY_EXIST_PROJECT',
+  ),
 } as const;

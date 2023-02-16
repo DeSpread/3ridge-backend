@@ -1,4 +1,4 @@
-import { ArgsType, Field, InputType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, PartialType } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
 import { User } from '../../schema/user.schema';
 import { RewardPolicy } from './policy.dto';
@@ -15,31 +15,19 @@ export class TicketCreateInput {
   @Field({ nullable: true })
   imageUrl: string;
 
-  @Field(() => [Quest])
+  @Field(() => [Quest], { nullable: true })
   quests: Quest[];
 
   @Field({ nullable: true })
   rewardPolicy: RewardPolicy;
+
+  @Field({ nullable: true })
+  project: string;
 }
 
 @ArgsType()
 @InputType()
-export class TicketUpdateInput {
-  @Field({ nullable: true })
-  title: string;
-
-  @Field({ nullable: true })
-  description: string;
-
-  @Field({ nullable: true })
-  imageUrl: string;
-
-  // @Field(() => [Quest], { nullable: true })
-  // quests: Quest[];
-
-  @Field({ nullable: true })
-  rewardPolicy: string;
-
+export class TicketUpdateInput extends PartialType(TicketCreateInput) {
   @Field(() => [User], { nullable: true })
   participants: User[];
 

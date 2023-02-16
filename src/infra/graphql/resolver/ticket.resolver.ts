@@ -13,8 +13,8 @@ export class TicketResolver {
   }
 
   @Query(() => Ticket)
-  async ticketById(@Args('id') id: string) {
-    return this.ticketService.findById(id);
+  async ticketById(@Args('ticketId') ticketId: string) {
+    return this.ticketService.findById(ticketId);
   }
 
   @Query(() => [Ticket])
@@ -34,15 +34,15 @@ export class TicketResolver {
 
   @Mutation(() => Ticket)
   async updateTicketById(
-    id: string,
+    @Args('ticketId') ticketId: string,
     @Args() ticketUpdateInput: TicketUpdateInput,
   ) {
-    return this.ticketService.update(id, ticketUpdateInput);
+    return this.ticketService.update(ticketId, ticketUpdateInput);
   }
 
   @Mutation(() => Ticket)
-  async removeTicketById(@Args('id') id: string) {
-    return this.ticketService.removeById(id);
+  async removeTicketById(@Args('ticketId') ticketId: string) {
+    return this.ticketService.removeById(ticketId);
   }
 
   @Mutation(() => Ticket)

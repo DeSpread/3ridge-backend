@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Quest } from './quest.schema';
 import { User } from './user.schema';
 import { RewardPolicy } from '../graphql/dto/policy.dto';
+import { Project } from './project.schema';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -24,6 +25,10 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   imageUrl: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Project' })
+  @Field(() => Project, { nullable: true })
+  project: Project;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quest' }] })
   @Field(() => [Quest], { nullable: true })

@@ -38,6 +38,7 @@ export class TicketService {
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
@@ -47,6 +48,7 @@ export class TicketService {
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
@@ -56,6 +58,7 @@ export class TicketService {
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
@@ -65,6 +68,7 @@ export class TicketService {
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
@@ -82,9 +86,9 @@ export class TicketService {
     return ticketModel.save();
   }
 
-  async update(id: string, ticketInput: TicketUpdateInput) {
+  async update(ticketId: string, ticketInput: TicketUpdateInput) {
     const existingTicket = await this.ticketModel
-      .findOneAndUpdate({ _id: id }, { $set: ticketInput }, { new: true })
+      .findOneAndUpdate({ _id: ticketId }, { $set: ticketInput }, { new: true })
       .exec();
 
     if (!existingTicket) {
