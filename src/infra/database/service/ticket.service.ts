@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
 import {
   TicketCreateInput,
@@ -12,8 +12,6 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../../../util/object.util';
-import { Args } from '@nestjs/graphql';
-import { ParticipateTicketOfUserResponse } from '../../graphql/dto/response.dto';
 import { User } from '../../schema/user.schema';
 import { UserService } from './user.service';
 import { StringUtil } from '../../../util/string.util';
@@ -74,6 +72,16 @@ export class TicketService {
   async findById(id: string): Promise<Ticket> {
     return await this.ticketModel
       .findById(id)
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .populate('project')
+      .exec();
+  }
+
+  async ticketsByProjectId(projectId: string): Promise<Ticket[]> {
+    return await this.ticketModel
+      .find({ project: new mongoose.Types.ObjectId(projectId) })
       .populate('quests')
       .populate('participants')
       .populate('winners')

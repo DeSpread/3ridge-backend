@@ -18,12 +18,17 @@ export class TicketResolver {
   }
 
   @Query(() => [Ticket])
+  async ticketsByProjectId(@Args('projectId') projectId: string) {
+    return this.ticketService.ticketsByProjectId(projectId);
+  }
+
+  @Query(() => [Ticket])
   async completedTickets() {
     return this.ticketService.findCompletedTickets();
   }
 
   @Query(() => [Ticket])
-  async inCompletedTickets() {
+  async availableTickets() {
     return this.ticketService.findInCompletedTickets();
   }
 

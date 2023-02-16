@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from '../../schema/project.schema';
@@ -7,7 +7,6 @@ import {
   ProjectUpdateInput,
 } from '../../graphql/dto/project.dto';
 import { ErrorCode } from '../../../constant/error.constant';
-import { ObjectUtil } from '../../../util/object.util';
 
 @Injectable()
 export class ProjectService {
