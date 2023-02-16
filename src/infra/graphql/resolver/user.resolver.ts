@@ -2,8 +2,6 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../../database/service/user.service';
 import { User, UserWallet } from '../../schema/user.schema';
 import { UserCreateByGmailInput, UserUpdateInput } from '../dto/user.dto';
-import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from '../../../auth/gql.auth.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -48,6 +46,11 @@ export class UserResolver {
   @Query(() => [User])
   async usersOrderByRewardPointDesc() {
     return this.userService.findAllOrderByRewardPointDesc();
+  }
+
+  @Query(() => Number)
+  async findRankByUserId(@Args('userId') userId: string) {
+    return this.userService.findRankByUserId(userId);
   }
 
   @Query(() => User)

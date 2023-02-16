@@ -87,6 +87,7 @@ type Query {
   auth(userId: String!): AuthResponse!
   completedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
+  findRankByUserId(userId: String!): Float!
   inCompletedTickets: [Ticket!]!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!

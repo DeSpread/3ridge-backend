@@ -8,6 +8,7 @@ import {
 } from '../../graphql/dto/user.dto';
 import { Project } from '../../schema/project.schema';
 import { ErrorCode } from '../../../constant/error.constant';
+import { StringUtil } from '../../../util/string.util';
 
 const { ObjectId } = mongoose.Types;
 
@@ -88,6 +89,18 @@ export class UserService {
       .populate('managedProjects')
       .populate('tickets')
       .exec();
+  }
+
+  async findRankByUserId(userId: string): Promise<number> {
+    const users = await this.findAllOrderByRewardPointDesc();
+    let rank = 0;
+    for (const user of users) {
+      rank++;
+      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+        return rank;
+      }
+    }
+    return rank;
   }
 
   async findByWalletAddress(walletAddress: string): Promise<User> {
