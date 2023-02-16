@@ -10,6 +10,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       sortSchema: true,
       debug: true,
       playground: true,
+      buildSchemaOptions: {
+        dateScalarMode: 'isoDate',
+      },
       context: ({ req, connection }) => {
         if (req) {
           const user = req.headers.authorization;

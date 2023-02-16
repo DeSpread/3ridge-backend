@@ -23,6 +23,9 @@ export class TicketCreateInput {
 
   @Field({ nullable: true })
   project: string;
+
+  @Field({ nullable: true })
+  untilTime: Date;
 }
 
 @ArgsType()

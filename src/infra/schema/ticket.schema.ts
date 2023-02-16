@@ -49,6 +49,10 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   completed: boolean;
+
+  @Prop()
+  @Field({ nullable: true })
+  untilTime: Date;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
