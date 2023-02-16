@@ -91,6 +91,7 @@ input ProjectSocialInputType {
 type Query {
   auth(userId: String!): AuthResponse!
   completedTickets: [Ticket!]!
+  findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
   findRankByUserId(userId: String!): Float!
   inCompletedTickets: [Ticket!]!

@@ -62,6 +62,15 @@ export class TicketService {
       .exec();
   }
 
+  async findMissedTickets(): Promise<Ticket[]> {
+    const current = new Date();
+    return this.ticketModel.find({
+      untilTime: {
+        $gte: current,
+      },
+    });
+  }
+
   async findById(id: string): Promise<Ticket> {
     return await this.ticketModel
       .findById(id)

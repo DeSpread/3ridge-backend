@@ -27,6 +27,11 @@ export class TicketResolver {
     return this.ticketService.findInCompletedTickets();
   }
 
+  @Query(() => [Ticket])
+  async findMissedTickets() {
+    return this.ticketService.findMissedTickets();
+  }
+
   @Mutation(() => Ticket)
   async createTicket(@Args() ticketCreateInput: TicketCreateInput) {
     return this.ticketService.create(ticketCreateInput);
