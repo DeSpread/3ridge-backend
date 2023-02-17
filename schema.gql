@@ -91,6 +91,7 @@ input ProjectSocialInputType {
 type Query {
   auth(userId: String!): AuthResponse!
   availableTickets: [Ticket!]!
+  checkTokenBalanceByWalletAddress(collectionName: String!, receiverAddress: String!, tokenName: String!): Float!
   completedTickets: [Ticket!]!
   findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!

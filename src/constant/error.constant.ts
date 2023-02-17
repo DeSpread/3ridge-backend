@@ -53,4 +53,8 @@ export const ErrorCode = {
     'project already exist',
     'ALREADY_EXIST_PROJECT',
   ),
+  DOES_NOT_CLAIMABLE: new ApolloError(
+    'receiver does not claimable',
+    'DOES_NOT_CLAIMABLE',
+  ),
 } as const;
