@@ -49,6 +49,10 @@ export const ErrorCode = {
     'user already participated ticket',
     'ALREADY_PARTICIPATED_USER',
   ),
+  ALREADY_INCLUDED_WINNER_USER: new ApolloError(
+    'user already included winner list in ticket',
+    'ALREADY_INCLUDED_WINNER_USER',
+  ),
   ALREADY_EXIST_PROJECT: new ApolloError(
     'project already exist',
     'ALREADY_EXIST_PROJECT',
@@ -56,5 +60,9 @@ export const ErrorCode = {
   DOES_NOT_CLAIMABLE: new ApolloError(
     'receiver does not claimable',
     'DOES_NOT_CLAIMABLE',
+  ),
+  DOES_NOT_WIN_TICKET: new ApolloError(
+    'user does not win in ticket',
+    'DOES_NOT_WIN_TICKET',
   ),
 } as const;

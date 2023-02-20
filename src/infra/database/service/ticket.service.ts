@@ -114,6 +114,53 @@ export class TicketService {
     return existingTicket;
   }
 
+  private async addWinnerToTicket(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyWinnerUser: User = await ticket.winners.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (!ObjectUtil.isNull(isAlreadyWinnerUser)) {
+      throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $push: {
+          winners: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to add winner to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
+  }
+
   async removeById(id: string) {
     return this.ticketModel.findByIdAndRemove(id);
   }
@@ -174,6 +221,9 @@ export class TicketService {
       `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
 
+    // check if this user completed all quests & if then, update winner list
+    await this.checkAndUpdateWinner(ticketId, userId);
+
     return ticket0;
   }
 
@@ -197,5 +247,21 @@ export class TicketService {
       );
     }
     return true;
+  }
+
+  async checkAndUpdateWinner(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    const isCompletedTicket = await this.isCompletedTicket(ticketId, userId);
+
+    if (!isCompletedTicket) {
+      this.logger.error(
+        `user does not complete all quests in ticket. ticketId: [${ticketId}], userId: [${userId}]`,
+      );
+      return null;
+    }
+
+    return this.addWinnerToTicket(ticketId, userId);
   }
 }

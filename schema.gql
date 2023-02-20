@@ -33,6 +33,7 @@ type IsCompletedQuestByUserIdResponse {
 }
 
 type Mutation {
+  checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
   completeQuestOfUser(questId: String!, ticketId: String!, userId: String!): Quest!
   createProject(categories: [CategoryType!], description: String, imageUrl: String, name: String!, projectSocial: ProjectSocialInputType): Project!
   createTicket(description: String, imageUrl: String, project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, title: String, untilTime: DateTime): Ticket!
