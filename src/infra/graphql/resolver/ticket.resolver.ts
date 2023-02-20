@@ -45,6 +45,14 @@ export class TicketResolver {
     return this.ticketService.findMissedTickets();
   }
 
+  @Query(() => Boolean)
+  async isWinner(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.ticketService.isWinner(ticketId, userId);
+  }
+
   @Mutation(() => Ticket)
   async createTicket(@Args() ticketCreateInput: TicketCreateInput) {
     return this.ticketService.create(ticketCreateInput);
@@ -69,5 +77,13 @@ export class TicketResolver {
     @Args('userId') userId: string,
   ) {
     return this.ticketService.participateTicketOfUser(ticketId, userId);
+  }
+
+  @Mutation(() => Ticket)
+  async checkAndUpdateWinner(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.ticketService.checkAndUpdateWinner(ticketId, userId);
   }
 }

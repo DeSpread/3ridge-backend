@@ -114,13 +114,6 @@ export class AptosService {
     ticketId: string,
     userId: string,
   ): Promise<boolean> {
-    const isCompletedTicket: boolean =
-      await this.ticketService.isCompletedTicket(ticketId, userId);
-
-    if (!isCompletedTicket) {
-      return false;
-    }
-
-    return true;
+    return this.ticketService.isWinner(ticketId, userId);
   }
 }

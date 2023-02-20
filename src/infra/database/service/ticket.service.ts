@@ -264,4 +264,24 @@ export class TicketService {
 
     return this.addWinnerToTicket(ticketId, userId);
   }
+
+  async isWinner(ticketId: string, userId: string): Promise<boolean> {
+    const ticket: Ticket = await this.findById(ticketId);
+
+    const winnerUsers: boolean = ticket.winners.some((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (!winnerUsers) {
+      this.logger.error(
+        `user is not winner. ticketId: [${ticketId}], userId: [${userId}]`,
+      );
+      return false;
+    }
+
+    this.logger.debug(
+      `user is winner. ticketId: [${ticketId}], userId: [${userId}]`,
+    );
+    return true;
+  }
 }
