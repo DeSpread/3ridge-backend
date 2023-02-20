@@ -1,7 +1,11 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../../database/service/user.service';
 import { User, UserWallet } from '../../schema/user.schema';
-import { UserCreateByGmailInput, UserUpdateInput } from '../dto/user.dto';
+import {
+  FetchUsersArgs,
+  UserCreateByGmailInput,
+  UserUpdateInput,
+} from '../dto/user.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -44,13 +48,16 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  async usersOrderByRewardPointDesc() {
-    return this.userService.findAllOrderByRewardPointDesc();
+  async usersOrderByRewardPointDesc(@Args() args: FetchUsersArgs) {
+    return this.userService.findAllOrderByRewardPointDesc(args);
   }
 
   @Query(() => Number)
-  async findRankByUserId(@Args('userId') userId: string) {
-    return this.userService.findRankByUserId(userId);
+  async findRankByUserId(
+    @Args('userId') userId: string,
+    @Args() args: FetchUsersArgs,
+  ) {
+    return this.userService.findRankByUserId(userId, args);
   }
 
   @Query(() => User)

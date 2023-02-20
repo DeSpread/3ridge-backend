@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User, UserWallet } from '../../schema/user.schema';
 import {
+  FetchUsersArgs,
   UserCreateByGmailInput,
   UserUpdateInput,
 } from '../../graphql/dto/user.dto';
 import { Project } from '../../schema/project.schema';
 import { ErrorCode } from '../../../constant/error.constant';
 import { StringUtil } from '../../../util/string.util';
+import { Args } from '@nestjs/graphql';
 
 const { ObjectId } = mongoose.Types;
 
@@ -81,9 +83,14 @@ export class UserService {
       .exec();
   }
 
-  async findAllOrderByRewardPointDesc(): Promise<User[]> {
+  async findAllOrderByRewardPointDesc(
+    args: FetchUsersArgs = { skip: 0, take: 25 },
+  ): Promise<User[]> {
     return await this.userModel
-      .find()
+      .find(null, null, {
+        limit: args.take,
+        skip: args.skip,
+      })
       .sort({ rewardPoint: -1 })
       .populate('userSocial')
       .populate('managedProjects')
@@ -91,8 +98,8 @@ export class UserService {
       .exec();
   }
 
-  async findRankByUserId(userId: string): Promise<number> {
-    const users = await this.findAllOrderByRewardPointDesc();
+  async findRankByUserId(userId: string, args): Promise<number> {
+    const users = await this.findAllOrderByRewardPointDesc(args);
     let rank = 0;
     for (const user of users) {
       rank++;
