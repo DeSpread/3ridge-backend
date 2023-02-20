@@ -176,4 +176,26 @@ export class TicketService {
 
     return ticket0;
   }
+
+  async isCompletedTicket(ticketId: string, userId: string): Promise<boolean> {
+    const ticket = await this.findById(ticketId);
+    for (const quest of ticket.quests) {
+      const completedUsers: User[] = quest.completedUsers.filter((x) => {
+        if (StringUtil.trimAndEqual(String(x._id), userId)) {
+          return true;
+        }
+      });
+      if (completedUsers.length <= 0) {
+        this.logger.error(
+          `user doest not complete qeust. questId: [${quest._id}], userId: [${userId}]`,
+        );
+        return false;
+      }
+
+      this.logger.debug(
+        `user completed qeust. questId: [${quest._id}], userId: [${userId}]`,
+      );
+    }
+    return true;
+  }
 }

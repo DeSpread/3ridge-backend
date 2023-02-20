@@ -12,6 +12,7 @@ import {
 import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
 import { ErrorCode } from '../../../constant/error.constant';
+import { TicketService } from './ticket.service';
 
 @Injectable()
 export class AptosService {
@@ -24,6 +25,7 @@ export class AptosService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     private configService: ConfigService,
+    private ticketService: TicketService,
   ) {
     this.nftCreator = new AptosAccount(
       HexString.ensure(
@@ -44,18 +46,15 @@ export class AptosService {
   }
 
   async requestClaimNFT(
+    ticketId: string,
+    userId: string,
     collectionName: string,
     tokenName: string,
     receiverAddress: string,
     tokenAmount: number,
     tokenPropertyVersion: number,
   ): Promise<AptosRequestClaimNFTResponse> {
-    const isClaimable = await this.isClaimable(
-      collectionName,
-      tokenName,
-      receiverAddress,
-      tokenPropertyVersion,
-    );
+    const isClaimable = await this.isClaimable(ticketId, userId);
 
     if (!isClaimable) {
       throw ErrorCode.DOES_NOT_CLAIMABLE;
@@ -112,19 +111,13 @@ export class AptosService {
   }
 
   private async isClaimable(
-    collectionName: string,
-    tokenName: string,
-    receiverAddress: string,
-    tokenPropertyVersion: number,
+    ticketId: string,
+    userId: string,
   ): Promise<boolean> {
-    const tokenBalance = await this.checkTokenBalance(
-      collectionName,
-      tokenName,
-      receiverAddress,
-      tokenPropertyVersion,
-    );
+    const isCompletedTicket: boolean =
+      await this.ticketService.isCompletedTicket(ticketId, userId);
 
-    if (tokenBalance > 0) {
+    if (!isCompletedTicket) {
       return false;
     }
 

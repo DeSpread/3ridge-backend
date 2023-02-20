@@ -43,7 +43,7 @@ type Mutation {
   removeProject(projectId: String!): Project!
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
-  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!): AptosRequestClaimNFTResponse!
+  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!, ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
@@ -97,6 +97,7 @@ type Query {
   findQuestById(questId: String!): Quest!
   findRankByUserId(userId: String!): Float!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
+  isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!

@@ -22,11 +22,15 @@ export class AptosResolver {
 
   @Mutation(() => AptosRequestClaimNFTResponse)
   async requestClaimNFT(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
     @Args('collectionName') collectionName: string,
     @Args('nftTokenName') tokenName: string,
     @Args('receiverAddress') receiverAddress: string,
   ) {
     return this.aptosService.requestClaimNFT(
+      ticketId,
+      userId,
       collectionName,
       tokenName,
       receiverAddress,

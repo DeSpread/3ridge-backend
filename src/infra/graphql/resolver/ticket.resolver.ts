@@ -12,6 +12,14 @@ export class TicketResolver {
     return this.ticketService.findAll();
   }
 
+  @Query(() => Boolean)
+  async isCompletedTicket(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.ticketService.isCompletedTicket(ticketId, userId);
+  }
+
   @Query(() => Ticket)
   async ticketById(@Args('ticketId') ticketId: string) {
     return this.ticketService.findById(ticketId);
