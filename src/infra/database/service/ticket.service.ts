@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { FilterQuery, Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
 import {
   TicketCreateInput,
@@ -32,22 +32,25 @@ export class TicketService {
     private userService: UserService,
   ) {}
 
-  async find(ticketStatus: TicketStatusInputType): Promise<Ticket[]> {
+  async find(
+    ticketStatus: TicketStatusInputType,
+    filter: FilterQuery<any> = {},
+  ): Promise<Ticket[]> {
     switch (ticketStatus.status) {
       case TicketStatusType.ALL:
-        return this.findAll();
+        return this.findAll(filter);
       case TicketStatusType.AVAILABLE:
-        return this.findInCompletedTickets();
-      case TicketStatusType.COMPLETE:
-        return this.findCompletedTickets();
+        return this.findInCompletedTickets(filter);
+      case TicketStatusType.COMPLETED:
+        return this.findCompletedTickets(filter);
       case TicketStatusType.MISSED:
-        return this.findMissedTickets();
+        return this.findMissedTickets(filter);
     }
   }
 
-  async findAll(): Promise<Ticket[]> {
+  async findAll(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
     return await this.ticketModel
-      .find()
+      .find(filter)
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -55,8 +58,9 @@ export class TicketService {
       .exec();
   }
 
-  async findCompletedTickets(): Promise<Ticket[]> {
+  async findCompletedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
     return await this.ticketModel
+      .find(filter)
       .find({ completed: true })
       .populate('quests')
       .populate('participants')
@@ -65,8 +69,11 @@ export class TicketService {
       .exec();
   }
 
-  async findInCompletedTickets(): Promise<Ticket[]> {
+  async findInCompletedTickets(
+    filter: FilterQuery<any> = {},
+  ): Promise<Ticket[]> {
     return await this.ticketModel
+      .find(filter)
       .find({ completed: false })
       .populate('quests')
       .populate('participants')
@@ -75,9 +82,9 @@ export class TicketService {
       .exec();
   }
 
-  async findMissedTickets(): Promise<Ticket[]> {
+  async findMissedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
     const current = new Date();
-    return this.ticketModel.find({
+    return this.ticketModel.find(filter).find({
       untilTime: {
         $gte: current,
       },
@@ -94,14 +101,13 @@ export class TicketService {
       .exec();
   }
 
-  async ticketsByProjectId(projectId: string): Promise<Ticket[]> {
-    return await this.ticketModel
-      .find({ project: new mongoose.Types.ObjectId(projectId) })
-      .populate('quests')
-      .populate('participants')
-      .populate('winners')
-      .populate('project')
-      .exec();
+  async ticketsByProjectId(
+    projectId: string,
+    ticketStatus: TicketStatusInputType,
+  ): Promise<Ticket[]> {
+    return this.find(ticketStatus, {
+      project: new mongoose.Types.ObjectId(projectId),
+    });
   }
 
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {

@@ -30,8 +30,11 @@ export class TicketResolver {
   }
 
   @Query(() => [Ticket])
-  async ticketsByProjectId(@Args('projectId') projectId: string) {
-    return this.ticketService.ticketsByProjectId(projectId);
+  async ticketsByProjectId(
+    @Args() ticketStatus: TicketStatusInputType,
+    @Args('projectId') projectId: string,
+  ) {
+    return this.ticketService.ticketsByProjectId(projectId, ticketStatus);
   }
 
   @Query(() => [Ticket])

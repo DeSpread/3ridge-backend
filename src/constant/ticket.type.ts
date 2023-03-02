@@ -3,7 +3,7 @@ import { registerEnumType } from '@nestjs/graphql';
 export enum TicketStatusType {
   ALL = 'ALL',
   AVAILABLE = 'AVAILABLE',
-  COMPLETE = 'COMPLETE',
+  COMPLETED = 'COMPLETED',
   MISSED = 'MISSED',
 }
 

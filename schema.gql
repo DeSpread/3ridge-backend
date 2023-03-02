@@ -108,7 +108,7 @@ type Query {
   projects: [Project!]!
   ticketById(ticketId: String!): Ticket!
   tickets(status: TicketStatusType = ALL): [Ticket!]!
-  ticketsByProjectId(projectId: String!): [Ticket!]!
+  ticketsByProjectId(projectId: String!, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
@@ -200,7 +200,7 @@ input TicketInputType {
 enum TicketStatusType {
   ALL
   AVAILABLE
-  COMPLETE
+  COMPLETED
   MISSED
 }
 
