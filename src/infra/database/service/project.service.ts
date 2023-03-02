@@ -15,6 +15,15 @@ export class ProjectService {
     private readonly projectModel: Model<Project>,
   ) {}
 
+  async findProjectById(projectId: string): Promise<Project> {
+    return await this.projectModel
+      .findById(projectId)
+      .populate('managedUsers')
+      .populate('tickets')
+      .populate('projectSocial')
+      .exec();
+  }
+
   async findAll(): Promise<Project[]> {
     return await this.projectModel
       .find()

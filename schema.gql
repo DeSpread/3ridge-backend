@@ -103,6 +103,7 @@ type Query {
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   isWinner(ticketId: String!, userId: String!): Boolean!
+  projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(ticketId: String!): Ticket!

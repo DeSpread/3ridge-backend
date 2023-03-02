@@ -12,6 +12,11 @@ export class ProjectResolver {
     return this.projectService.findAll();
   }
 
+  @Query(() => Project)
+  async projectById(@Args('projectId') projectId: string) {
+    return this.projectService.findProjectById(projectId);
+  }
+
   @Query(() => [Project])
   async projectByName(@Args('projectName') projectName: string) {
     return this.projectService.findAllByName(projectName);
