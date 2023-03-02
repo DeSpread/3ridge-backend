@@ -1,15 +1,19 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { TicketService } from '../../database/service/ticket.service';
-import { TicketCreateInput, TicketUpdateInput } from '../dto/ticket.dto';
+import {
+  TicketCreateInput,
+  TicketStatusInputType,
+  TicketUpdateInput,
+} from '../dto/ticket.dto';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
   constructor(private readonly ticketService: TicketService) {}
 
   @Query(() => [Ticket])
-  async tickets() {
-    return this.ticketService.findAll();
+  async tickets(@Args() ticketStatus: TicketStatusInputType) {
+    return this.ticketService.find(ticketStatus);
   }
 
   @Query(() => Boolean)

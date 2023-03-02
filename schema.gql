@@ -107,7 +107,7 @@ type Query {
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets: [Ticket!]!
+  tickets(status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(projectId: String!): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
@@ -195,6 +195,13 @@ input TicketInputType {
   title: String
   untilTime: DateTime
   winners: [UserInputType!]
+}
+
+enum TicketStatusType {
+  ALL
+  AVAILABLE
+  COMPLETE
+  MISSED
 }
 
 type User {

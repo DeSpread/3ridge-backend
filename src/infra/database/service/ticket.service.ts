@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
 import {
   TicketCreateInput,
+  TicketStatusInputType,
   TicketUpdateInput,
 } from '../../graphql/dto/ticket.dto';
 import { ErrorCode } from '../../../constant/error.constant';
@@ -15,6 +16,7 @@ import { ObjectUtil } from '../../../util/object.util';
 import { User } from '../../schema/user.schema';
 import { UserService } from './user.service';
 import { StringUtil } from '../../../util/string.util';
+import { TicketStatusType } from '../../../constant/ticket.type';
 
 @Injectable()
 export class TicketService {
@@ -29,6 +31,19 @@ export class TicketService {
     private rewardService: RewardService,
     private userService: UserService,
   ) {}
+
+  async find(ticketStatus: TicketStatusInputType): Promise<Ticket[]> {
+    switch (ticketStatus.status) {
+      case TicketStatusType.ALL:
+        return this.findAll();
+      case TicketStatusType.AVAILABLE:
+        return this.findInCompletedTickets();
+      case TicketStatusType.COMPLETE:
+        return this.findCompletedTickets();
+      case TicketStatusType.MISSED:
+        return this.findMissedTickets();
+    }
+  }
 
   async findAll(): Promise<Ticket[]> {
     return await this.ticketModel
