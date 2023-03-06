@@ -84,11 +84,18 @@ export class TicketService {
 
   async findMissedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
     const current = new Date();
-    return this.ticketModel.find(filter).find({
-      untilTime: {
-        $gte: current,
-      },
-    });
+    return await this.ticketModel
+      .find(filter)
+      .find({
+        untilTime: {
+          $gte: current,
+        },
+      })
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .populate('project')
+      .exec();
   }
 
   async findById(id: string): Promise<Ticket> {

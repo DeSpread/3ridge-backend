@@ -36,7 +36,7 @@ export class Project {
   _id: string;
 
   @Prop()
-  @Field({ nullable: true })
+  @Field()
   name: string;
 
   @Prop()
