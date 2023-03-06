@@ -52,6 +52,10 @@ export class Ticket {
 
   @Prop()
   @Field({ nullable: true })
+  beginTime: Date;
+
+  @Prop()
+  @Field({ nullable: true })
   untilTime: Date;
 }
 

@@ -171,6 +171,7 @@ enum RewardPolicyType {
 
 type Ticket {
   _id: String
+  beginTime: DateTime
   completed: Boolean
   description: String
   imageUrl: String
@@ -185,6 +186,7 @@ type Ticket {
 
 input TicketInputType {
   _id: String
+  beginTime: DateTime
   completed: Boolean
   description: String
   imageUrl: String

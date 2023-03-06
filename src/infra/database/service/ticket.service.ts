@@ -61,7 +61,9 @@ export class TicketService {
   async findCompletedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
     return await this.ticketModel
       .find(filter)
-      .find({ completed: true })
+      .find({
+        completed: true,
+      })
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -72,9 +74,15 @@ export class TicketService {
   async findInCompletedTickets(
     filter: FilterQuery<any> = {},
   ): Promise<Ticket[]> {
+    const current = new Date();
     return await this.ticketModel
       .find(filter)
-      .find({ completed: false })
+      .find({
+        completed: false,
+        untilTime: {
+          $gte: current,
+        },
+      })
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -88,7 +96,7 @@ export class TicketService {
       .find(filter)
       .find({
         untilTime: {
-          $gte: current,
+          $lte: current,
         },
       })
       .populate('quests')
