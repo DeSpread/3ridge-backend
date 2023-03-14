@@ -7,4 +7,10 @@ export enum TicketStatusType {
   MISSED = 'MISSED',
 }
 
+export enum TicketSortType {
+  TRENDING = 'TRENDING',
+  NEWEST = 'NEWEST',
+}
+
 registerEnumType(TicketStatusType, { name: 'TicketStatusType' });
+registerEnumType(TicketSortType, { name: 'TicketSortType' });

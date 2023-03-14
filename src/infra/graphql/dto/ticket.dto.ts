@@ -2,7 +2,10 @@ import { ArgsType, Field, InputType, PartialType } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
 import { User } from '../../schema/user.schema';
 import { RewardPolicy } from './policy.dto';
-import { TicketStatusType } from '../../../constant/ticket.type';
+import {
+  TicketSortType,
+  TicketStatusType,
+} from '../../../constant/ticket.type';
 import { IsEnum } from 'class-validator';
 
 @ArgsType()
@@ -49,4 +52,8 @@ export class TicketStatusInputType {
   @IsEnum(TicketStatusType)
   @Field(() => TicketStatusType, { nullable: true })
   status: TicketStatusType = TicketStatusType.ALL;
+
+  @IsEnum(TicketSortType)
+  @Field(() => TicketSortType, { nullable: true })
+  sort: TicketSortType = TicketSortType.TRENDING;
 }

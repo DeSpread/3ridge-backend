@@ -16,7 +16,10 @@ import { ObjectUtil } from '../../../util/object.util';
 import { User } from '../../schema/user.schema';
 import { UserService } from './user.service';
 import { StringUtil } from '../../../util/string.util';
-import { TicketStatusType } from '../../../constant/ticket.type';
+import {
+  TicketSortType,
+  TicketStatusType,
+} from '../../../constant/ticket.type';
 
 @Injectable()
 export class TicketService {
@@ -36,21 +39,36 @@ export class TicketService {
     ticketStatus: TicketStatusInputType,
     filter: FilterQuery<any> = {},
   ): Promise<Ticket[]> {
+    let sortQuery;
+    switch (ticketStatus.sort) {
+      case TicketSortType.NEWEST:
+        sortQuery = { updatedAt: -1 };
+        break;
+      case TicketSortType.TRENDING:
+      default:
+        sortQuery = { participantCount: -1 };
+        break;
+    }
+
     switch (ticketStatus.status) {
       case TicketStatusType.ALL:
-        return this.findAll(filter);
+        return this.findAll(filter, sortQuery);
       case TicketStatusType.AVAILABLE:
-        return this.findInCompletedTickets(filter);
+        return this.findInCompletedTickets(filter, sortQuery);
       case TicketStatusType.COMPLETED:
-        return this.findCompletedTickets(filter);
+        return this.findCompletedTickets(filter, sortQuery);
       case TicketStatusType.MISSED:
-        return this.findMissedTickets(filter);
+        return this.findMissedTickets(filter, sortQuery);
     }
   }
 
-  async findAll(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
+  async findAll(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
     return await this.ticketModel
       .find(filter)
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -58,12 +76,16 @@ export class TicketService {
       .exec();
   }
 
-  async findCompletedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
+  async findCompletedTickets(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
     return await this.ticketModel
       .find(filter)
       .find({
         completed: true,
       })
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -73,6 +95,7 @@ export class TicketService {
 
   async findInCompletedTickets(
     filter: FilterQuery<any> = {},
+    sortQuery = {},
   ): Promise<Ticket[]> {
     const current = new Date();
     return await this.ticketModel
@@ -83,6 +106,7 @@ export class TicketService {
           $gte: current,
         },
       })
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -90,7 +114,10 @@ export class TicketService {
       .exec();
   }
 
-  async findMissedTickets(filter: FilterQuery<any> = {}): Promise<Ticket[]> {
+  async findMissedTickets(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
     const current = new Date();
     return await this.ticketModel
       .find(filter)
@@ -99,6 +126,7 @@ export class TicketService {
           $lte: current,
         },
       })
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
@@ -248,6 +276,9 @@ export class TicketService {
       {
         $push: {
           participants: user,
+        },
+        $inc: {
+          participantCount: 1,
         },
       },
       { new: true },

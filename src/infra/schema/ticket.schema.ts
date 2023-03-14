@@ -42,6 +42,10 @@ export class Ticket {
   @Field(() => [User], { nullable: true })
   participants: User[];
 
+  @Prop()
+  @Field({ nullable: true })
+  participantCount: number;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })
   winners: User[];

@@ -107,8 +107,8 @@ type Query {
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets(status: TicketStatusType = ALL): [Ticket!]!
-  ticketsByProjectId(projectId: String!, status: TicketStatusType = ALL): [Ticket!]!
+  tickets(sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
@@ -175,6 +175,7 @@ type Ticket {
   completed: Boolean
   description: String
   imageUrl: String
+  participantCount: Float
   participants: [User!]
   project: Project
   quests: [Quest!]
@@ -190,6 +191,7 @@ input TicketInputType {
   completed: Boolean
   description: String
   imageUrl: String
+  participantCount: Float
   participants: [UserInputType!]
   project: ProjectInputType
   quests: [QuestInputType!]
@@ -197,6 +199,11 @@ input TicketInputType {
   title: String
   untilTime: DateTime
   winners: [UserInputType!]
+}
+
+enum TicketSortType {
+  NEWEST
+  TRENDING
 }
 
 enum TicketStatusType {
