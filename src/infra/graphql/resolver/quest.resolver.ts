@@ -67,4 +67,12 @@ export class QuestResolver {
       userId,
     );
   }
+
+  @Mutation(() => Quest)
+  async verifyContractQuest(
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verifyContractQuest(questId, userId);
+  }
 }

@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@golevelup/nestjs-graphql-request": "^0.1.14",
     "@nestjs/apollo": "^10.1.6",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.2.0",
@@ -36,6 +37,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "graphql": "^16.6.0",
+    "graphql-request": "^5.2.0",
     "graphql-tools": "^8.3.12",
     "mongoose": "^6.7.3",
     "nest-winston": "^1.8.0",

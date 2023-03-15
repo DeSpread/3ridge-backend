@@ -6,6 +6,8 @@ import { UserService } from './user.service';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import { ErrorCode } from '../../../constant/error.constant';
+import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
+import { gql, GraphQLClient } from 'graphql-request';
 
 @Injectable()
 export class VerifierService {
@@ -14,6 +16,7 @@ export class VerifierService {
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @InjectGraphQLClient() private readonly client: GraphQLClient,
     private configService: ConfigService,
     private userService: UserService,
   ) {
@@ -168,5 +171,20 @@ export class VerifierService {
     }
 
     return false;
+  }
+
+  async hasNft(userId: string): Promise<User> {
+    const user: User = await this.userService.findUserById(userId);
+
+    const query = gql`
+      {
+        users {
+          _id
+        }
+      }
+    `;
+    this.client.request(query).then((data) => console.log(data));
+
+    return user;
   }
 }

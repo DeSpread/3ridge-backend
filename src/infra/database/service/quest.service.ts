@@ -142,6 +142,12 @@ export class QuestService {
     return false;
   }
 
+  async verifyContractQuest(questId: string, userId: string) {
+    const quest: Quest = await this.questModel.findById(questId);
+    await this.verifierService.hasNft(userId);
+    return quest;
+  }
+
   async verifyTwitterFollowQuest(
     ticketId: string,
     questId: string,
