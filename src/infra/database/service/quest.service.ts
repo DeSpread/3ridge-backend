@@ -12,6 +12,7 @@ import { User } from '../../schema/user.schema';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 import {
+  VerifyAptosQuest,
   VerifyTwitterFollowQuest,
   VerifyTwitterLikingQuest,
   VerifyTwitterRetweetQuest,
@@ -88,6 +89,12 @@ export class QuestService {
           const verifyTwitterLikingQuest1: VerifyTwitterLikingQuest =
             JSON.parse(questPolicy.context);
           return false;
+        case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:
+          const verifyAptosQuest1: VerifyAptosQuest = JSON.parse(
+            questPolicy.context,
+          );
+          return false;
+        // TODO: 나머지 Type도 추가 필요
       }
     } catch (e) {
       this.logger.error(`Requested quest is invalid. error: [${e.message}]`);
@@ -283,6 +290,47 @@ export class QuestService {
 
     this.logger.debug(
       `Successful to verify twitter liking. questId: ${questId}, userId: ${userId}, targetTweetId: ${targetTweetId}`,
+    );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
+    return quest;
+  }
+
+  async verifyAptosQuest(ticketId: string, questId: string, userId: string) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
+    const quest: Quest = await this.questModel.findById(questId);
+
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const verifyAptosQuest: VerifyAptosQuest = JSON.parse(
+      quest.questPolicy.context,
+    );
+    const walletAddress = verifyAptosQuest.walletAddress;
+    // TODO: VerifyService의 검증 로직이 여기에 들어감
+    const user: User = null;
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify twitter liking. questId: ${questId}, userId: ${userId}`,
     );
 
     await this.ticketService.participateTicketOfUser(ticketId, userId);
