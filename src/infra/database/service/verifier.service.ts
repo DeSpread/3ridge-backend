@@ -189,12 +189,14 @@ export class VerifierService {
     `;
     try {
       const data = await this.client.request(query);
-      data['current_collection_ownership_view']?.forEach((_e) => {
-        const count = _e['distinct_tokens'];
+      const collection = data['current_collection_ownership_view'];
+      if (!collection) return false;
+      for (let i = 0; i < collection.length; i++) {
+        const count = collection[i]['distinct_tokens'];
         if (count > 0) return true;
-      });
+      }
     } catch (e) {
-      throw ErrorCode.DOES_NOT_CLAIMABLE;
+      throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
   }

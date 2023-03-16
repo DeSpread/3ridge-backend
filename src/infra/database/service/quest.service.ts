@@ -318,6 +318,7 @@ export class QuestService {
         : user.wallets[0].chain === ChainType.APTOS
         ? user.wallets[0].address
         : undefined;
+
     if (
       quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_HAS_NFT
     ) {
@@ -325,6 +326,7 @@ export class QuestService {
       const hasNft = await this.verifierService.hasAptosNft(
         userAptosWalletAddress,
       );
+      console.log(hasNft);
       if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
     }
 
