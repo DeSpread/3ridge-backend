@@ -340,7 +340,7 @@ export class QuestService {
     );
 
     this.logger.debug(
-      `Successful to verify aptos quest. questId: ${questId}, userId: ${userId}`,
+      `Successful to verify aptos quest. ticketId: ${ticketId}, questId: ${questId}, userId: ${userId}`,
     );
 
     await this.ticketService.participateTicketOfUser(ticketId, userId);
