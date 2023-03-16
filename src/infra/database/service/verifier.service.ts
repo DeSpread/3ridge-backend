@@ -173,18 +173,31 @@ export class VerifierService {
     return false;
   }
 
-  async hasNft(userId: string): Promise<User> {
-    const user: User = await this.userService.findUserById(userId);
-
+  async hasAptosNft(walletAddress: string): Promise<boolean> {
     const query = gql`
       {
-        users {
-          _id
+        current_collection_ownership_view(
+          where: {
+            owner_address: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          distinct_tokens
         }
       }
     `;
-    this.client.request(query).then((data) => console.log(data));
-
-    return user;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['current_collection_ownership_view'];
+      if (!collection) return false;
+      for (let i = 0; i < collection.length; i++) {
+        const count = collection[i]['distinct_tokens'];
+        if (count > 0) return true;
+      }
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
   }
 }
