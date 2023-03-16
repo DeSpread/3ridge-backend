@@ -20,6 +20,7 @@ import {
 import { StringUtil } from '../../../util/string.util';
 import { IsCompletedQuestByUserIdResponse } from '../../graphql/dto/response.dto';
 import { TicketService } from './ticket.service';
+import { ChainType } from '../../../constant/chain.type';
 
 @Injectable()
 export class QuestService {
@@ -147,12 +148,6 @@ export class QuestService {
       }
     }
     return false;
-  }
-
-  async verifyContractQuest(questId: string, userId: string) {
-    const quest: Quest = await this.questModel.findById(questId);
-    await this.verifierService.hasNft(userId);
-    return quest;
   }
 
   async verifyTwitterFollowQuest(
@@ -301,6 +296,10 @@ export class QuestService {
     if (await this.isAlreadyCompletedUser(questId, userId)) {
       throw ErrorCode.ALREADY_VERIFIED_USER;
     }
+    const user: User = await this.userService.findUserById(userId);
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
 
     const quest: Quest = await this.questModel.findById(questId);
 
@@ -311,12 +310,22 @@ export class QuestService {
     const verifyAptosQuest: VerifyAptosQuest = JSON.parse(
       quest.questPolicy.context,
     );
-    const walletAddress = verifyAptosQuest.walletAddress;
-    // TODO: VerifyService의 검증 로직이 여기에 들어감
-    const user: User = null;
 
-    if (ObjectUtil.isNull(user)) {
-      throw ErrorCode.NOT_FOUND_USER;
+    // TODO: VerifyService의 검증 로직이 여기에 들어감
+    const userAptosWalletAddress =
+      user.wallets.length <= 0
+        ? undefined
+        : user.wallets[0].chain === ChainType.APTOS
+        ? user.wallets[0].address
+        : undefined;
+    if (
+      quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_HAS_NFT
+    ) {
+      if (!userAptosWalletAddress) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
+      const hasNft = await this.verifierService.hasAptosNft(
+        userAptosWalletAddress,
+      );
+      if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
     }
 
     await this.questModel.findByIdAndUpdate(
@@ -330,7 +339,7 @@ export class QuestService {
     );
 
     this.logger.debug(
-      `Successful to verify twitter liking. questId: ${questId}, userId: ${userId}`,
+      `Successful to verify aptos quest. questId: ${questId}, userId: ${userId}`,
     );
 
     await this.ticketService.participateTicketOfUser(ticketId, userId);

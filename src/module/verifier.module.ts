@@ -10,7 +10,7 @@ import { GraphQLRequestModule } from '@golevelup/nestjs-graphql-request';
     ConfigModule,
     UserModule,
     GraphQLRequestModule.forRoot(GraphQLRequestModule, {
-      endpoint: 'https://dev-api.3ridge.xyz/graphql',
+      endpoint: 'https://indexer.mainnet.aptoslabs.com/v1/graphql',
       options: {
         headers: {
           'content-type': 'application/json',

@@ -69,10 +69,11 @@ export class QuestResolver {
   }
 
   @Mutation(() => Quest)
-  async verifyContractQuest(
+  async verifyAptosQuest(
+    @Args('ticketId') ticketId: string,
     @Args('questId') questId: string,
     @Args('userId') userId: string,
   ) {
-    return this.questService.verifyContractQuest(questId, userId);
+    return this.questService.verifyAptosQuest(ticketId, questId, userId);
   }
 }
