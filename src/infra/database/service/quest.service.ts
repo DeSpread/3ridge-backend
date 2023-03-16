@@ -326,7 +326,6 @@ export class QuestService {
       const hasNft = await this.verifierService.hasAptosNft(
         userAptosWalletAddress,
       );
-      console.log(hasNft);
       if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
     }
 
