@@ -335,6 +335,13 @@ export class QuestService {
           verifyAptosExistTxQuest.txCount,
         );
       if (!hasAptosTransaction) throw ErrorCode.DOES_NOT_HAVE_ATPOS_TRANSACTION;
+    } else if (
+      quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_HAS_ANS
+    ) {
+      const hasAptosAns = await this.verifierService.hasAtosAns(
+        userAptosWalletAddress,
+      );
+      if (!hasAptosAns) throw ErrorCode.DOES_NOT_HAVE_ATPOS_ANS;
     }
     await this.questModel.findByIdAndUpdate(
       { _id: questId },

@@ -173,6 +173,31 @@ export class VerifierService {
     return false;
   }
 
+  async hasAtosAns(walletAddress: string): Promise<boolean> {
+    const query = gql`
+      {
+        current_ans_lookup(
+          where: {
+            registered_address: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          registered_address
+        }
+      }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['current_ans_lookup'];
+      if (!collection || collection.length === 0) return false;
+      return true;
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
+
   async hasAptosTransactions(
     walletAddress: string,
     transactionCount: number,
