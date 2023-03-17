@@ -19,6 +19,6 @@ export interface VerifyQuestInput {
   verifiedUrl: string;
 }
 
-export interface VerifyAptosQuest {
-  walletAddress: string;
+export interface VerifyAptosExistTxQuest {
+  txCount: number;
 }
