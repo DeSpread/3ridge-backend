@@ -277,7 +277,6 @@ export class VerifierService {
 
       for (let i = 0; i < coinActivities.length; i++) {
         const functionStr: string = coinActivities[i]['entry_function_id_str'];
-        // TODO
         if (functionStr.includes('coin_bridge')) {
           return true;
         }
