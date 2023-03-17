@@ -254,4 +254,37 @@ export class VerifierService {
     }
     return false;
   }
+
+  async isBridgeToAptos(walletAddress: string): Promise<boolean> {
+    const query = gql`
+        {
+            coin_activities(
+                where: {
+                    owner_address: {
+                        _eq: "${walletAddress}"
+                    }
+                }
+            ) {
+                entry_function_id_str
+            }
+        }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const coinActivities = data['coin_activities'];
+
+      if (!coinActivities || coinActivities.length === 0) return false;
+
+      for (let i = 0; i < coinActivities.length; i++) {
+        const functionStr: string = coinActivities[i]['entry_function_id_str'];
+        // TODO
+        if (functionStr.includes('coin_bridge')) {
+          return true;
+        }
+      }
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
 }

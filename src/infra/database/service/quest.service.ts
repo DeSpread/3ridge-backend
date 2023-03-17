@@ -314,35 +314,42 @@ export class QuestService {
         : user.wallets[0].chain === ChainType.APTOS
         ? user.wallets[0].address
         : undefined;
+
     if (!userAptosWalletAddress) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
 
-    if (
-      quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_HAS_NFT
-    ) {
-      const hasNft = await this.verifierService.hasAptosNft(
-        userAptosWalletAddress,
-      );
-      if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
-    } else if (
-      quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_EXIST_TX
-    ) {
-      const verifyAptosExistTxQuest: VerifyAptosExistTxQuest = JSON.parse(
-        quest.questPolicy.context,
-      );
-      const hasAptosTransaction =
-        await this.verifierService.hasAptosTransactions(
+    switch (quest.questPolicy.questPolicy) {
+      case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:
+        const isBridgeToAptos = await this.verifierService.isBridgeToAptos(
           userAptosWalletAddress,
-          verifyAptosExistTxQuest.txCount,
         );
-      if (!hasAptosTransaction) throw ErrorCode.DOES_NOT_HAVE_ATPOS_TRANSACTION;
-    } else if (
-      quest.questPolicy.questPolicy === QuestPolicyType.VERIFY_APTOS_HAS_ANS
-    ) {
-      const hasAptosAns = await this.verifierService.hasAtosAns(
-        userAptosWalletAddress,
-      );
-      if (!hasAptosAns) throw ErrorCode.DOES_NOT_HAVE_ATPOS_ANS;
+        if (!isBridgeToAptos) throw ErrorCode.DOES_NOT_BRIDGE_TO_APTOS;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_HAS_NFT:
+        const hasNft = await this.verifierService.hasAptosNft(
+          userAptosWalletAddress,
+        );
+        if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_EXIST_TX:
+        const verifyAptosExistTxQuest: VerifyAptosExistTxQuest = JSON.parse(
+          quest.questPolicy.context,
+        );
+        const hasAptosTransaction =
+          await this.verifierService.hasAptosTransactions(
+            userAptosWalletAddress,
+            verifyAptosExistTxQuest.txCount,
+          );
+        if (!hasAptosTransaction)
+          throw ErrorCode.DOES_NOT_HAVE_ATPOS_TRANSACTION;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_HAS_ANS:
+        const hasAptosAns = await this.verifierService.hasAtosAns(
+          userAptosWalletAddress,
+        );
+        if (!hasAptosAns) throw ErrorCode.DOES_NOT_HAVE_ATPOS_ANS;
+        break;
     }
+
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {

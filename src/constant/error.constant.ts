@@ -65,6 +65,10 @@ export const ErrorCode = {
     'user does not win in ticket',
     'DOES_NOT_WIN_TICKET',
   ),
+  DOES_NOT_BRIDGE_TO_APTOS: new ApolloError(
+    'user does not bridge to aptos',
+    'DOES_NOT_BRIDGE_TO_APTOS',
+  ),
   DOES_NOT_HAVA_APTOS_WALLET: new ApolloError(
     'user does not have aptos wallet',
     'DOES_NOT_HAVA_APTOS_WALLET',
