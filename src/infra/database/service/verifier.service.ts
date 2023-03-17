@@ -173,6 +173,35 @@ export class VerifierService {
     return false;
   }
 
+  async hasAptosTransactions(
+    walletAddress: string,
+    transactionCount: number,
+  ): Promise<boolean> {
+    const query = gql`
+      {
+        user_transactions(
+          where: {
+            sender: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          entry_function_id_str
+          sequence_number
+        }
+      }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['user_transactions'];
+      if (!collection || collection.length < transactionCount) return false;
+      return true;
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
+
   async hasAptosNft(walletAddress: string): Promise<boolean> {
     const query = gql`
       {
@@ -190,7 +219,7 @@ export class VerifierService {
     try {
       const data = await this.client.request(query);
       const collection = data['current_collection_ownership_view'];
-      if (!collection) return false;
+      if (!collection || collection.length === 0) return false;
       for (let i = 0; i < collection.length; i++) {
         const count = collection[i]['distinct_tokens'];
         if (count > 0) return true;

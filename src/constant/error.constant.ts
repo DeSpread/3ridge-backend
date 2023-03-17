@@ -65,9 +65,17 @@ export const ErrorCode = {
     'user does not win in ticket',
     'DOES_NOT_WIN_TICKET',
   ),
+  DOES_NOT_HAVA_APTOS_WALLET: new ApolloError(
+    'user does not have aptos wallet',
+    'DOES_NOT_HAVA_APTOS_WALLET',
+  ),
   DOES_NOT_HAVE_APTOS_NFT: new ApolloError(
     'user does not have aptos nft',
     'DOES_NOT_HAVE_APTOS_NFT',
+  ),
+  DOES_NOT_HAVE_ATPOS_TRANSACTION: new ApolloError(
+    'user does not have aptos transaction',
+    'DOES_NOT_HAVE_ATPOS_TRANSACTION',
   ),
   APTOS_INDEXER_ERROR: new ApolloError(
     'aptos indexer has something error',
