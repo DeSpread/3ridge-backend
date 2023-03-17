@@ -77,6 +77,10 @@ export const ErrorCode = {
     'user does not have aptos transaction',
     'DOES_NOT_HAVE_ATPOS_TRANSACTION',
   ),
+  DOES_NOT_HAVE_ATPOS_ANS: new ApolloError(
+    'user does not have aptos ans',
+    'DOES_NOT_HAVE_ATPOS_ANS',
+  ),
   APTOS_INDEXER_ERROR: new ApolloError(
     'aptos indexer has something error',
     'APTOS_INDEXER_ERROR',
