@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Quest } from './quest.schema';
 import { User } from './user.schema';
 import { RewardPolicy } from '../graphql/dto/policy.dto';
+import { Project } from './project.schema';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -25,6 +26,10 @@ export class Ticket {
   @Field({ nullable: true })
   imageUrl: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Project' })
+  @Field(() => Project, { nullable: true })
+  project: Project;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quest' }] })
   @Field(() => [Quest], { nullable: true })
   quests: Quest[];
@@ -37,6 +42,10 @@ export class Ticket {
   @Field(() => [User], { nullable: true })
   participants: User[];
 
+  @Prop()
+  @Field({ nullable: true })
+  participantCount: number;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })
   winners: User[];
@@ -44,6 +53,14 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   completed: boolean;
+
+  @Prop()
+  @Field({ nullable: true })
+  beginTime: Date;
+
+  @Prop()
+  @Field({ nullable: true })
+  untilTime: Date;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);

@@ -6,6 +6,8 @@ import { UserService } from './user.service';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import { ErrorCode } from '../../../constant/error.constant';
+import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
+import { gql, GraphQLClient } from 'graphql-request';
 
 @Injectable()
 export class VerifierService {
@@ -14,6 +16,7 @@ export class VerifierService {
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @InjectGraphQLClient() private readonly client: GraphQLClient,
     private configService: ConfigService,
     private userService: UserService,
   ) {
@@ -21,6 +24,28 @@ export class VerifierService {
 
     this.twitterClient = new TwitterApi(bearer);
     this.readOnlyClient = this.twitterClient.readOnly;
+  }
+
+  async isLikingTweetByUserId(
+    userId: string,
+    targetTweetId: string,
+  ): Promise<User> {
+    const user: User = await this.userService.findUserById(userId);
+    const sourceTwitterUsername = user.userSocial.twitterId;
+    const isLikingTweet = await this.isLikingTweetByUsername(
+      sourceTwitterUsername,
+      targetTweetId,
+    );
+
+    this.logger.debug(
+      `userId: ${userId} -> targetTweetId: ${targetTweetId}, isLiking: ${isLikingTweet}`,
+    );
+
+    if (!isLikingTweet) {
+      throw ErrorCode.DOES_NOT_TWITTER_LIKING;
+    }
+
+    return user;
   }
 
   async isFollowTwitterByUserId(
@@ -65,6 +90,32 @@ export class VerifierService {
     }
 
     return user;
+  }
+
+  private async isLikingTweetByUsername(
+    sourceTwitterUsername: string,
+    targetTweetId: string,
+  ): Promise<boolean> {
+    const usersPaginated = await this.readOnlyClient.v2.tweetLikedBy(
+      targetTweetId,
+      {
+        asPaginator: true,
+      },
+    );
+
+    let paginatorIdx = 0;
+    while (!usersPaginated.done) {
+      this.logger.debug(`paginator index: ${paginatorIdx}`);
+      for (const user of usersPaginated) {
+        if (StringUtil.trimAndEqual(user.username, sourceTwitterUsername)) {
+          return true;
+        }
+      }
+      await usersPaginated.fetchNext();
+      paginatorIdx++;
+    }
+
+    return false;
   }
 
   private async isFollowTwitterByUsername(
@@ -119,6 +170,120 @@ export class VerifierService {
       paginatorIdx++;
     }
 
+    return false;
+  }
+
+  async hasAtosAns(walletAddress: string): Promise<boolean> {
+    const query = gql`
+      {
+        current_ans_lookup(
+          where: {
+            registered_address: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          registered_address
+        }
+      }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['current_ans_lookup'];
+      if (!collection || collection.length === 0) return false;
+      return true;
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
+
+  async hasAptosTransactions(
+    walletAddress: string,
+    transactionCount: number,
+  ): Promise<boolean> {
+    const query = gql`
+      {
+        user_transactions(
+          where: {
+            sender: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          entry_function_id_str
+          sequence_number
+        }
+      }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['user_transactions'];
+      if (!collection || collection.length < transactionCount) return false;
+      return true;
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
+
+  async hasAptosNft(walletAddress: string): Promise<boolean> {
+    const query = gql`
+      {
+        current_collection_ownership_view(
+          where: {
+            owner_address: {
+              _eq: "${walletAddress}"
+            }
+          }
+        ) {
+          distinct_tokens
+        }
+      }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const collection = data['current_collection_ownership_view'];
+      if (!collection || collection.length === 0) return false;
+      for (let i = 0; i < collection.length; i++) {
+        const count = collection[i]['distinct_tokens'];
+        if (count > 0) return true;
+      }
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
+    return false;
+  }
+
+  async isBridgeToAptos(walletAddress: string): Promise<boolean> {
+    const query = gql`
+        {
+            coin_activities(
+                where: {
+                    owner_address: {
+                        _eq: "${walletAddress}"
+                    }
+                }
+            ) {
+                entry_function_id_str
+            }
+        }
+    `;
+    try {
+      const data = await this.client.request(query);
+      const coinActivities = data['coin_activities'];
+
+      if (!coinActivities || coinActivities.length === 0) return false;
+
+      for (let i = 0; i < coinActivities.length; i++) {
+        const functionStr: string = coinActivities[i]['entry_function_id_str'];
+        if (functionStr.includes('coin_bridge')) {
+          return true;
+        }
+      }
+    } catch (e) {
+      throw ErrorCode.APTOS_INDEXER_ERROR;
+    }
     return false;
   }
 }

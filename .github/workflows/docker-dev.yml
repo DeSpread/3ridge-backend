@@ -1,4 +1,4 @@
-name: Docker Image CI/CD with arguments
+name: Dev - Docker Image CI/CD with arguments
 
 on:
   push:

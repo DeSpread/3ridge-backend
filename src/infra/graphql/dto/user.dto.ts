@@ -1,5 +1,6 @@
-import { ArgsType, Field, InputType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, Int } from '@nestjs/graphql';
 import { UserSocial, UserWallet } from '../../schema/user.schema';
+import { Max, Min } from 'class-validator';
 
 @ArgsType()
 @InputType()
@@ -31,4 +32,16 @@ export class UserCreateByGmailInput {
 
   @Field({ nullable: true })
   profileImageUrl: string;
+}
+
+@ArgsType()
+export class FetchUsersArgs {
+  @Field(() => Int)
+  @Min(0)
+  skip = 0;
+
+  @Field(() => Int)
+  @Min(1)
+  @Max(50)
+  take = 25;
 }

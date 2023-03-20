@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from '../../schema/project.schema';
@@ -15,11 +15,21 @@ export class ProjectService {
     private readonly projectModel: Model<Project>,
   ) {}
 
+  async findProjectById(projectId: string): Promise<Project> {
+    return await this.projectModel
+      .findById(projectId)
+      .populate('managedUsers')
+      .populate('tickets')
+      .populate('projectSocial')
+      .exec();
+  }
+
   async findAll(): Promise<Project[]> {
     return await this.projectModel
       .find()
       .populate('managedUsers')
       .populate('tickets')
+      .populate('projectSocial')
       .exec();
   }
 
@@ -28,11 +38,20 @@ export class ProjectService {
       .find({ name: name })
       .populate('managedUsers')
       .populate('tickets')
+      .populate('projectSocial')
       .exec();
   }
 
   async create(projectCreateInput: ProjectCreateInput): Promise<Project> {
     const projectModel = new this.projectModel(projectCreateInput);
+    const project = await this.projectModel.exists({
+      name: projectCreateInput.name,
+    });
+
+    if (project) {
+      throw ErrorCode.ALREADY_EXIST_PROJECT;
+    }
+
     return projectModel.save();
   }
 

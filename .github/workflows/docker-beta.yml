@@ -1,4 +1,4 @@
-name: Docker Image CI/CD with arguments
+name: Beta - Docker Image CI/CD with arguments
 
 on:
   push:

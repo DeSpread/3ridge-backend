@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TicketResolver } from '../infra/graphql/resolver/ticket.resolver';
@@ -20,8 +20,9 @@ import { ProjectModule } from './project.module';
     ConfigModule,
     UserModule,
     ProjectModule,
-    QuestModule,
+    forwardRef(() => QuestModule),
   ],
   providers: [TicketResolver, TicketService, RewardService],
+  exports: [TicketService],
 })
 export class TicketModule {}

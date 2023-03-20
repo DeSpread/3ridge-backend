@@ -22,25 +22,58 @@ export class QuestResolver {
 
   @Mutation(() => Quest)
   async completeQuestOfUser(
+    @Args('ticketId') ticketId: string,
     @Args('questId') questId: string,
     @Args('userId') userId: string,
   ) {
-    return this.questService.completeQuestOfUser(questId, userId);
+    return this.questService.completeQuestOfUser(ticketId, questId, userId);
   }
 
   @Mutation(() => Quest)
   async verifyTwitterFollowQuest(
+    @Args('ticketId') ticketId: string,
     @Args('questId') questId: string,
     @Args('userId') userId: string,
   ) {
-    return this.questService.verifyTwitterFollowQuest(questId, userId);
+    return this.questService.verifyTwitterFollowQuest(
+      ticketId,
+      questId,
+      userId,
+    );
   }
 
   @Mutation(() => Quest)
   async verifyTwitterRetweetQuest(
+    @Args('ticketId') ticketId: string,
     @Args('questId') questId: string,
     @Args('userId') userId: string,
   ) {
-    return this.questService.verifyTwitterRetweetQuest(questId, userId);
+    return this.questService.verifyTwitterRetweetQuest(
+      ticketId,
+      questId,
+      userId,
+    );
+  }
+
+  @Mutation(() => Quest)
+  async verifyTwitterLikingQuest(
+    @Args('ticketId') ticketId: string,
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verifyTwitterLikingQuest(
+      ticketId,
+      questId,
+      userId,
+    );
+  }
+
+  @Mutation(() => Quest)
+  async verifyAptosQuest(
+    @Args('ticketId') ticketId: string,
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verifyAptosQuest(ticketId, questId, userId);
   }
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ErrorCode } from '../../../constant/error.constant';
@@ -12,11 +12,15 @@ import { User } from '../../schema/user.schema';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 import {
+  VerifyAptosExistTxQuest,
   VerifyTwitterFollowQuest,
+  VerifyTwitterLikingQuest,
   VerifyTwitterRetweetQuest,
 } from '../../../model/verify.quest.model';
 import { StringUtil } from '../../../util/string.util';
 import { IsCompletedQuestByUserIdResponse } from '../../graphql/dto/response.dto';
+import { TicketService } from './ticket.service';
+import { ChainType } from '../../../constant/chain.type';
 
 @Injectable()
 export class QuestService {
@@ -26,6 +30,8 @@ export class QuestService {
     private readonly questModel: Model<Quest>,
     private userService: UserService,
     private verifierService: VerifierService,
+    @Inject(forwardRef(() => TicketService))
+    private ticketService: TicketService,
   ) {}
 
   async findQuestById(questId: string): Promise<Quest> {
@@ -80,6 +86,16 @@ export class QuestService {
           const verifyTwitterRetweetQuest1: VerifyTwitterRetweetQuest =
             JSON.parse(questPolicy.context);
           return false;
+        case QuestPolicyType.VERIFY_TWITTER_LIKING:
+          const verifyTwitterLikingQuest1: VerifyTwitterLikingQuest =
+            JSON.parse(questPolicy.context);
+          return false;
+        case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:
+          const verifyAptosQuest1: VerifyAptosExistTxQuest = JSON.parse(
+            questPolicy.context,
+          );
+          return false;
+        // TODO: 나머지 Type도 추가 필요
       }
     } catch (e) {
       this.logger.error(`Requested quest is invalid. error: [${e.message}]`);
@@ -99,7 +115,7 @@ export class QuestService {
     return questList;
   }
 
-  async completeQuestOfUser(questId: string, userId: string) {
+  async completeQuestOfUser(ticketId: string, questId: string, userId: string) {
     const user: User = await this.userService.findUserById(userId);
     const quest: Quest = await this.questModel.findByIdAndUpdate(
       { _id: questId },
@@ -110,6 +126,9 @@ export class QuestService {
       },
       { new: true },
     );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
     return quest;
   }
 
@@ -131,7 +150,11 @@ export class QuestService {
     return false;
   }
 
-  async verifyTwitterFollowQuest(questId: string, userId: string) {
+  async verifyTwitterFollowQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
     if (await this.isAlreadyCompletedUser(questId, userId)) {
       throw ErrorCode.ALREADY_VERIFIED_USER;
     }
@@ -170,10 +193,16 @@ export class QuestService {
       `Successful to verify twitter follow. questId: ${questId}, userId: ${userId}, targetTwitterUsername: ${targetTwitterUsername}`,
     );
 
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
     return quest;
   }
 
-  async verifyTwitterRetweetQuest(questId: string, userId: string) {
+  async verifyTwitterRetweetQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
     if (await this.isAlreadyCompletedUser(questId, userId)) {
       throw ErrorCode.ALREADY_VERIFIED_USER;
     }
@@ -210,6 +239,132 @@ export class QuestService {
     this.logger.debug(
       `Successful to verify twitter retweet. questId: ${questId}, userId: ${userId}, targetRetweetId: ${targetRetweetId}`,
     );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
+    return quest;
+  }
+
+  async verifyTwitterLikingQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
+    const quest: Quest = await this.questModel.findById(questId);
+
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const verifyTwitterLikingQuest1: VerifyTwitterLikingQuest = JSON.parse(
+      quest.questPolicy.context,
+    );
+    const targetTweetId = verifyTwitterLikingQuest1.tweetId;
+    const user: User = await this.verifierService.isLikingTweetByUserId(
+      userId,
+      targetTweetId,
+    );
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify twitter liking. questId: ${questId}, userId: ${userId}, targetTweetId: ${targetTweetId}`,
+    );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
+    return quest;
+  }
+
+  async verifyAptosQuest(ticketId: string, questId: string, userId: string) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+    const user: User = await this.userService.findUserById(userId);
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const quest: Quest = await this.questModel.findById(questId);
+
+    console.log(quest.questPolicy.context);
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const userAptosWalletAddress =
+      user.wallets.length <= 0
+        ? undefined
+        : user.wallets[0].chain === ChainType.APTOS
+        ? user.wallets[0].address
+        : undefined;
+
+    if (!userAptosWalletAddress) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
+
+    switch (quest.questPolicy.questPolicy) {
+      case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:
+        const isBridgeToAptos = await this.verifierService.isBridgeToAptos(
+          userAptosWalletAddress,
+        );
+        if (!isBridgeToAptos) throw ErrorCode.DOES_NOT_BRIDGE_TO_APTOS;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_HAS_NFT:
+        const hasNft = await this.verifierService.hasAptosNft(
+          userAptosWalletAddress,
+        );
+        if (!hasNft) throw ErrorCode.DOES_NOT_HAVE_APTOS_NFT;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_EXIST_TX:
+        const verifyAptosExistTxQuest: VerifyAptosExistTxQuest = JSON.parse(
+          quest.questPolicy.context,
+        );
+        const hasAptosTransaction =
+          await this.verifierService.hasAptosTransactions(
+            userAptosWalletAddress,
+            verifyAptosExistTxQuest.txCount,
+          );
+        if (!hasAptosTransaction)
+          throw ErrorCode.DOES_NOT_HAVE_ATPOS_TRANSACTION;
+        break;
+      case QuestPolicyType.VERIFY_APTOS_HAS_ANS:
+        const hasAptosAns = await this.verifierService.hasAtosAns(
+          userAptosWalletAddress,
+        );
+        if (!hasAptosAns) throw ErrorCode.DOES_NOT_HAVE_ATPOS_ANS;
+        break;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify aptos quest. ticketId: ${ticketId}, questId: ${questId}, userId: ${userId}`,
+    );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
 
     return quest;
   }

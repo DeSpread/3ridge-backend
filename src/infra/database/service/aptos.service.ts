@@ -11,6 +11,8 @@ import {
 } from 'aptos';
 import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
+import { ErrorCode } from '../../../constant/error.constant';
+import { TicketService } from './ticket.service';
 
 @Injectable()
 export class AptosService {
@@ -23,6 +25,7 @@ export class AptosService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     private configService: ConfigService,
+    private ticketService: TicketService,
   ) {
     this.nftCreator = new AptosAccount(
       HexString.ensure(
@@ -43,22 +46,31 @@ export class AptosService {
   }
 
   async requestClaimNFT(
+    ticketId: string,
+    userId: string,
     collectionName: string,
-    nftTokenName: string,
+    tokenName: string,
     receiverAddress: string,
+    tokenAmount: number,
+    tokenPropertyVersion: number,
   ): Promise<AptosRequestClaimNFTResponse> {
+    const isClaimable = await this.isClaimable(ticketId, userId);
+
+    if (!isClaimable) {
+      throw ErrorCode.DOES_NOT_CLAIMABLE;
+    }
+
     try {
       const txnHash = await this.tokenClient.offerToken(
         this.nftCreator,
         receiverAddress,
         this.nftCreator.address(),
         collectionName,
-        nftTokenName,
-        1,
-        0,
+        tokenName,
+        tokenAmount,
+        tokenPropertyVersion,
       );
       await this.client.waitForTransaction(txnHash, { checkSuccess: true });
-
       this.faucetClient.fundAccount(receiverAddress, 100_000_000);
 
       return {
@@ -68,5 +80,40 @@ export class AptosService {
       this.logger.error(`Failed to offer nft token. error: [${e.message}]`);
       throw new ApolloError(e.message, 'BAD_REQUEST_CLAIM_NFT');
     }
+  }
+
+  async checkTokenBalance(
+    collectionName: string,
+    tokenName: string,
+    receiverAddress: string,
+    tokenPropertyVersion: number,
+  ): Promise<number> {
+    const tokenId = {
+      token_data_id: {
+        creator: this.nftCreator.address().hex(),
+        collection: collectionName,
+        name: tokenName,
+      },
+      property_version: `${tokenPropertyVersion}`,
+    };
+
+    try {
+      const balanceOfToken = await this.tokenClient.getTokenForAccount(
+        receiverAddress,
+        tokenId,
+      );
+      this.logger.debug(`Check token balance: [${balanceOfToken}]`);
+      return balanceOfToken['amount'];
+    } catch (e) {
+      this.logger.error(`Check token balance. resource not found`);
+    }
+    return 0;
+  }
+
+  private async isClaimable(
+    ticketId: string,
+    userId: string,
+  ): Promise<boolean> {
+    return this.ticketService.isWinner(ticketId, userId);
   }
 }

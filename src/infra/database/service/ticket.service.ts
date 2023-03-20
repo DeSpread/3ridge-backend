@@ -1,9 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { FilterQuery, Model } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
 import {
   TicketCreateInput,
+  TicketStatusInputType,
   TicketUpdateInput,
 } from '../../graphql/dto/ticket.dto';
 import { ErrorCode } from '../../../constant/error.constant';
@@ -12,11 +13,13 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../../../util/object.util';
-import { Args } from '@nestjs/graphql';
-import { ParticipateTicketOfUserResponse } from '../../graphql/dto/response.dto';
 import { User } from '../../schema/user.schema';
 import { UserService } from './user.service';
 import { StringUtil } from '../../../util/string.util';
+import {
+  TicketSortType,
+  TicketStatusType,
+} from '../../../constant/ticket.type';
 
 @Injectable()
 export class TicketService {
@@ -26,35 +29,108 @@ export class TicketService {
     private ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private questModel: Model<Quest>,
+    @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
     private rewardService: RewardService,
     private userService: UserService,
   ) {}
 
-  async findAll(): Promise<Ticket[]> {
+  async find(
+    ticketStatus: TicketStatusInputType,
+    filter: FilterQuery<any> = {},
+  ): Promise<Ticket[]> {
+    let sortQuery;
+    switch (ticketStatus.sort) {
+      case TicketSortType.NEWEST:
+        sortQuery = { updatedAt: -1 };
+        break;
+      case TicketSortType.TRENDING:
+      default:
+        sortQuery = { participantCount: -1 };
+        break;
+    }
+
+    switch (ticketStatus.status) {
+      case TicketStatusType.ALL:
+        return this.findAll(filter, sortQuery);
+      case TicketStatusType.AVAILABLE:
+        return this.findInCompletedTickets(filter, sortQuery);
+      case TicketStatusType.COMPLETED:
+        return this.findCompletedTickets(filter, sortQuery);
+      case TicketStatusType.MISSED:
+        return this.findMissedTickets(filter, sortQuery);
+    }
+  }
+
+  async findAll(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
     return await this.ticketModel
-      .find()
+      .find(filter)
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
-  async findCompletedTickets(): Promise<Ticket[]> {
+  async findCompletedTickets(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
     return await this.ticketModel
-      .find({ completed: true })
+      .find(filter)
+      .find({
+        completed: true,
+      })
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
   }
 
-  async findInCompletedTickets(): Promise<Ticket[]> {
+  async findInCompletedTickets(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
+    const current = new Date();
     return await this.ticketModel
-      .find({ completed: false })
+      .find(filter)
+      .find({
+        completed: false,
+        untilTime: {
+          $gte: current,
+        },
+      })
+      .sort(sortQuery)
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
+      .exec();
+  }
+
+  async findMissedTickets(
+    filter: FilterQuery<any> = {},
+    sortQuery = {},
+  ): Promise<Ticket[]> {
+    const current = new Date();
+    return await this.ticketModel
+      .find(filter)
+      .find({
+        untilTime: {
+          $lte: current,
+        },
+      })
+      .sort(sortQuery)
+      .populate('quests')
+      .populate('participants')
+      .populate('winners')
+      .populate('project')
       .exec();
   }
 
@@ -64,7 +140,17 @@ export class TicketService {
       .populate('quests')
       .populate('participants')
       .populate('winners')
+      .populate('project')
       .exec();
+  }
+
+  async ticketsByProjectId(
+    projectId: string,
+    ticketStatus: TicketStatusInputType,
+  ): Promise<Ticket[]> {
+    return this.find(ticketStatus, {
+      project: new mongoose.Types.ObjectId(projectId),
+    });
   }
 
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
@@ -81,15 +167,62 @@ export class TicketService {
     return ticketModel.save();
   }
 
-  async update(id: string, ticketInput: TicketUpdateInput) {
+  async update(ticketId: string, ticketInput: TicketUpdateInput) {
     const existingTicket = await this.ticketModel
-      .findOneAndUpdate({ _id: id }, { $set: ticketInput }, { new: true })
+      .findOneAndUpdate({ _id: ticketId }, { $set: ticketInput }, { new: true })
       .exec();
 
     if (!existingTicket) {
       throw ErrorCode.NOT_FOUND_PROJECT;
     }
     return existingTicket;
+  }
+
+  private async addWinnerToTicket(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyWinnerUser: User = await ticket.winners.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (!ObjectUtil.isNull(isAlreadyWinnerUser)) {
+      throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $push: {
+          winners: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to add winner to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
   }
 
   async removeById(id: string) {
@@ -144,6 +277,9 @@ export class TicketService {
         $push: {
           participants: user,
         },
+        $inc: {
+          participantCount: 1,
+        },
       },
       { new: true },
     );
@@ -152,6 +288,67 @@ export class TicketService {
       `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
 
+    // check if this user completed all quests & if then, update winner list
+    await this.checkAndUpdateWinner(ticketId, userId);
+
     return ticket0;
+  }
+
+  async isCompletedTicket(ticketId: string, userId: string): Promise<boolean> {
+    const ticket = await this.findById(ticketId);
+    for (const quest of ticket.quests) {
+      const completedUsers: User[] = quest.completedUsers.filter((x) => {
+        if (StringUtil.trimAndEqual(String(x._id), userId)) {
+          return true;
+        }
+      });
+      if (completedUsers.length <= 0) {
+        this.logger.error(
+          `user doest not complete qeust. questId: [${quest._id}], userId: [${userId}]`,
+        );
+        return false;
+      }
+
+      this.logger.debug(
+        `user completed qeust. questId: [${quest._id}], userId: [${userId}]`,
+      );
+    }
+    return true;
+  }
+
+  async checkAndUpdateWinner(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    const isCompletedTicket = await this.isCompletedTicket(ticketId, userId);
+
+    if (!isCompletedTicket) {
+      this.logger.error(
+        `user does not complete all quests in ticket. ticketId: [${ticketId}], userId: [${userId}]`,
+      );
+      return null;
+    }
+
+    return this.addWinnerToTicket(ticketId, userId);
+  }
+
+  async isWinner(ticketId: string, userId: string): Promise<boolean> {
+    const ticket: Ticket = await this.findById(ticketId);
+
+    const winnerUsers: boolean = ticket.winners.some((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (!winnerUsers) {
+      this.logger.error(
+        `user is not winner. ticketId: [${ticketId}], userId: [${userId}]`,
+      );
+      return false;
+    }
+
+    this.logger.debug(
+      `user is winner. ticketId: [${ticketId}], userId: [${userId}]`,
+    );
+    return true;
   }
 }

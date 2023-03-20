@@ -22,37 +22,46 @@ enum ChainType {
   EVM
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type IsCompletedQuestByUserIdResponse {
   isCompleted: Boolean!
   questId: String!
 }
 
 type Mutation {
-  completeQuestOfUser(questId: String!, userId: String!): Quest!
-  createProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
-  createTicket(description: String, imageUrl: String, quests: [QuestInputType!]!, rewardPolicy: RewardPolicyInputType, title: String): Ticket!
+  checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
+  completeQuestOfUser(questId: String!, ticketId: String!, userId: String!): Quest!
+  createProject(categories: [CategoryType!], description: String, imageUrl: String, name: String!, projectSocial: ProjectSocialInputType): Project!
+  createTicket(description: String, imageUrl: String, project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, title: String, untilTime: DateTime): Ticket!
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(address: String!, chain: ChainType!): User!
   participateTicketOfUser(ticketId: String!, userId: String!): Ticket!
   removeProject(projectId: String!): Project!
-  removeTicketById(id: String!): Ticket!
+  removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
-  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!): AptosRequestClaimNFTResponse!
-  updateProject(categories: [CategoryType!], description: String, managedUsers: [UserInputType!], name: String, projectId: String!, thumbnailUrl: String, tickets: [TicketInputType!]): Project!
-  updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], rewardPolicy: String, title: String, winners: [UserInputType!]): Ticket!
+  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!, ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
+  updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
+  updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
-  verifyTwitterFollowQuest(questId: String!, userId: String!): Quest!
-  verifyTwitterRetweetQuest(questId: String!, userId: String!): Quest!
+  verifyAptosQuest(questId: String!, ticketId: String!, userId: String!): Quest!
+  verifyTwitterFollowQuest(questId: String!, ticketId: String!, userId: String!): Quest!
+  verifyTwitterLikingQuest(questId: String!, ticketId: String!, userId: String!): Quest!
+  verifyTwitterRetweetQuest(questId: String!, ticketId: String!, userId: String!): Quest!
 }
 
 type Project {
   _id: String
   categories: [CategoryType!]
   description: String
+  imageUrl: String
   managedUsers: [User!]
   name: String!
-  thumbnailUrl: String
+  projectSocial: ProjectSocial
   tickets: [Ticket!]
 }
 
@@ -60,30 +69,53 @@ input ProjectInputType {
   _id: String
   categories: [CategoryType!]
   description: String
+  imageUrl: String
   managedUsers: [UserInputType!]
   name: String!
-  thumbnailUrl: String
+  projectSocial: ProjectSocialInputType
   tickets: [TicketInputType!]
+}
+
+type ProjectSocial {
+  discordUrl: String
+  officialUrl: String
+  telegramUrl: String
+  twitterUrl: String
+}
+
+input ProjectSocialInputType {
+  discordUrl: String
+  officialUrl: String
+  telegramUrl: String
+  twitterUrl: String
 }
 
 type Query {
   auth(userId: String!): AuthResponse!
+  availableTickets: [Ticket!]!
+  checkTokenBalanceByWalletAddress(collectionName: String!, receiverAddress: String!, tokenName: String!): Float!
   completedTickets: [Ticket!]!
+  findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
-  inCompletedTickets: [Ticket!]!
+  findRankByUserId(skip: Int = 0, take: Int = 25, userId: String!): Float!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
+  isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
+  isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
+  isWinner(ticketId: String!, userId: String!): Boolean!
+  projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
-  ticketById(id: String!): Ticket!
-  tickets: [Ticket!]!
+  ticketById(ticketId: String!): Ticket!
+  tickets(sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
   userByWalletAddress(walletAddress: String!): User!
   users: [User!]!
-  usersOrderByRewardPointDesc: [User!]!
+  usersOrderByRewardPointDesc(skip: Int = 0, take: Int = 25): [User!]!
 }
 
 type Quest {
@@ -114,9 +146,13 @@ input QuestPolicyInputType {
 
 enum QuestPolicyType {
   QUIZ
-  VERIFY_CONTRACT
+  VERIFY_APTOS_BRIDGE_TO_APTOS
+  VERIFY_APTOS_EXIST_TX
+  VERIFY_APTOS_HAS_ANS
+  VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
   VERIFY_TWITTER_FOLLOW
+  VERIFY_TWITTER_LIKING
   VERIFY_TWITTER_RETWEET
 }
 
@@ -139,26 +175,46 @@ enum RewardPolicyType {
 
 type Ticket {
   _id: String
+  beginTime: DateTime
   completed: Boolean
   description: String
   imageUrl: String
+  participantCount: Float
   participants: [User!]
+  project: Project
   quests: [Quest!]
   rewardPolicy: RewardPolicy
   title: String
+  untilTime: DateTime
   winners: [User!]
 }
 
 input TicketInputType {
   _id: String
+  beginTime: DateTime
   completed: Boolean
   description: String
   imageUrl: String
+  participantCount: Float
   participants: [UserInputType!]
+  project: ProjectInputType
   quests: [QuestInputType!]
   rewardPolicy: RewardPolicyInputType
   title: String
+  untilTime: DateTime
   winners: [UserInputType!]
+}
+
+enum TicketSortType {
+  NEWEST
+  TRENDING
+}
+
+enum TicketStatusType {
+  ALL
+  AVAILABLE
+  COMPLETED
+  MISSED
 }
 
 type User {

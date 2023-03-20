@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
@@ -8,6 +8,7 @@ import { User, UserSchema } from '../infra/schema/user.schema';
 import { UserModule } from './user.module';
 import { Project, ProjectSchema } from '../infra/schema/project.schema';
 import { VerifierModule } from './verifier.module';
+import { TicketModule } from './ticket.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { VerifierModule } from './verifier.module';
     ConfigModule,
     UserModule,
     VerifierModule,
+    forwardRef(() => TicketModule),
   ],
   providers: [QuestResolver, QuestService],
   exports: [QuestService],
