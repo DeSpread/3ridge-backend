@@ -267,9 +267,10 @@ export class TicketService {
     );
 
     console.log(isAlreadyParticiaptedUser);
+    await this.checkAndUpdateWinner(ticketId, userId);
+
     if (!ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
       // Check if this user completed all quests & if then, update winner list
-      await this.checkAndUpdateWinner(ticketId, userId);
       throw ErrorCode.ALREADY_PARTICIPATED_USER;
     }
 
