@@ -48,6 +48,7 @@ type Mutation {
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
+  verify3ridgePoint(questId: String!, ticketId: String!, userId: String!): Quest!
   verifyAptosQuest(questId: String!, ticketId: String!, userId: String!): Quest!
   verifyTwitterFollowQuest(questId: String!, ticketId: String!, userId: String!): Quest!
   verifyTwitterLikingQuest(questId: String!, ticketId: String!, userId: String!): Quest!
@@ -146,6 +147,7 @@ input QuestPolicyInputType {
 
 enum QuestPolicyType {
   QUIZ
+  VERIFY_3RIDGE_POINT
   VERIFY_APTOS_BRIDGE_TO_APTOS
   VERIFY_APTOS_EXIST_TX
   VERIFY_APTOS_HAS_ANS

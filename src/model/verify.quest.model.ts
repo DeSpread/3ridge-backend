@@ -22,3 +22,7 @@ export interface VerifyQuestInput {
 export interface VerifyAptosExistTxQuest {
   txCount: number;
 }
+
+export interface Verify3ridgePoint {
+  point: number;
+}

@@ -12,6 +12,7 @@ import { User } from '../../schema/user.schema';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 import {
+  Verify3ridgePoint,
   VerifyAptosExistTxQuest,
   VerifyTwitterFollowQuest,
   VerifyTwitterLikingQuest,
@@ -94,6 +95,13 @@ export class QuestService {
           const verifyAptosQuest1: VerifyAptosExistTxQuest = JSON.parse(
             questPolicy.context,
           );
+          return false;
+        case QuestPolicyType.VERIFY_3RIDGE_POINT:
+          const verify3ridgePoint: Verify3ridgePoint = JSON.parse(
+            questPolicy.context,
+          );
+          return false;
+        default:
           return false;
         // TODO: 나머지 Type도 추가 필요
       }
@@ -366,6 +374,53 @@ export class QuestService {
 
     this.logger.debug(
       `Successful to verify aptos quest. ticketId: ${ticketId}, questId: ${questId}, userId: ${userId}`,
+    );
+
+    await this.ticketService.participateTicketOfUser(ticketId, userId);
+
+    return quest;
+  }
+
+  async verify3ridgePointQuest(
+    ticketId: string,
+    questId: string,
+    userId: string,
+  ) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
+    const quest: Quest = await this.questModel.findById(questId);
+
+    if (await this.isInvalidQuest(quest.questPolicy)) {
+      throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
+    }
+
+    const verify3ridgePoint: Verify3ridgePoint = JSON.parse(
+      quest.questPolicy.context,
+    );
+    const point = verify3ridgePoint.point;
+    const user: User = await this.verifierService.hasEnough3ridgePoint(
+      userId,
+      point,
+    );
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    await this.questModel.findByIdAndUpdate(
+      { _id: questId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to verify has enough 3ridge point. questId: ${questId}, userId: ${userId}, 3ridge point: ${user.rewardPoint}`,
     );
 
     await this.ticketService.participateTicketOfUser(ticketId, userId);

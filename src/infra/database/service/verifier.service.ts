@@ -26,6 +26,24 @@ export class VerifierService {
     this.readOnlyClient = this.twitterClient.readOnly;
   }
 
+  async hasEnough3ridgePoint(
+    userId: string,
+    validationPoint: number,
+  ): Promise<User> {
+    const user: User = await this.userService.findUserById(userId);
+    const rewardPoint: number = user.rewardPoint;
+
+    if (rewardPoint < validationPoint) {
+      throw ErrorCode.NOT_ENOUGH_3RIDGE_POINT;
+    }
+
+    this.logger.debug(
+      `userId: ${userId} -> has point: ${rewardPoint}, validation point: ${validationPoint}`,
+    );
+
+    return user;
+  }
+
   async isLikingTweetByUserId(
     userId: string,
     targetTweetId: string,

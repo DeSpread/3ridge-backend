@@ -89,4 +89,8 @@ export const ErrorCode = {
     'aptos indexer has something error',
     'APTOS_INDEXER_ERROR',
   ),
+  NOT_ENOUGH_3RIDGE_POINT: new ApolloError(
+    'not enough 3ridge point',
+    'NOT_ENOUGH_3RIDGE_POINT',
+  ),
 } as const;
