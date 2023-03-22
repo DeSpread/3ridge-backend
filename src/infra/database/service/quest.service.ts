@@ -116,6 +116,10 @@ export class QuestService {
   }
 
   async completeQuestOfUser(ticketId: string, questId: string, userId: string) {
+    if (await this.isAlreadyCompletedUser(questId, userId)) {
+      throw ErrorCode.ALREADY_VERIFIED_USER;
+    }
+
     const user: User = await this.userService.findUserById(userId);
     const quest: Quest = await this.questModel.findByIdAndUpdate(
       { _id: questId },
