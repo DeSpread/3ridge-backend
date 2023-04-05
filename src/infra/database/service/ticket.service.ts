@@ -266,7 +266,6 @@ export class TicketService {
       (x) => StringUtil.trimAndEqual(String(x._id), userId),
     );
 
-    console.log(isAlreadyParticiaptedUser);
     await this.checkAndUpdateWinner(ticketId, userId);
 
     if (!ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
@@ -286,6 +285,8 @@ export class TicketService {
       },
       { new: true },
     );
+
+    await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
 
     this.logger.debug(
       `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,

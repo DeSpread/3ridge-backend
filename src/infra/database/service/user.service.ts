@@ -11,6 +11,8 @@ import { Project } from '../../schema/project.schema';
 import { ErrorCode } from '../../../constant/error.constant';
 import { StringUtil } from '../../../util/string.util';
 import { Args } from '@nestjs/graphql';
+import { Ticket } from '../../schema/ticket.schema';
+import { ObjectUtil } from '../../../util/object.util';
 
 const { ObjectId } = mongoose.Types;
 
@@ -203,5 +205,25 @@ export class UserService {
         { new: true },
       )
       .exec();
+  }
+
+  async checkParticipatedTicketAndUpdate(user: User, ticket: Ticket) {
+    const ticket0: Ticket = await user.tickets.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), ticket._id),
+    );
+
+    if (!ObjectUtil.isNull(ticket0)) {
+      // Check if this user completed all quests & if then, update winner list
+      throw ErrorCode.ALREADY_PARTICIPATED_USER;
+    }
+
+    await this.userModel.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $push: {
+          tickets: ticket,
+        },
+      },
+    );
   }
 }
