@@ -225,9 +225,9 @@ type User {
   gmail: String
   managedProjects: [Project!]
   name: String
+  participatingTickets: [Ticket!]
   profileImageUrl: String
   rewardPoint: Float
-  tickets: [Ticket!]
   userSocial: UserSocial
   wallets: [UserWallet!]
 }
@@ -238,9 +238,9 @@ input UserInputType {
   gmail: String
   managedProjects: [ProjectInputType!]
   name: String
+  participatingTickets: [TicketInputType!]
   profileImageUrl: String
   rewardPoint: Float
-  tickets: [TicketInputType!]
   userSocial: UserSocialInputType
   wallets: [UserWalletInputType!]
 }

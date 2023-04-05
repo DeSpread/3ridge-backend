@@ -81,7 +81,7 @@ export class UserService {
       .find()
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -96,7 +96,7 @@ export class UserService {
       .sort({ rewardPoint: -1 })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -123,7 +123,7 @@ export class UserService {
       })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -132,7 +132,7 @@ export class UserService {
       .findOne({ gmail: gmail })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -141,7 +141,7 @@ export class UserService {
       .findOne({ email: email })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
 
     if (!user) {
@@ -156,7 +156,7 @@ export class UserService {
       .findOne({ name: name })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -193,7 +193,7 @@ export class UserService {
       .findById(userId)
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -208,7 +208,7 @@ export class UserService {
   }
 
   async checkParticipatedTicketAndUpdate(user: User, ticket: Ticket) {
-    const ticket0: Ticket = await user.tickets.find((x) =>
+    const ticket0: Ticket = await user.participatingTickets.find((x) =>
       StringUtil.trimAndEqual(String(x._id), ticket._id),
     );
 
@@ -221,7 +221,7 @@ export class UserService {
       { _id: user._id },
       {
         $push: {
-          tickets: ticket,
+          participatingTickets: ticket,
         },
       },
     );
