@@ -194,4 +194,14 @@ export class UserService {
       .populate('tickets')
       .exec();
   }
+
+  async rewardPointToUser(userId: string, rewardPoint: number) {
+    return await this.userModel
+      .updateOne(
+        { _id: userId },
+        { $inc: { rewardPoint: rewardPoint } },
+        { new: true },
+      )
+      .exec();
+  }
 }

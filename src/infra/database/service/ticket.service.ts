@@ -329,7 +329,13 @@ export class TicketService {
       return null;
     }
 
-    return this.addWinnerToTicket(ticketId, userId);
+    const ticket = await this.addWinnerToTicket(ticketId, userId);
+    await this.userService.rewardPointToUser(
+      userId,
+      ticket.rewardPolicy.rewardPoint,
+    );
+
+    return ticket;
   }
 
   async isWinner(ticketId: string, userId: string): Promise<boolean> {
