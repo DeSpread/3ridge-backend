@@ -104,7 +104,7 @@ type Query {
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
-  isWinner(ticketId: String!, userId: String!): Boolean!
+  isRewardClaimed(ticketId: String!, userId: String!): Boolean!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
@@ -185,6 +185,7 @@ type Ticket {
   participants: [User!]
   project: Project
   quests: [Quest!]
+  rewardClaimedUsers: [User!]
   rewardPolicy: RewardPolicy
   title: String
   untilTime: DateTime
@@ -201,6 +202,7 @@ input TicketInputType {
   participants: [UserInputType!]
   project: ProjectInputType
   quests: [QuestInputType!]
+  rewardClaimedUsers: [UserInputType!]
   rewardPolicy: RewardPolicyInputType
   title: String
   untilTime: DateTime

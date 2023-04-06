@@ -339,23 +339,67 @@ export class TicketService {
     return ticket;
   }
 
-  async isWinner(ticketId: string, userId: string): Promise<boolean> {
+  async isRewardClaimed(ticketId: string, userId: string): Promise<boolean> {
     const ticket: Ticket = await this.findById(ticketId);
 
-    const winnerUsers: boolean = ticket.winners.some((x) =>
+    const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
       StringUtil.trimAndEqual(String(x._id), userId),
     );
 
-    if (!winnerUsers) {
+    if (isRewardClaimed) {
       this.logger.error(
-        `user is not winner. ticketId: [${ticketId}], userId: [${userId}]`,
+        `user already claimed reward. ticketId: [${ticketId}], userId: [${userId}]`,
       );
-      return false;
+      return true;
     }
 
-    this.logger.debug(
-      `user is winner. ticketId: [${ticketId}], userId: [${userId}]`,
+    return false;
+  }
+
+  async checkAndUpdateRewardClaimedUser(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyClaimed: User = await ticket.rewardClaimedUsers.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
     );
-    return true;
+
+    if (!ObjectUtil.isNull(isAlreadyClaimed)) {
+      throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $push: {
+          rewardClaimedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to add winner to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
   }
 }

@@ -63,7 +63,7 @@ export class AptosService {
     try {
       const txnHash = await this.tokenClient.offerToken(
         this.nftCreator,
-        receiverAddress,
+        HexString.ensure(receiverAddress),
         this.nftCreator.address(),
         collectionName,
         tokenName,
@@ -72,6 +72,11 @@ export class AptosService {
       );
       await this.client.waitForTransaction(txnHash, { checkSuccess: true });
       this.faucetClient.fundAccount(receiverAddress, 100_000_000);
+
+      await this.ticketService.checkAndUpdateRewardClaimedUser(
+        ticketId,
+        userId,
+      );
 
       return {
         txHash: txnHash,
@@ -114,6 +119,14 @@ export class AptosService {
     ticketId: string,
     userId: string,
   ): Promise<boolean> {
-    return this.ticketService.isWinner(ticketId, userId);
+    const isRewardClaimed = await this.ticketService.isRewardClaimed(
+      ticketId,
+      userId,
+    );
+    if (isRewardClaimed) {
+      return false;
+    }
+
+    return true;
   }
 }
