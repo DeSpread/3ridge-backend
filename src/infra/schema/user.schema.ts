@@ -67,7 +67,7 @@ export class User {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }] })
   @Field(() => [Ticket], { nullable: true })
-  tickets: Ticket[];
+  participatingTickets: Ticket[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] })
   @Field(() => [Project], { nullable: true })

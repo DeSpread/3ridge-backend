@@ -10,7 +10,8 @@ import {
 import { Project } from '../../schema/project.schema';
 import { ErrorCode } from '../../../constant/error.constant';
 import { StringUtil } from '../../../util/string.util';
-import { Args } from '@nestjs/graphql';
+import { Ticket } from '../../schema/ticket.schema';
+import { ObjectUtil } from '../../../util/object.util';
 
 const { ObjectId } = mongoose.Types;
 
@@ -79,7 +80,7 @@ export class UserService {
       .find()
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -94,7 +95,7 @@ export class UserService {
       .sort({ rewardPoint: -1 })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -121,7 +122,7 @@ export class UserService {
       })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -130,7 +131,7 @@ export class UserService {
       .findOne({ gmail: gmail })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -139,7 +140,7 @@ export class UserService {
       .findOne({ email: email })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
 
     if (!user) {
@@ -154,7 +155,7 @@ export class UserService {
       .findOne({ name: name })
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
   }
 
@@ -191,7 +192,37 @@ export class UserService {
       .findById(userId)
       .populate('userSocial')
       .populate('managedProjects')
-      .populate('tickets')
+      .populate('participatingTickets')
       .exec();
+  }
+
+  async rewardPointToUser(userId: string, rewardPoint: number) {
+    return await this.userModel
+      .updateOne(
+        { _id: userId },
+        { $inc: { rewardPoint: rewardPoint } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async checkParticipatedTicketAndUpdate(user: User, ticket: Ticket) {
+    const ticket0: Ticket = await user.participatingTickets.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), ticket._id),
+    );
+
+    if (!ObjectUtil.isNull(ticket0)) {
+      // Check if this user completed all quests & if then, update winner list
+      throw ErrorCode.ALREADY_PARTICIPATED_USER;
+    }
+
+    await this.userModel.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $push: {
+          participatingTickets: ticket,
+        },
+      },
+    );
   }
 }

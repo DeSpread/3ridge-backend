@@ -76,4 +76,13 @@ export class QuestResolver {
   ) {
     return this.questService.verifyAptosQuest(ticketId, questId, userId);
   }
+
+  @Mutation(() => Quest)
+  async verify3ridgePoint(
+    @Args('ticketId') ticketId: string,
+    @Args('questId') questId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.verify3ridgePointQuest(ticketId, questId, userId);
+  }
 }

@@ -50,6 +50,10 @@ export class Ticket {
   @Field(() => [User], { nullable: true })
   winners: User[];
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  @Field(() => [User], { nullable: true })
+  rewardClaimedUsers: User[];
+
   @Prop()
   @Field({ nullable: true })
   completed: boolean;

@@ -53,11 +53,11 @@ export class TicketResolver {
   }
 
   @Query(() => Boolean)
-  async isWinner(
+  async isRewardClaimed(
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.isWinner(ticketId, userId);
+    return this.ticketService.isRewardClaimed(ticketId, userId);
   }
 
   @Mutation(() => Ticket)

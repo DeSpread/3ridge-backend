@@ -53,6 +53,10 @@ export const ErrorCode = {
     'user already included winner list in ticket',
     'ALREADY_INCLUDED_WINNER_USER',
   ),
+  ALREADY_INCLUDED_REWARD_CLAIMED_USER: new ApolloError(
+    'user already included reward claimed list in ticket',
+    'ALREADY_INCLUDED_REWARD_CLAIMED_USER',
+  ),
   ALREADY_EXIST_PROJECT: new ApolloError(
     'project already exist',
     'ALREADY_EXIST_PROJECT',
@@ -88,5 +92,9 @@ export const ErrorCode = {
   APTOS_INDEXER_ERROR: new ApolloError(
     'aptos indexer has something error',
     'APTOS_INDEXER_ERROR',
+  ),
+  NOT_ENOUGH_3RIDGE_POINT: new ApolloError(
+    'not enough 3ridge point',
+    'NOT_ENOUGH_3RIDGE_POINT',
   ),
 } as const;
