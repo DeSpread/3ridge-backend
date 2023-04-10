@@ -292,6 +292,9 @@ export class TicketService {
       `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
 
+    // check if this user completed all quests & if then, update winner list
+    await this.checkAndUpdateWinner(ticketId, userId);
+
     return ticket0;
   }
 

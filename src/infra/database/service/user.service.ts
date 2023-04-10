@@ -10,7 +10,6 @@ import {
 import { Project } from '../../schema/project.schema';
 import { ErrorCode } from '../../../constant/error.constant';
 import { StringUtil } from '../../../util/string.util';
-import { Args } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { ObjectUtil } from '../../../util/object.util';
 
