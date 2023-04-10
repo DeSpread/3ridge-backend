@@ -13,7 +13,7 @@ import { Module } from '@nestjs/common';
           level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
           format: winston.format.combine(
             winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('sakura-backend', {
+            nestWinstonModuleUtilities.format.nestLike('3ridge-backend', {
               prettyPrint: true,
             }),
           ),
