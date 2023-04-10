@@ -37,7 +37,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: ssh connect & production
+      - name: ssh connect - dev1
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEV_HOST1 }}

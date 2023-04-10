@@ -37,7 +37,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: ssh connect & production
+      - name: ssh connect - beta1
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BETA_HOST1 }}
@@ -49,7 +49,7 @@ jobs:
             docker rm $(docker ps -a -q) 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-      - name: ssh connect & production
+      - name: ssh connect - beta2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BETA_HOST2 }}
