@@ -156,6 +156,7 @@ export class UserService {
       .populate('userSocial')
       .populate('managedProjects')
       .populate('participatingTickets')
+      .populate({ path: 'participatingTickets', populate: { path: 'project' } })
       .exec();
   }
 
