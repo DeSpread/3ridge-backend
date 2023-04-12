@@ -19,7 +19,7 @@ export class ProjectService {
     return await this.projectModel
       .findById(projectId)
       .populate('managedUsers')
-      .populate('participatingTickets')
+      .populate('tickets')
       .populate('projectSocial')
       .exec();
   }
@@ -28,7 +28,7 @@ export class ProjectService {
     return await this.projectModel
       .find()
       .populate('managedUsers')
-      .populate('participatingTickets')
+      .populate('tickets')
       .populate('projectSocial')
       .exec();
   }
@@ -37,7 +37,7 @@ export class ProjectService {
     return await this.projectModel
       .find({ name: name })
       .populate('managedUsers')
-      .populate('participatingTickets')
+      .populate('tickets')
       .populate('projectSocial')
       .exec();
   }
