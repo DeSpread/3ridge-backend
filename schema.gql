@@ -123,14 +123,35 @@ type Quest {
   _id: String
   completedUsers: [User!]
   description: String
+  questGuides: [QuestGuide!]
   questPolicy: QuestPolicy
   title: String
+}
+
+type QuestGuide {
+  description: String!
+  externalLink: String
+  guidePolicyType: QuestGuideType!
+  title: String!
+}
+
+input QuestGuideInputType {
+  description: String!
+  externalLink: String
+  guidePolicyType: QuestGuideType = CONTENT
+  title: String!
+}
+
+enum QuestGuideType {
+  CONTENT
+  INTRO
 }
 
 input QuestInputType {
   _id: String
   completedUsers: [UserInputType!]
   description: String
+  questGuides: [QuestGuideInputType!]
   questPolicy: QuestPolicyInputType
   title: String
 }

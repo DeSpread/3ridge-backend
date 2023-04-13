@@ -3,6 +3,7 @@ import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { User } from './user.schema';
 import { QuestPolicy } from '../graphql/dto/policy.dto';
+import { QuestGuide } from '../graphql/dto/guide.dto';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -27,6 +28,10 @@ export class Quest {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })
   completedUsers: User[];
+
+  @Prop()
+  @Field(() => [QuestGuide], { nullable: true })
+  questGuides: QuestGuide[];
 }
 
 export const QuestSchema = SchemaFactory.createForClass(Quest);

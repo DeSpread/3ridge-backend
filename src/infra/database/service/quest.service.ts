@@ -40,6 +40,7 @@ export class QuestService {
       .findById(questId)
       .populate('questPolicy')
       .populate('completedUsers')
+      .populate('questGuides')
       .exec();
   }
 
@@ -51,6 +52,7 @@ export class QuestService {
       .findById(questId)
       .populate('questPolicy')
       .populate('completedUsers')
+      .populate('questGuides')
       .exec();
 
     if (ObjectUtil.isNull(quest)) {
