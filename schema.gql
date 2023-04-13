@@ -22,6 +22,15 @@ enum ChainType {
   EVM
 }
 
+enum ContentEncodingType {
+  BASE64
+}
+
+enum ContentFormatType {
+  HTML
+  MARKDOWN_V2
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -129,22 +138,15 @@ type Quest {
 }
 
 type QuestGuide {
-  description: String!
-  externalLink: String
-  guidePolicyType: QuestGuideType!
-  title: String!
+  content: String!
+  contentEncodingType: ContentEncodingType!
+  contentFormatType: ContentFormatType!
 }
 
 input QuestGuideInputType {
-  description: String!
-  externalLink: String
-  guidePolicyType: QuestGuideType = CONTENT
-  title: String!
-}
-
-enum QuestGuideType {
-  CONTENT
-  INTRO
+  content: String!
+  contentEncodingType: ContentEncodingType = BASE64
+  contentFormatType: ContentFormatType = HTML
 }
 
 input QuestInputType {
