@@ -20,6 +20,7 @@ import {
   TicketSortType,
   TicketStatusType,
 } from '../../../constant/ticket.type';
+import { QueryOptions } from '../../graphql/dto/argument.dto';
 
 @Injectable()
 export class TicketService {
@@ -38,6 +39,7 @@ export class TicketService {
   async find(
     ticketStatus: TicketStatusInputType,
     filter: FilterQuery<any> = {},
+    queryOptions: QueryOptions = new QueryOptions(),
   ): Promise<Ticket[]> {
     let sortQuery;
     switch (ticketStatus.sort) {
@@ -52,22 +54,23 @@ export class TicketService {
 
     switch (ticketStatus.status) {
       case TicketStatusType.ALL:
-        return this.findAll(filter, sortQuery);
+        return this.findAll(filter, sortQuery, queryOptions);
       case TicketStatusType.AVAILABLE:
-        return this.findInCompletedTickets(filter, sortQuery);
+        return this.findInCompletedTickets(filter, sortQuery, queryOptions);
       case TicketStatusType.COMPLETED:
-        return this.findCompletedTickets(filter, sortQuery);
+        return this.findCompletedTickets(filter, sortQuery, queryOptions);
       case TicketStatusType.MISSED:
-        return this.findMissedTickets(filter, sortQuery);
+        return this.findMissedTickets(filter, sortQuery, queryOptions);
     }
   }
 
   async findAll(
     filter: FilterQuery<any> = {},
     sortQuery = {},
+    options,
   ): Promise<Ticket[]> {
     return await this.ticketModel
-      .find(filter)
+      .find(filter, null, options)
       .sort(sortQuery)
       .populate('quests')
       .populate('participants')
@@ -79,9 +82,10 @@ export class TicketService {
   async findCompletedTickets(
     filter: FilterQuery<any> = {},
     sortQuery = {},
+    options = {},
   ): Promise<Ticket[]> {
     return await this.ticketModel
-      .find(filter)
+      .find(filter, null, options)
       .find({
         completed: true,
       })
@@ -96,10 +100,11 @@ export class TicketService {
   async findInCompletedTickets(
     filter: FilterQuery<any> = {},
     sortQuery = {},
+    options = {},
   ): Promise<Ticket[]> {
     const current = new Date();
     return await this.ticketModel
-      .find(filter)
+      .find(filter, null, options)
       .find({
         completed: false,
         untilTime: {
@@ -117,10 +122,11 @@ export class TicketService {
   async findMissedTickets(
     filter: FilterQuery<any> = {},
     sortQuery = {},
+    options = {},
   ): Promise<Ticket[]> {
     const current = new Date();
     return await this.ticketModel
-      .find(filter)
+      .find(filter, null, options)
       .find({
         untilTime: {
           $lte: current,

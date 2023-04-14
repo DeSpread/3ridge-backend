@@ -107,7 +107,7 @@ type Query {
   completedTickets: [Ticket!]!
   findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
-  findRankByUserId(skip: Int = 0, take: Int = 25, userId: String!): Float!
+  findRankByUserId(limit: Int = 25, skip: Int = 0, userId: String!): Float!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
   isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
@@ -118,14 +118,14 @@ type Query {
   projectByName(projectName: String!): [Project!]!
   projects: [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets(sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  tickets(limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
   userByWalletAddress(walletAddress: String!): User!
   users: [User!]!
-  usersOrderByRewardPointDesc(skip: Int = 0, take: Int = 25): [User!]!
+  usersOrderByRewardPointDesc(limit: Int = 25, skip: Int = 0): [User!]!
 }
 
 type Quest {

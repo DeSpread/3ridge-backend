@@ -6,14 +6,18 @@ import {
   TicketStatusInputType,
   TicketUpdateInput,
 } from '../dto/ticket.dto';
+import { QueryOptions } from '../dto/argument.dto';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
   constructor(private readonly ticketService: TicketService) {}
 
   @Query(() => [Ticket])
-  async tickets(@Args() ticketStatus: TicketStatusInputType) {
-    return this.ticketService.find(ticketStatus);
+  async tickets(
+    @Args() ticketStatus: TicketStatusInputType,
+    @Args() queryOptions: QueryOptions,
+  ) {
+    return this.ticketService.find(ticketStatus, {}, queryOptions);
   }
 
   @Query(() => Boolean)

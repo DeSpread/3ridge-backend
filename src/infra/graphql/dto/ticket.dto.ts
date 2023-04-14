@@ -1,4 +1,4 @@
-import { ArgsType, Field, InputType, PartialType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
 import { User } from '../../schema/user.schema';
 import { RewardPolicy } from './policy.dto';
@@ -6,7 +6,7 @@ import {
   TicketSortType,
   TicketStatusType,
 } from '../../../constant/ticket.type';
-import { IsEnum } from 'class-validator';
+import { IsEnum, Max, Min } from 'class-validator';
 
 @ArgsType()
 @InputType()

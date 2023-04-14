@@ -33,15 +33,3 @@ export class UserCreateByGmailInput {
   @Field({ nullable: true })
   profileImageUrl: string;
 }
-
-@ArgsType()
-export class FetchUsersArgs {
-  @Field(() => Int)
-  @Min(0)
-  skip = 0;
-
-  @Field(() => Int)
-  @Min(1)
-  @Max(50)
-  take = 25;
-}
