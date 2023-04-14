@@ -116,7 +116,7 @@ type Query {
   isRewardClaimed(ticketId: String!, userId: String!): Boolean!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
-  projects: [Project!]!
+  projects(limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
   tickets(limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!

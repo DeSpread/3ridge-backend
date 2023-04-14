@@ -2,14 +2,15 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProjectService } from '../../database/service/project.service';
 import { Project } from '../../schema/project.schema';
 import { ProjectCreateInput, ProjectUpdateInput } from '../dto/project.dto';
+import { QueryOptions } from '../dto/argument.dto';
 
 @Resolver(() => Project)
 export class ProjectResolver {
   constructor(private readonly projectService: ProjectService) {}
 
   @Query(() => [Project])
-  async projects() {
-    return this.projectService.findAll();
+  async projects(@Args() queryOptions: QueryOptions) {
+    return this.projectService.findAll(queryOptions);
   }
 
   @Query(() => Project)

@@ -7,6 +7,7 @@ import {
   ProjectUpdateInput,
 } from '../../graphql/dto/project.dto';
 import { ErrorCode } from '../../../constant/error.constant';
+import { QueryOptions } from '../../graphql/dto/argument.dto';
 
 @Injectable()
 export class ProjectService {
@@ -24,9 +25,11 @@ export class ProjectService {
       .exec();
   }
 
-  async findAll(): Promise<Project[]> {
+  async findAll(
+    queryOptions: QueryOptions = new QueryOptions(),
+  ): Promise<Project[]> {
     return await this.projectModel
-      .find()
+      .find(null, null, queryOptions)
       .populate('managedUsers')
       .populate('tickets')
       .populate('projectSocial')
