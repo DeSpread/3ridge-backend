@@ -2,7 +2,7 @@ name: Beta - Docker Image CI/CD with arguments
 
 on:
   push:
-    branches: [ main ]
+    branches: [ beta ]
 
 env:
   VERSION: ${{ github.sha }}
