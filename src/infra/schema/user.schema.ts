@@ -4,6 +4,7 @@ import { Project } from './project.schema';
 import * as mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
 import { ChainType } from '../../constant/chain.type';
+import { UserSocial } from './user.social.schema';
 
 @Schema()
 @ArgsType()
@@ -17,16 +18,6 @@ export class UserWallet {
   @Prop()
   @Field()
   address: string;
-}
-
-@Schema()
-@ArgsType()
-@InputType('UserSocialInputType', { isAbstract: true })
-@ObjectType()
-export class UserSocial {
-  @Prop()
-  @Field({ nullable: true })
-  twitterId: string;
 }
 
 @Schema({ timestamps: true })

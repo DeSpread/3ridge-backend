@@ -20,6 +20,7 @@ enum CategoryType {
 enum ChainType {
   APTOS
   EVM
+  SUI
 }
 
 enum ContentEncodingType {
@@ -176,6 +177,7 @@ enum QuestPolicyType {
   VERIFY_APTOS_HAS_ANS
   VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
+  VERIFY_TELEGRAM
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING
   VERIFY_TWITTER_RETWEET
@@ -196,6 +198,24 @@ input RewardPolicyInputType {
 enum RewardPolicyType {
   FCFS
   LUCKY_DRAW
+}
+
+type TelegramUser {
+  authDate: Float
+  firstName: String
+  hash: String
+  id: Float!
+  photoUrl: String
+  username: String!
+}
+
+input TelegramUserInputType {
+  authDate: Float
+  firstName: String
+  hash: String
+  id: Float!
+  photoUrl: String
+  username: String!
 }
 
 type Ticket {
@@ -271,10 +291,12 @@ input UserInputType {
 }
 
 type UserSocial {
+  telegramUser: TelegramUser
   twitterId: String
 }
 
 input UserSocialInputType {
+  telegramUser: TelegramUserInputType
   twitterId: String
 }
 
