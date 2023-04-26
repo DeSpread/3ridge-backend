@@ -158,8 +158,8 @@ export class UserService {
       .populate('participatingTickets')
       .populate({ path: 'participatingTickets', populate: { path: 'project' } })
       .populate({
-        path: 'participatingTickets.winners',
-        populate: { path: 'user' },
+        path: 'participatingTickets',
+        populate: { path: 'winners' },
       })
       .exec();
   }
