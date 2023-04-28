@@ -76,4 +76,9 @@ export class UserResolver {
   async userByWalletAddress(@Args('walletAddress') walletAddress: string) {
     return this.userService.findByWalletAddress(walletAddress);
   }
+
+  @Query(() => Boolean)
+  async isRegisteredWallet(@Args() userWallet: UserWallet) {
+    return this.userService.isRegisteredWallet(userWallet);
+  }
 }
