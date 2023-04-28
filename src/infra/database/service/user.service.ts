@@ -53,7 +53,6 @@ export class UserService {
 
     const userModel = new this.userModel({
       gmail: userCreateByGmailInput.gmail,
-      profileImageUrl: userCreateByGmailInput.profileImageUrl,
     });
     userModel.name = userModel._id;
     return userModel.save();
@@ -87,21 +86,13 @@ export class UserService {
   async findAllOrderByRewardPointDesc(
     queryOptions: QueryOptions = { skip: 0, limit: 25 },
   ): Promise<User[]> {
-    const users: User[] = await this.userModel
+    return await this.userModel
       .find(null, null, queryOptions)
       .sort({ rewardPoint: -1 })
       .populate('userSocial')
       .populate('managedProjects')
       .populate('participatingTickets')
       .exec();
-
-    // TODO: 추후 필터링메소드 구현 필요
-    return users.map((user) => {
-      if (StringUtil.trimAndEqual(String(user.name), String(user._id))) {
-        user.profileImageUrl = undefined;
-      }
-      return user;
-    });
   }
 
   async findRankByUserId(
