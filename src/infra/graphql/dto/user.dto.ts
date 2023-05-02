@@ -2,6 +2,7 @@ import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { UserWallet } from '../../schema/user.schema';
 import { UserSocial } from '../../schema/user.social.schema';
 
+// User
 @ArgsType()
 @InputType()
 export class UserUpdateInput {
