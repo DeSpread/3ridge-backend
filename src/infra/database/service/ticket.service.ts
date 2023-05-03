@@ -21,6 +21,7 @@ import {
   TicketStatusType,
 } from '../../../constant/ticket.type';
 import { QueryOptions } from '../../graphql/dto/argument.dto';
+import { RewardPolicyType } from '../../../constant/reward.type';
 
 @Injectable()
 export class TicketService {
@@ -74,6 +75,7 @@ export class TicketService {
       .sort(sortQuery)
       .populate('quests')
       .populate('participants')
+      .populate('completedUsers')
       .populate('winners')
       .populate('project')
       .exec();
@@ -92,6 +94,7 @@ export class TicketService {
       .sort(sortQuery)
       .populate('quests')
       .populate('participants')
+      .populate('completedUsers')
       .populate('winners')
       .populate('project')
       .exec();
@@ -114,6 +117,7 @@ export class TicketService {
       .sort(sortQuery)
       .populate('quests')
       .populate('participants')
+      .populate('completedUsers')
       .populate('winners')
       .populate('project')
       .exec();
@@ -135,6 +139,7 @@ export class TicketService {
       .sort(sortQuery)
       .populate('quests')
       .populate('participants')
+      .populate('completedUsers')
       .populate('winners')
       .populate('project')
       .exec();
@@ -145,6 +150,7 @@ export class TicketService {
       .findById(id)
       .populate('quests')
       .populate('participants')
+      .populate('completedUsers')
       .populate('winners')
       .populate('project')
       .exec();
@@ -184,6 +190,53 @@ export class TicketService {
     return existingTicket;
   }
 
+  private async addCompletedUserToTicket(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyCompletedUser: User = await ticket.completedUsers.find((x) =>
+      StringUtil.trimAndEqual(String(x._id), userId),
+    );
+
+    if (!ObjectUtil.isNull(isAlreadyCompletedUser)) {
+      throw ErrorCode.ALREADY_INCLUDED_COMPLETED_USER;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $push: {
+          completedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `Successful to add completed user to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
+  }
+
   private async addWinnerToTicket(
     ticketId: string,
     userId: string,
@@ -206,11 +259,11 @@ export class TicketService {
       throw ErrorCode.NOT_FOUND_TICKET;
     }
 
-    const isAlreadyWinnerUser: User = await ticket.winners.find((x) =>
+    const isAlreadyWinnersUser: User = await ticket.winners.find((x) =>
       StringUtil.trimAndEqual(String(x._id), userId),
     );
 
-    if (!ObjectUtil.isNull(isAlreadyWinnerUser)) {
+    if (!ObjectUtil.isNull(isAlreadyWinnersUser)) {
       throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
     }
 
@@ -272,7 +325,7 @@ export class TicketService {
       (x) => StringUtil.trimAndEqual(String(x._id), userId),
     );
 
-    await this.checkAndUpdateWinner(ticketId, userId);
+    await this.checkAndUpdateComplete(ticketId, userId);
 
     if (!ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
       // Check if this user completed all quests & if then, update winner list
@@ -299,7 +352,7 @@ export class TicketService {
     );
 
     // check if this user completed all quests & if then, update winner list
-    await this.checkAndUpdateWinner(ticketId, userId);
+    await this.checkAndUpdateComplete(ticketId, userId);
 
     return ticket0;
   }
@@ -326,7 +379,7 @@ export class TicketService {
     return true;
   }
 
-  async checkAndUpdateWinner(
+  async checkAndUpdateComplete(
     ticketId: string,
     userId: string,
   ): Promise<Ticket> {
@@ -339,11 +392,22 @@ export class TicketService {
       return null;
     }
 
-    const ticket = await this.addWinnerToTicket(ticketId, userId);
+    const ticket = await this.addCompletedUserToTicket(ticketId, userId);
     await this.userService.rewardPointToUser(
       userId,
       ticket.rewardPolicy.rewardPoint,
     );
+
+    if (ticket.rewardPolicy.rewardPolicyType === RewardPolicyType.FCFS) {
+      this.logger.debug(
+        'since the ticket reward selection method is FCFS, so should consider adding a winner list',
+      );
+      await this.addWinnerToTicket(ticketId, userId);
+    } else {
+      this.logger.debug(
+        'Since the reward selection method is FCFS, does not consider adding a winner list',
+      );
+    }
 
     return ticket;
   }

@@ -48,6 +48,10 @@ export class Ticket {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   @Field(() => [User], { nullable: true })
+  completedUsers: User[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  @Field(() => [User], { nullable: true })
   winners: User[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
