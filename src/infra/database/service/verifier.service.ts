@@ -150,7 +150,7 @@ export class VerifierService {
     );
 
     let paginatorIdx = 0;
-    while (!followingPaginated.done) {
+    do {
       this.logger.debug(`paginator index: ${paginatorIdx}`);
       for (const following of followingPaginated) {
         const followingUsername = following.username;
@@ -160,7 +160,7 @@ export class VerifierService {
       }
       await followingPaginated.fetchNext();
       paginatorIdx++;
-    }
+    } while (!followingPaginated.done);
 
     return false;
   }
