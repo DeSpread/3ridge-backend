@@ -20,6 +20,7 @@ enum CategoryType {
 enum ChainType {
   APTOS
   EVM
+  SUI
 }
 
 enum ContentEncodingType {
@@ -112,6 +113,7 @@ type Query {
   isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
+  isRegisteredWallet(address: String!, chain: ChainType!): Boolean!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   isRewardClaimed(ticketId: String!, userId: String!): Boolean!
   projectById(projectId: String!): Project!
@@ -176,6 +178,7 @@ enum QuestPolicyType {
   VERIFY_APTOS_HAS_ANS
   VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
+  VERIFY_TELEGRAM
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING
   VERIFY_TWITTER_RETWEET
@@ -198,10 +201,29 @@ enum RewardPolicyType {
   LUCKY_DRAW
 }
 
+type TelegramUser {
+  authDate: Float
+  firstName: String
+  hash: String
+  id: Float!
+  photoUrl: String
+  username: String!
+}
+
+input TelegramUserInputType {
+  authDate: Float
+  firstName: String
+  hash: String
+  id: Float!
+  photoUrl: String
+  username: String!
+}
+
 type Ticket {
   _id: String
   beginTime: DateTime
   completed: Boolean
+  completedUsers: [User!]
   description: String
   imageUrl: String
   participantCount: Float
@@ -219,6 +241,7 @@ input TicketInputType {
   _id: String
   beginTime: DateTime
   completed: Boolean
+  completedUsers: [UserInputType!]
   description: String
   imageUrl: String
   participantCount: Float
@@ -271,10 +294,12 @@ input UserInputType {
 }
 
 type UserSocial {
+  telegramUser: TelegramUser
   twitterId: String
 }
 
 input UserSocialInputType {
+  telegramUser: TelegramUserInputType
   twitterId: String
 }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User, UserWallet } from '../../schema/user.schema';
@@ -12,12 +12,14 @@ import { StringUtil } from '../../../util/string.util';
 import { Ticket } from '../../schema/ticket.schema';
 import { ObjectUtil } from '../../../util/object.util';
 import { QueryOptions } from '../../graphql/dto/argument.dto';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 const { ObjectId } = mongoose.Types;
 
 @Injectable()
 export class UserService {
   constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Project.name)
@@ -53,9 +55,8 @@ export class UserService {
 
     const userModel = new this.userModel({
       gmail: userCreateByGmailInput.gmail,
-      name: userCreateByGmailInput.gmail,
-      profileImageUrl: userCreateByGmailInput.profileImageUrl,
     });
+    userModel.name = userModel._id;
     return userModel.save();
   }
 
@@ -70,8 +71,8 @@ export class UserService {
 
     const userModel = new this.userModel({
       email: email,
-      name: email,
     });
+    userModel.name = userModel._id;
     return userModel.save();
   }
 
@@ -157,6 +158,10 @@ export class UserService {
       .populate('managedProjects')
       .populate('participatingTickets')
       .populate({ path: 'participatingTickets', populate: { path: 'project' } })
+      .populate({
+        path: 'participatingTickets',
+        populate: { path: 'winners' },
+      })
       .exec();
   }
 
@@ -225,5 +230,31 @@ export class UserService {
         },
       },
     );
+  }
+
+  async isRegisteredWallet(userWallet: UserWallet): Promise<boolean> {
+    const users: User[] = await this.findAll();
+    const searchedUserCount: number = users.filter((user: User) => {
+      const registeredUsers: UserWallet[] = user.wallets.filter(
+        (wallet: UserWallet) => {
+          if (
+            StringUtil.isEqualsIgnoreCase(wallet.address, userWallet.address)
+          ) {
+            return true;
+          }
+          return false;
+        },
+      );
+      if (registeredUsers.length > 0) {
+        this.logger.debug(
+          `Already registered wallet address. userId: ${user._id}, userName: ${user.name}`,
+        );
+        return true;
+      }
+      return false;
+    }).length;
+
+    const isAlreadyRegisteredUser: boolean = searchedUserCount > 0;
+    return isAlreadyRegisteredUser;
   }
 }

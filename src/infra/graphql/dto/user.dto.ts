@@ -1,7 +1,8 @@
-import { ArgsType, Field, InputType, Int } from '@nestjs/graphql';
-import { UserSocial, UserWallet } from '../../schema/user.schema';
-import { Max, Min } from 'class-validator';
+import { ArgsType, Field, InputType } from '@nestjs/graphql';
+import { UserWallet } from '../../schema/user.schema';
+import { UserSocial } from '../../schema/user.social.schema';
 
+// User
 @ArgsType()
 @InputType()
 export class UserUpdateInput {

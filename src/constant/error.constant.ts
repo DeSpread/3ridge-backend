@@ -49,6 +49,10 @@ export const ErrorCode = {
     'user already participated ticket',
     'ALREADY_PARTICIPATED_USER',
   ),
+  ALREADY_INCLUDED_COMPLETED_USER: new ApolloError(
+    'user already included completed list in ticket',
+    'ALREADY_INCLUDED_COMPLETED_USER',
+  ),
   ALREADY_INCLUDED_WINNER_USER: new ApolloError(
     'user already included winner list in ticket',
     'ALREADY_INCLUDED_WINNER_USER',
