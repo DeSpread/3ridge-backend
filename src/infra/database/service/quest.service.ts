@@ -8,7 +8,7 @@ import { QuizQuestInput } from '../../../model/quiz.quest.model';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../../../constant/quest.policy';
 import { UserService } from './user.service';
-import { User } from '../../schema/user.schema';
+import { User, UserWallet } from '../../schema/user.schema';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 import {
@@ -322,14 +322,21 @@ export class QuestService {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }
 
-    const userAptosWalletAddress =
-      user.wallets.length <= 0
-        ? undefined
-        : user.wallets[0].chain === ChainType.APTOS
-        ? user.wallets[0].address
-        : undefined;
+    const userAptosWallets: UserWallet[] = user.wallets.filter(
+      (wallet: UserWallet) => {
+        if (wallet.chain === ChainType.APTOS) {
+          return true;
+        }
+        return false;
+      },
+    );
 
-    if (!userAptosWalletAddress) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
+    if (userAptosWallets.length < 1) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
+
+    const userAptosWalletAddress = userAptosWallets[0].address;
+    this.logger.debug(
+      `found userAptosWalletAddress: ${userAptosWalletAddress}`,
+    );
 
     switch (quest.questPolicy.questPolicy) {
       case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:
