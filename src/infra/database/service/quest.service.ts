@@ -48,6 +48,7 @@ export class QuestService {
     questId: string,
     userId: string,
   ): Promise<IsCompletedQuestByUserIdResponse> {
+    let isCompleted = false;
     const quest = await this.questModel
       .findById(questId)
       .populate('questPolicy')
@@ -63,13 +64,13 @@ export class QuestService {
       StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
-    if (ObjectUtil.isNull(user)) {
-      throw ErrorCode.NOT_FOUND_USER;
+    if (!ObjectUtil.isNull(user)) {
+      isCompleted = true;
     }
 
     return {
       questId: questId,
-      isCompleted: true,
+      isCompleted: isCompleted,
     } as IsCompletedQuestByUserIdResponse;
   }
 
