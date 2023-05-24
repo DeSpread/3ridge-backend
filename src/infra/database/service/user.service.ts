@@ -105,7 +105,7 @@ export class UserService {
     let rank = 0;
     for (const user of users) {
       rank++;
-      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+      if (StringUtil.isEqualsIgnoreCase(user._id, userId)) {
         return rank;
       }
     }
@@ -214,7 +214,7 @@ export class UserService {
 
   async checkParticipatedTicketAndUpdate(user: User, ticket: Ticket) {
     const ticket0: Ticket = await user.participatingTickets.find((x) =>
-      StringUtil.trimAndEqual(String(x._id), String(ticket._id)),
+      StringUtil.isEqualsIgnoreCase(x._id, ticket._id),
     );
 
     if (!ObjectUtil.isNull(ticket0)) {

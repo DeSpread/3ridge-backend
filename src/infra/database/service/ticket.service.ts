@@ -213,7 +213,7 @@ export class TicketService {
     }
 
     const isAlreadyCompletedUser: User = await ticket.completedUsers.find((x) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     this.logger.debug(`isAlreadyCompletedUser: ${isAlreadyCompletedUser}`);
@@ -262,7 +262,7 @@ export class TicketService {
     }
 
     const isAlreadyWinnersUser: User = await ticket.winners.find((x) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     if (!ObjectUtil.isNull(isAlreadyWinnersUser)) {
@@ -325,7 +325,7 @@ export class TicketService {
 
     // 1. Check if user participate ticket and update
     const isAlreadyParticiaptedUser: User = await ticket.participants.find(
-      (x) => StringUtil.trimAndEqual(String(x._id), userId),
+      (x) => StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     if (ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
@@ -367,7 +367,7 @@ export class TicketService {
     const ticket = await this.findById(ticketId);
     for (const quest of ticket.quests) {
       const completedUsers: User[] = quest.completedUsers.filter((x) => {
-        if (StringUtil.trimAndEqual(String(x._id), userId)) {
+        if (StringUtil.isEqualsIgnoreCase(x._id, userId)) {
           return true;
         }
       });
@@ -422,7 +422,7 @@ export class TicketService {
     const ticket: Ticket = await this.findById(ticketId);
 
     const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     if (isRewardClaimed) {
@@ -458,7 +458,7 @@ export class TicketService {
     }
 
     const isAlreadyClaimed: User = await ticket.rewardClaimedUsers.find((x) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     if (!ObjectUtil.isNull(isAlreadyClaimed)) {

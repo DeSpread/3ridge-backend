@@ -60,7 +60,7 @@ export class QuestService {
     }
 
     const user: User = await quest.completedUsers.find((x: User) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
     if (ObjectUtil.isNull(user)) {
@@ -157,7 +157,7 @@ export class QuestService {
   ): Promise<boolean> {
     const completedUsers = await this.getCompletedUsers(questId);
     for (const user of completedUsers) {
-      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+      if (StringUtil.isEqualsIgnoreCase(user._id, userId)) {
         return true;
       }
     }

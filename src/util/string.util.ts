@@ -3,27 +3,24 @@ export class StringUtil {
     return value.replace(/\s/g, '');
   }
 
-  static trimAndEqual(targetA: string, targetB: string): boolean {
-    const wrappedStringSource = String(targetA);
-    const wrappedStringTarget = String(targetA);
+  static trimAndEqual(source: string, target: string): boolean {
+    const wrappedStringSource = String(source);
+    const wrappedStringTarget = String(target);
 
     console.log(
-      `trimAndEqual source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+      `check if equal string source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
     );
-    if (wrappedStringSource === wrappedStringTarget) {
+    if (this.trim(wrappedStringSource) === this.trim(wrappedStringTarget)) {
       console.log(
-        `source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+        `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
       );
       return true;
     }
 
-    return this.trim(targetA) === this.trim(targetB);
+    return false;
   }
 
   static isEqualsIgnoreCase(targetA: string, targetB: string): boolean {
-    return this.trimAndEqual(
-      String(targetA).toUpperCase(),
-      String(targetB).toUpperCase(),
-    );
+    return this.trimAndEqual(targetA.toUpperCase(), targetB.toUpperCase());
   }
 }
