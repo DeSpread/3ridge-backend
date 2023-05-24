@@ -357,6 +357,8 @@ export class TicketService {
     // 3. Check if user complete all quest in the ticket and update to complete ticket
     await this.checkAndUpdateCompleteTicket(ticketId, userId);
 
+    await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
+
     this.logger.debug(
       `Successful update to check and participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
