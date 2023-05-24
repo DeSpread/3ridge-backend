@@ -216,6 +216,8 @@ export class TicketService {
       StringUtil.trimAndEqual(String(x._id), userId),
     );
 
+    this.logger.debug(`isAlreadyCompletedUser: ${isAlreadyCompletedUser}`);
+
     if (!ObjectUtil.isNull(isAlreadyCompletedUser)) {
       throw ErrorCode.ALREADY_INCLUDED_COMPLETED_USER;
     }
@@ -321,40 +323,44 @@ export class TicketService {
       throw ErrorCode.NOT_FOUND_TICKET;
     }
 
+    // 1. Check if user participate ticket and update
     const isAlreadyParticiaptedUser: User = await ticket.participants.find(
       (x) => StringUtil.trimAndEqual(String(x._id), userId),
     );
 
-    await this.checkAndUpdateComplete(ticketId, userId);
-
-    if (!ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
+    if (ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
       // Check if this user completed all quests & if then, update winner list
-      throw ErrorCode.ALREADY_PARTICIPATED_USER;
+      await this.ticketModel.findByIdAndUpdate(
+        { _id: ticketId },
+        {
+          $push: {
+            participants: user,
+          },
+          $inc: {
+            participantCount: 1,
+          },
+        },
+        { new: true },
+      );
+
+      this.logger.debug(
+        `This quest is first in user's participating ticket. Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
+      );
+    } else {
+      this.logger.debug(
+        `Already user's participating ticket include this ticket. ticketId: ${ticketId}, userId: ${userId}`,
+      );
     }
-
-    const ticket0 = await this.ticketModel.findByIdAndUpdate(
-      { _id: ticketId },
-      {
-        $push: {
-          participants: user,
-        },
-        $inc: {
-          participantCount: 1,
-        },
-      },
-      { new: true },
-    );
-
+    // 2. Check if user's participatingTicket list has this ticket and update list
     await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
 
+    // 3. Check if user complete all quest in the ticket and update to complete ticket
+    await this.checkAndUpdateCompleteTicket(ticketId, userId);
+
     this.logger.debug(
-      `Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
+      `Successful update to check and participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
-
-    // check if this user completed all quests & if then, update winner list
-    await this.checkAndUpdateComplete(ticketId, userId);
-
-    return ticket0;
+    return ticket;
   }
 
   async isCompletedTicket(ticketId: string, userId: string): Promise<boolean> {
@@ -379,7 +385,7 @@ export class TicketService {
     return true;
   }
 
-  async checkAndUpdateComplete(
+  async checkAndUpdateCompleteTicket(
     ticketId: string,
     userId: string,
   ): Promise<Ticket> {

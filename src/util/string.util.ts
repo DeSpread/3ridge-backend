@@ -4,8 +4,16 @@ export class StringUtil {
   }
 
   static trimAndEqual(targetA: string, targetB: string): boolean {
-    // console.log(`trimAndEqual: ${targetA} / ${targetB}`);
-    if (targetA === targetB) {
+    const wrappedStringSource = String(targetA);
+    const wrappedStringTarget = String(targetA);
+
+    console.log(
+      `trimAndEqual source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+    );
+    if (wrappedStringSource === wrappedStringTarget) {
+      console.log(
+        `source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+      );
       return true;
     }
 

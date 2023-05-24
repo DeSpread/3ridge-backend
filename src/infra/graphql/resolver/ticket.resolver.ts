@@ -95,6 +95,6 @@ export class TicketResolver {
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.checkAndUpdateComplete(ticketId, userId);
+    return this.ticketService.checkAndUpdateCompleteTicket(ticketId, userId);
   }
 }
