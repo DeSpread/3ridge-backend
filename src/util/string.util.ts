@@ -21,6 +21,9 @@ export class StringUtil {
   }
 
   static isEqualsIgnoreCase(targetA: string, targetB: string): boolean {
-    return this.trimAndEqual(targetA.toUpperCase(), targetB.toUpperCase());
+    return this.trimAndEqual(
+      String(targetA).toUpperCase(),
+      String(targetB).toUpperCase(),
+    );
   }
 }
