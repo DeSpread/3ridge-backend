@@ -20,6 +20,7 @@ enum CategoryType {
 enum ChainType {
   APTOS
   EVM
+  STACKS
   SUI
 }
 
