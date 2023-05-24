@@ -8,7 +8,7 @@ import { QuizQuestInput } from '../../../model/quiz.quest.model';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../../../constant/quest.policy';
 import { UserService } from './user.service';
-import { User } from '../../schema/user.schema';
+import { User, UserWallet } from '../../schema/user.schema';
 import { VerifierService } from './verifier.service';
 import { ObjectUtil } from '../../../util/object.util';
 import {
@@ -48,6 +48,7 @@ export class QuestService {
     questId: string,
     userId: string,
   ): Promise<IsCompletedQuestByUserIdResponse> {
+    let isCompleted = false;
     const quest = await this.questModel
       .findById(questId)
       .populate('questPolicy')
@@ -60,16 +61,16 @@ export class QuestService {
     }
 
     const user: User = await quest.completedUsers.find((x: User) =>
-      StringUtil.trimAndEqual(String(x._id), userId),
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
-    if (ObjectUtil.isNull(user)) {
-      throw ErrorCode.NOT_FOUND_USER;
+    if (!ObjectUtil.isNull(user)) {
+      isCompleted = true;
     }
 
     return {
       questId: questId,
-      isCompleted: true,
+      isCompleted: isCompleted,
     } as IsCompletedQuestByUserIdResponse;
   }
 
@@ -157,7 +158,7 @@ export class QuestService {
   ): Promise<boolean> {
     const completedUsers = await this.getCompletedUsers(questId);
     for (const user of completedUsers) {
-      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+      if (StringUtil.isEqualsIgnoreCase(user._id, userId)) {
         return true;
       }
     }
@@ -322,14 +323,21 @@ export class QuestService {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }
 
-    const userAptosWalletAddress =
-      user.wallets.length <= 0
-        ? undefined
-        : user.wallets[0].chain === ChainType.APTOS
-        ? user.wallets[0].address
-        : undefined;
+    const userAptosWallets: UserWallet[] = user.wallets.filter(
+      (wallet: UserWallet) => {
+        if (wallet.chain === ChainType.APTOS) {
+          return true;
+        }
+        return false;
+      },
+    );
 
-    if (!userAptosWalletAddress) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
+    if (userAptosWallets.length < 1) throw ErrorCode.DOES_NOT_HAVA_APTOS_WALLET;
+
+    const userAptosWalletAddress = userAptosWallets[0].address;
+    this.logger.debug(
+      `found userAptosWalletAddress: ${userAptosWalletAddress}`,
+    );
 
     switch (quest.questPolicy.questPolicy) {
       case QuestPolicyType.VERIFY_APTOS_BRIDGE_TO_APTOS:

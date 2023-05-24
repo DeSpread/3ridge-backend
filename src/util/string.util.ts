@@ -3,13 +3,21 @@ export class StringUtil {
     return value.replace(/\s/g, '');
   }
 
-  static trimAndEqual(targetA: string, targetB: string): boolean {
-    // console.log(`trimAndEqual: ${targetA} / ${targetB}`);
-    if (targetA === targetB) {
+  static trimAndEqual(source: string, target: string): boolean {
+    const wrappedStringSource = String(source);
+    const wrappedStringTarget = String(target);
+
+    console.log(
+      `check if equal string source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+    );
+    if (this.trim(wrappedStringSource) === this.trim(wrappedStringTarget)) {
+      console.log(
+        `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+      );
       return true;
     }
 
-    return this.trim(targetA) === this.trim(targetB);
+    return false;
   }
 
   static isEqualsIgnoreCase(targetA: string, targetB: string): boolean {

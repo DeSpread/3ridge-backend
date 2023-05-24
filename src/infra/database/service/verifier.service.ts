@@ -154,7 +154,12 @@ export class VerifierService {
       this.logger.debug(`paginator index: ${paginatorIdx}`);
       for (const following of followingPaginated) {
         const followingUsername = following.username;
-        if (StringUtil.trimAndEqual(followingUsername, targetTwitterUsername)) {
+        if (
+          StringUtil.isEqualsIgnoreCase(
+            followingUsername,
+            targetTwitterUsername,
+          )
+        ) {
           return true;
         }
       }

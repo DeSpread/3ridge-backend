@@ -105,7 +105,7 @@ export class UserService {
     let rank = 0;
     for (const user of users) {
       rank++;
-      if (StringUtil.trimAndEqual(String(user._id), userId)) {
+      if (StringUtil.isEqualsIgnoreCase(user._id, userId)) {
         return rank;
       }
     }
@@ -214,12 +214,15 @@ export class UserService {
 
   async checkParticipatedTicketAndUpdate(user: User, ticket: Ticket) {
     const ticket0: Ticket = await user.participatingTickets.find((x) =>
-      StringUtil.trimAndEqual(String(x._id), ticket._id),
+      StringUtil.isEqualsIgnoreCase(x._id, ticket._id),
     );
 
     if (!ObjectUtil.isNull(ticket0)) {
       // Check if this user completed all quests & if then, update winner list
-      throw ErrorCode.ALREADY_PARTICIPATED_USER;
+      this.logger.debug(
+        `Already user's participating ticket list has the ticket. ticketId: ${ticket0._id}, userId: ${user._id}`,
+      );
+      return;
     }
 
     await this.userModel.findOneAndUpdate(
