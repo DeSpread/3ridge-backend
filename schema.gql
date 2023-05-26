@@ -123,7 +123,7 @@ type Query {
   projectByName(projectName: String!): [Project!]!
   projects(limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets(limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  tickets(isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
@@ -237,6 +237,7 @@ type Ticket {
   rewardPolicy: RewardPolicy
   title: String
   untilTime: DateTime
+  visible: Boolean
   winners: [User!]
 }
 
@@ -255,6 +256,7 @@ input TicketInputType {
   rewardPolicy: RewardPolicyInputType
   title: String
   untilTime: DateTime
+  visible: Boolean = false
   winners: [UserInputType!]
 }
 

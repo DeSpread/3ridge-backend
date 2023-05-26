@@ -41,7 +41,16 @@ export class TicketService {
     ticketStatus: TicketStatusInputType,
     filter: FilterQuery<any> = {},
     queryOptions: QueryOptions = new QueryOptions(),
+    isVisibleOnly = true,
   ): Promise<Ticket[]> {
+    let filter0;
+    if (isVisibleOnly) {
+      filter0 = {
+        ...filter,
+        visible: true,
+      };
+    }
+
     let sortQuery;
     switch (ticketStatus.sort) {
       case TicketSortType.NEWEST:
@@ -55,13 +64,13 @@ export class TicketService {
 
     switch (ticketStatus.status) {
       case TicketStatusType.ALL:
-        return this.findAll(filter, sortQuery, queryOptions);
+        return this.findAll(filter0, sortQuery, queryOptions);
       case TicketStatusType.AVAILABLE:
-        return this.findInCompletedTickets(filter, sortQuery, queryOptions);
+        return this.findInCompletedTickets(filter0, sortQuery, queryOptions);
       case TicketStatusType.COMPLETED:
-        return this.findCompletedTickets(filter, sortQuery, queryOptions);
+        return this.findCompletedTickets(filter0, sortQuery, queryOptions);
       case TicketStatusType.MISSED:
-        return this.findMissedTickets(filter, sortQuery, queryOptions);
+        return this.findMissedTickets(filter0, sortQuery, queryOptions);
     }
   }
 
