@@ -64,6 +64,10 @@ export class Ticket {
 
   @Prop()
   @Field({ nullable: true })
+  visible: boolean = false;
+
+  @Prop()
+  @Field({ nullable: true })
   beginTime: Date;
 
   @Prop()

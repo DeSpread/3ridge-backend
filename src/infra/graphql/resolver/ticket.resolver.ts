@@ -16,8 +16,14 @@ export class TicketResolver {
   async tickets(
     @Args() ticketStatus: TicketStatusInputType,
     @Args() queryOptions: QueryOptions,
+    @Args('isVisibleOnly', { defaultValue: true }) isVisibleOnly: boolean,
   ) {
-    return this.ticketService.find(ticketStatus, {}, queryOptions);
+    return this.ticketService.find(
+      ticketStatus,
+      {},
+      queryOptions,
+      isVisibleOnly,
+    );
   }
 
   @Query(() => Boolean)
