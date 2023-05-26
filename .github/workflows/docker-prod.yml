@@ -7,7 +7,7 @@ on:
 env:
   VERSION: ${{ github.sha }}
   DOCKER_IMAGE_NAME: 3ridge-backend
-  DOCKER_IMAGE_TAG: beta
+  DOCKER_IMAGE_TAG: release
 jobs:
   build:
     runs-on: ubuntu-latest
