@@ -1,4 +1,4 @@
-name: Dev - Docker Image CI/CD with arguments
+name: Develop - Docker Image CI/CD with arguments
 
 on:
   push:
@@ -29,10 +29,10 @@ jobs:
           file: ./Dockerfile.dev
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
           build-args: |
-            DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
-            AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
+            DATABASE_MONGODB_ENDPOINT=${{ secrets.DEV_DATABASE_MONGODB_ENDPOINT }}
+            AUTH_JWT_SECRET=${{ secrets.DEV_AUTH_JWT_SECRET }}
             TWITTER_BEARER=${{ secrets.DEV_TWITTER_BEARER }}
-            APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}
+            APTOS_PRIVATE_KEY=${{ secrets.DEV_APTOS_PRIVATE_KEY }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
