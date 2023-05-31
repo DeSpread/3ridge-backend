@@ -40,7 +40,9 @@ jobs:
       - name: ssh connect - beta1
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.BETA_HOST1 }}
+          host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
+          sync: true
+          script_stop: true
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
@@ -49,15 +51,5 @@ jobs:
             docker rm $(docker ps -a -q) 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-      - name: ssh connect - beta2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.BETA_HOST2 }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            docker stop $(docker ps -a -q) 
-            docker rm $(docker ps -a -q) 
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-            docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+            docker system prune --volumes
+            for v in $(sudo docker volume ls -qf 'dangling=true'); do sudo docker volume rm "$v"; done
