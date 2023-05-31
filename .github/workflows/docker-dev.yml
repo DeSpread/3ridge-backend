@@ -49,3 +49,5 @@ jobs:
             docker rm $(docker ps -a -q) 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+            docker system prune --volumes
+            for v in $(sudo docker volume ls -qf 'dangling=true'); do sudo docker volume rm "$v"; done

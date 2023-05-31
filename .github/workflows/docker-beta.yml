@@ -37,7 +37,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: ssh connect - beta1
+      - name: ssh connect & restart docker - beta1, beta2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
