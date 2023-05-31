@@ -22,6 +22,7 @@ import {
 } from '../../../constant/ticket.type';
 import { QueryOptions } from '../../graphql/dto/argument.dto';
 import { RewardPolicyType } from '../../../constant/reward.type';
+import { FcfsReward } from '../../../model/reward.model';
 
 @Injectable()
 export class TicketService {
@@ -332,7 +333,16 @@ export class TicketService {
       throw ErrorCode.NOT_FOUND_TICKET;
     }
 
-    // 1. Check if user participate ticket and update
+    // 1. Check if the ticket exceed limit of participants
+    const fcfsRewardInput: FcfsReward = JSON.parse(ticket.rewardPolicy.context);
+    const isExceedLimitOfParticipants =
+      ticket.participantCount >= fcfsRewardInput.limitNumber;
+
+    if (isExceedLimitOfParticipants) {
+      throw ErrorCode.EXCEED_LIMIT_PARTICIPANTS_TICKET;
+    }
+
+    // 2. Check if user participate ticket and update
     const isAlreadyParticiaptedUser: User = await ticket.participants.find(
       (x) => StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
@@ -360,10 +370,10 @@ export class TicketService {
         `Already user's participating ticket include this ticket. ticketId: ${ticketId}, userId: ${userId}`,
       );
     }
-    // 2. Check if user's participatingTicket list has this ticket and update list
+    // 3. Check if user's participatingTicket list has this ticket and update list
     await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
 
-    // 3. Check if user complete all quest in the ticket and update to complete ticket
+    // 4. Check if user complete all quest in the ticket and update to complete ticket
     await this.checkAndUpdateCompleteTicket(ticketId, userId);
 
     this.logger.debug(

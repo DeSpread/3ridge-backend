@@ -49,6 +49,10 @@ export const ErrorCode = {
     'user already participated ticket',
     'ALREADY_PARTICIPATED_USER',
   ),
+  EXCEED_LIMIT_PARTICIPANTS_TICKET: new ApolloError(
+    'ticket exceed limit of participants',
+    'EXCEED_LIMIT_PARTICIPANTS_TICKET',
+  ),
   ALREADY_INCLUDED_COMPLETED_USER: new ApolloError(
     'user already included completed list in ticket',
     'ALREADY_INCLUDED_COMPLETED_USER',
