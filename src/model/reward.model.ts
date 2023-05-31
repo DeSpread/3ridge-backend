@@ -1,7 +1,7 @@
 import { ChainType } from '../constant/chain.type';
 import { RewardUnitType } from '../constant/reward.type';
 
-export class FcfsRewardInput {
+export class FcfsReward {
   limitNumber: number;
   beginTime: Date;
   untilTime: Date;
