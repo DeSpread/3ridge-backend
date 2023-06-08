@@ -1,28 +1,25 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery, Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
+import { Ticket } from '../infra/schema/ticket.schema';
 import {
   TicketCreateInput,
   TicketStatusInputType,
   TicketUpdateInput,
-} from '../../graphql/dto/ticket.dto';
-import { ErrorCode } from '../../../constant/error.constant';
-import { Quest } from '../../schema/quest.schema';
+} from '../infra/graphql/dto/ticket.dto';
+import { ErrorCode } from '../constant/error.constant';
+import { Quest } from '../infra/schema/quest.schema';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
-import { ObjectUtil } from '../../../util/object.util';
-import { User } from '../../schema/user.schema';
+import { ObjectUtil } from '../util/object.util';
+import { User } from '../infra/schema/user.schema';
 import { UserService } from './user.service';
-import { StringUtil } from '../../../util/string.util';
-import {
-  TicketSortType,
-  TicketStatusType,
-} from '../../../constant/ticket.type';
-import { QueryOptions } from '../../graphql/dto/argument.dto';
-import { RewardPolicyType } from '../../../constant/reward.type';
-import { FcfsReward } from '../../../model/reward.model';
+import { StringUtil } from '../util/string.util';
+import { TicketSortType, TicketStatusType } from '../constant/ticket.type';
+import { QueryOptions } from '../infra/graphql/dto/argument.dto';
+import { RewardPolicyType } from '../constant/reward.type';
+import { FcfsReward } from '../model/reward.model';
 
 @Injectable()
 export class TicketService {

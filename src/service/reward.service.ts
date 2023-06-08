@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
-import { RewardPolicy } from '../../graphql/dto/policy.dto';
-import { FcfsReward } from '../../../model/reward.model';
-import { RewardPolicyType } from '../../../constant/reward.type';
+import { RewardPolicy } from '../infra/graphql/dto/policy.dto';
+import { FcfsReward } from '../model/reward.model';
+import { RewardPolicyType } from '../constant/reward.type';
 
 @Injectable()
 export class RewardService {

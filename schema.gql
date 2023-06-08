@@ -53,6 +53,7 @@ type Mutation {
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(address: String!, chain: ChainType!): User!
+  indexToLogData(message: String!): Boolean!
   participateTicketOfUser(ticketId: String!, userId: String!): Ticket!
   removeProject(projectId: String!): Project!
   removeTicketById(ticketId: String!): Ticket!
@@ -182,6 +183,9 @@ enum QuestPolicyType {
   VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
   VERIFY_EMAIL
+  VERIFY_HAS_EMAIL
+  VERIFY_HAS_TWITTER
+  VERIFY_HAS_WALLET_ADDRESS
   VERIFY_TELEGRAM
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING

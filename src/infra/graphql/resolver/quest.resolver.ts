@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Quest } from '../../schema/quest.schema';
-import { QuestService } from '../../database/service/quest.service';
+import { QuestService } from '../../../service/quest.service';
 import { IsCompletedQuestByUserIdResponse } from '../dto/response.dto';
 
 @Resolver(() => Quest)

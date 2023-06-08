@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../../schema/user.schema';
+import { User } from '../infra/schema/user.schema';
 import { TwitterApi } from 'twitter-api-v2';
-import { StringUtil } from '../../../util/string.util';
+import { StringUtil } from '../util/string.util';
 import { UserService } from './user.service';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
-import { ErrorCode } from '../../../constant/error.constant';
+import { ErrorCode } from '../constant/error.constant';
 import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
 import { gql, GraphQLClient } from 'graphql-request';
 

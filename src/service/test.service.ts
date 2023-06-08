@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../../schema/user.schema';
+import { User } from '../infra/schema/user.schema';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
-import { Quest } from '../../schema/quest.schema';
+import { Ticket } from '../infra/schema/ticket.schema';
+import { Quest } from '../infra/schema/quest.schema';
 
 @Injectable()
 export class TestService {
@@ -85,4 +85,6 @@ export class TestService {
       return false;
     }
   }
+
+  async test() {}
 }

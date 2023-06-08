@@ -9,9 +9,9 @@ import {
   HexString,
   TokenClient,
 } from 'aptos';
-import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
+import { AptosRequestClaimNFTResponse } from '../infra/graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
-import { ErrorCode } from '../../../constant/error.constant';
+import { ErrorCode } from '../constant/error.constant';
 import { TicketService } from './ticket.service';
 
 @Injectable()
