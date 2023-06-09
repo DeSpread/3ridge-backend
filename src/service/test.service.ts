@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../infra/schema/user.schema';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Ticket } from '../infra/schema/ticket.schema';
 import { Quest } from '../infra/schema/quest.schema';
+import { LoggerService } from './loggerService';
 
 @Injectable()
 export class TestService {
@@ -16,6 +17,7 @@ export class TestService {
     private readonly ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
+    private loggerService: LoggerService,
   ) {}
 
   async clearParticipatedAllEvents(): Promise<boolean> {
@@ -86,5 +88,8 @@ export class TestService {
     }
   }
 
-  async test() {}
+  async testLogMessage(message: string) {
+    this.loggerService.debug(message);
+    return true;
+  }
 }

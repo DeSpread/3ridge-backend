@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TransactionUtil } from '../util/transaction.util';
+import { HashUtil } from '../util/hashUtil';
 
 @Injectable()
 export class RequestIdService {
   constructor(private readonly request: Request) {}
 
-  getReqId(): string {
-    return TransactionUtil.getTxId();
+  getRequestId(): string {
+    return HashUtil.getUniqId();
   }
 }
