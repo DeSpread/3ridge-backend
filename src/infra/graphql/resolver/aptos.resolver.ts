@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AptosRequestClaimNFTResponse } from '../dto/response.dto';
-import { AptosService } from '../../database/service/aptos.service';
+import { AptosService } from '../../../service/aptos.service';
 
 @Resolver()
 export class AptosResolver {

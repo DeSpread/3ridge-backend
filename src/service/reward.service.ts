@@ -1,14 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
-import { RewardPolicy } from '../../graphql/dto/policy.dto';
-import { FcfsReward } from '../../../model/reward.model';
-import { RewardPolicyType } from '../../../constant/reward.type';
+import { Injectable } from '@nestjs/common';
+import { RewardPolicy } from '../infra/graphql/dto/policy.dto';
+import { FcfsReward } from '../model/reward.model';
+import { RewardPolicyType } from '../constant/reward.type';
+import { LoggerService } from './loggerService';
 
 @Injectable()
 export class RewardService {
-  constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   async isInvalidReward(rewardPolicy: RewardPolicy): Promise<boolean> {
     try {
