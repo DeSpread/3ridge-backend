@@ -39,15 +39,15 @@ export class LoggerService {
     return false;
   }
 
-  debug(message?: string) {
+  debug(message?: any) {
     this.logger.debug(this.getMessageWithRequestId(message));
   }
 
-  error(message?: string) {
+  error(message?: any) {
     this.logger.error(this.getMessageWithRequestId(message));
   }
 
-  request(message?: string, requestContext?: any) {
+  request(message?: any, requestContext?: any) {
     const log = new LogSearchData(
       this.requestId,
       message,

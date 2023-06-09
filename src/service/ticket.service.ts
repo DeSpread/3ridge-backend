@@ -9,7 +9,6 @@ import {
 } from '../infra/graphql/dto/ticket.dto';
 import { ErrorCode } from '../constant/error.constant';
 import { Quest } from '../infra/schema/quest.schema';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../util/object.util';
@@ -20,11 +19,12 @@ import { TicketSortType, TicketStatusType } from '../constant/ticket.type';
 import { QueryOptions } from '../infra/graphql/dto/argument.dto';
 import { RewardPolicyType } from '../constant/reward.type';
 import { FcfsReward } from '../model/reward.model';
+import { LoggerService } from './loggerService';
 
 @Injectable()
 export class TicketService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    private readonly logger: LoggerService,
     @InjectModel(Ticket.name)
     private ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
@@ -182,7 +182,7 @@ export class TicketService {
       ticketCreateInput.quests,
     );
 
-    this.logger.log(ticketCreateInput);
+    this.logger.debug(ticketCreateInput);
     return ticketModel.save();
   }
 

@@ -5,7 +5,6 @@ import { ErrorCode } from '../constant/error.constant';
 import { Quest } from '../infra/schema/quest.schema';
 import { QuestPolicy } from '../infra/graphql/dto/policy.dto';
 import { QuizQuestInput } from '../model/quiz.quest.model';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { QuestPolicyType } from '../constant/quest.policy';
 import { UserService } from './user.service';
 import { User, UserWallet } from '../infra/schema/user.schema';
@@ -22,11 +21,12 @@ import { StringUtil } from '../util/string.util';
 import { IsCompletedQuestByUserIdResponse } from '../infra/graphql/dto/response.dto';
 import { TicketService } from './ticket.service';
 import { ChainType } from '../constant/chain.type';
+import { LoggerService } from './loggerService';
 
 @Injectable()
 export class QuestService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
+    private readonly logger: LoggerService,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
     private userService: UserService,
