@@ -5,7 +5,7 @@ export class HashUtil {
   private static DELIMITER = '-';
 
   static getUniqId(): string {
-    const currentUnixTimestamp = moment().tz(process.env.TZ).unix();
+    const currentUnixTimestamp = moment().tz('Asia/Seoul').unix();
     return currentUnixTimestamp + this.DELIMITER + uuid();
   }
 }
