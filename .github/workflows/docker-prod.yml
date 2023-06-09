@@ -33,6 +33,10 @@ jobs:
             AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
             TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}
             APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}
+            ELASTICSEARCH_ENDPOINT=${{ secrets.ELASTICSEARCH_ENDPOINT }}
+            ELASTICSEARCH_AUTH_USERNAME=${{ secrets.ELASTICSEARCH_AUTH_USERNAME }}
+            ELASTICSEARCH_AUTH_PASSWORD=${{ secrets.ELASTICSEARCH_AUTH_PASSWORD }}
+            ELASTICSEARCH_LOG_INDEX=${{ secrets.PROD_ELASTICSEARCH_LOG_INDEX }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
