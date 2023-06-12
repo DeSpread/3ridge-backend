@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggerService } from './loggerService';
+import { StringUtil } from '../util/string.util';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -17,9 +18,13 @@ export class LoggerMiddleware implements NestMiddleware {
     const _url = tempUrl ? tempUrl : {};
 
     // Dev 환경에서 GraphQL playground을 켜놓았을때 주기적으로 요청되어 필터링이 필요함
+    // FIXME: need to create as type class in later
     if (
-      String(_body?.operationName).toUpperCase().trim() ===
-      'IntrospectionQuery'.toUpperCase()
+      StringUtil.isEqualsIgnoreCase(
+        _body?.operationName,
+        'IntrospectionQuery',
+      ) ||
+      StringUtil.isEqualsIgnoreCase(_service, 'health')
     ) {
       return;
     }
