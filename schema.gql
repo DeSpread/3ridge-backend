@@ -58,6 +58,7 @@ type Mutation {
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
   requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!, ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
+  testLogMessage(message: String!): Boolean!
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
@@ -182,6 +183,9 @@ enum QuestPolicyType {
   VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
   VERIFY_EMAIL
+  VERIFY_HAS_EMAIL
+  VERIFY_HAS_TWITTER
+  VERIFY_HAS_WALLET_ADDRESS
   VERIFY_TELEGRAM
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING

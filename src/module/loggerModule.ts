@@ -3,8 +3,12 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { RequestIdModule } from './request.id.module';
+import { LoggerService } from '../service/loggerService';
+import { SearchModule } from './searchModule';
 
+@Global()
 @Module({
   imports: [
     WinstonModule.forRoot({
@@ -14,12 +18,17 @@ import { Module } from '@nestjs/common';
           format: winston.format.combine(
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike('3ridge-backend', {
+              colors: true,
               prettyPrint: true,
             }),
           ),
         }),
       ],
     }),
+    RequestIdModule,
+    SearchModule,
   ],
+  providers: [LoggerService],
+  exports: [LoggerService],
 })
 export class LoggerModule {}

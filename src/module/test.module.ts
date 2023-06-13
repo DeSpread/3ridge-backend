@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TestResolver } from '../infra/graphql/resolver/test.resolver';
-import { TestService } from '../infra/database/service/test.service';
+import { TestService } from '../service/test.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../infra/schema/user.schema';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';

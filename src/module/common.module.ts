@@ -5,6 +5,8 @@ import { DatabaseModule } from './database.module';
 import { CustomConfigModule } from './custom.config.module';
 import { AuthModule } from './auth.module';
 import { LoggerModule } from './loggerModule';
+import { SearchModule } from './searchModule';
+import { RequestIdModule } from './request.id.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { LoggerModule } from './loggerModule';
     GraphqlModule,
     AuthModule,
     LoggerModule,
+    SearchModule,
+    RequestIdModule,
   ],
   exports: [
     CustomConfigModule,
@@ -22,6 +26,8 @@ import { LoggerModule } from './loggerModule';
     GraphqlModule,
     AuthModule,
     LoggerModule,
+    SearchModule,
+    RequestIdModule,
   ],
 })
 export class CommonModule {}
