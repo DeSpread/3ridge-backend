@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../service/user.service';
+import { UserService } from '../infra/database/service/user.service';
 import { AuthResponse } from '../model/auth.model';
 import { ObjectUtil } from '../util/object.util';
 import { ApolloError } from 'apollo-server-express';

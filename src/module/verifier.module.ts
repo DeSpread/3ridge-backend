@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { VerifierResolver } from '../infra/graphql/resolver/verifier.resolver';
-import { VerifierService } from '../service/verifier.service';
+import { VerifierService } from '../infra/database/service/verifier.service';
 import { UserModule } from './user.module';
 import { GraphQLRequestModule } from '@golevelup/nestjs-graphql-request';
 
