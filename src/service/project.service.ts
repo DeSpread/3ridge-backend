@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Project } from '../../schema/project.schema';
+import { Project } from '../infra/schema/project.schema';
 import {
   ProjectCreateInput,
   ProjectUpdateInput,
-} from '../../graphql/dto/project.dto';
-import { ErrorCode } from '../../../constant/error.constant';
-import { QueryOptions } from '../../graphql/dto/argument.dto';
+} from '../infra/graphql/dto/project.dto';
+import { ErrorCode } from '../constant/error.constant';
+import { QueryOptions } from '../infra/graphql/dto/argument.dto';
 
 @Injectable()
 export class ProjectService {
