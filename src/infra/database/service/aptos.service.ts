@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import {
   AptosAccount,
@@ -8,11 +9,10 @@ import {
   HexString,
   TokenClient,
 } from 'aptos';
-import { AptosRequestClaimNFTResponse } from '../infra/graphql/dto/response.dto';
+import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
-import { ErrorCode } from '../constant/error.constant';
+import { ErrorCode } from '../../../constant/error.constant';
 import { TicketService } from './ticket.service';
-import { LoggerService } from './loggerService';
 
 @Injectable()
 export class AptosService {
@@ -23,7 +23,7 @@ export class AptosService {
   private coinClient;
 
   constructor(
-    private readonly logger: LoggerService,
+    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     private configService: ConfigService,
     private ticketService: TicketService,
   ) {
