@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../infra/schema/user.schema';
 import { UserResolver } from '../infra/graphql/resolver/user.resolver';
-import { UserService } from '../infra/database/service/user.service';
+import { UserService } from '../service/user.service';
 import { Project, ProjectSchema } from '../infra/schema/project.schema';
 
 @Module({

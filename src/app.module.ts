@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { UserModule } from './module/user.module';
 import { CommonModule } from './module/common.module';
 import { ProjectModule } from './module/project.module';
@@ -7,6 +7,8 @@ import { QuestModule } from './module/quest.module';
 import { VerifierModule } from './module/verifier.module';
 import { AptosModule } from './module/aptos.module';
 import { TestModule } from './module/test.module';
+import { LoggerMiddleware } from './service/LoggerMiddleware';
+import { TestResolver } from './infra/graphql/resolver/test.resolver';
 
 @Module({
   imports: [
@@ -20,4 +22,10 @@ import { TestModule } from './module/test.module';
     TestModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
