@@ -1,5 +1,5 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { VerifierService } from '../../../service/verifier.service';
+import { VerifierService } from '../../database/service/verifier.service';
 import { User } from '../../schema/user.schema';
 
 @Resolver()
