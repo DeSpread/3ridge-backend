@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ProjectService } from '../../../service/project.service';
+import { ProjectService } from '../../database/service/project.service';
 import { Project } from '../../schema/project.schema';
 import { ProjectCreateInput, ProjectUpdateInput } from '../dto/project.dto';
 import { QueryOptions } from '../dto/argument.dto';
