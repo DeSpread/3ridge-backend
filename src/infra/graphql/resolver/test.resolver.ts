@@ -1,6 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { TestService } from '../../../service/test.service';
-import { LogSearchData } from '../../../model/search.model';
+import { TestService } from '../../database/service/test.service';
 
 @Resolver()
 export class TestResolver {
@@ -14,10 +13,5 @@ export class TestResolver {
   @Mutation(() => Boolean)
   async clearParticipatedAllEventsByUserId(@Args('userId') userId: string) {
     return this.testService.clearParticipatedAllEventsByUserId(userId);
-  }
-
-  @Mutation(() => Boolean)
-  async testLogMessage(@Args('message') message: string) {
-    return this.testService.testLogMessage(message);
   }
 }
