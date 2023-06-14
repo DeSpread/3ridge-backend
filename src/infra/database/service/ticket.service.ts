@@ -22,7 +22,7 @@ import {
 } from '../../../constant/ticket.type';
 import { QueryOptions } from '../../graphql/dto/argument.dto';
 import { RewardPolicyType } from '../../../constant/reward.type';
-import { FcfsReward } from '../../../model/reward.model';
+import { RewardContext } from '../../../model/reward.model';
 
 @Injectable()
 export class TicketService {
@@ -334,7 +334,9 @@ export class TicketService {
     }
 
     // 1. Check if the ticket exceed limit of participants
-    const fcfsRewardInput: FcfsReward = JSON.parse(ticket.rewardPolicy.context);
+    const fcfsRewardInput: RewardContext = JSON.parse(
+      ticket.rewardPolicy.context,
+    );
     const isExceedLimitOfParticipants =
       ticket.participantCount >= fcfsRewardInput.limitNumber;
 
@@ -437,7 +439,7 @@ export class TicketService {
     return ticket;
   }
 
-  async isRewardClaimed(ticketId: string, userId: string): Promise<boolean> {
+  async checkRewardClaimableUser(ticketId: string, userId: string) {
     const ticket: Ticket = await this.findById(ticketId);
 
     const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
@@ -448,10 +450,19 @@ export class TicketService {
       this.logger.error(
         `user already claimed reward. ticketId: [${ticketId}], userId: [${userId}]`,
       );
-      return true;
+      throw ErrorCode.ALREADY_CLAIMED_REWARD;
     }
 
-    return false;
+    const isWinner: boolean = ticket.winners.some((x) =>
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
+    );
+
+    if (!isWinner) {
+      this.logger.error(
+        `user is not winner of this ticket. ticketId: [${ticketId}], userId: [${userId}]`,
+      );
+      throw ErrorCode.DOES_NOT_WIN_TICKET;
+    }
   }
 
   async checkAndUpdateRewardClaimedUser(

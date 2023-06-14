@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { RewardPolicy } from '../../graphql/dto/policy.dto';
-import { FcfsReward } from '../../../model/reward.model';
+import { RewardContext } from '../../../model/reward.model';
 import { RewardPolicyType } from '../../../constant/reward.type';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class RewardService {
     try {
       switch (rewardPolicy.rewardPolicyType) {
         case RewardPolicyType.FCFS:
-          const input: FcfsReward = JSON.parse(rewardPolicy.context);
+          const input: RewardContext = JSON.parse(rewardPolicy.context);
           return false;
       }
     } catch (e) {

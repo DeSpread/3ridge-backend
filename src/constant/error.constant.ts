@@ -69,6 +69,10 @@ export const ErrorCode = {
     'project already exist',
     'ALREADY_EXIST_PROJECT',
   ),
+  ALREADY_CLAIMED_REWARD: new ApolloError(
+    'receiver already claimed reward',
+    'ALREADY_CLAIMED_REWARD',
+  ),
   DOES_NOT_CLAIMABLE: new ApolloError(
     'receiver does not claimable',
     'DOES_NOT_CLAIMABLE',

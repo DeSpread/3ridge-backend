@@ -67,7 +67,8 @@ export class TicketResolver {
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.isRewardClaimed(ticketId, userId);
+    await this.ticketService.checkRewardClaimableUser(ticketId, userId);
+    return true;
   }
 
   @Mutation(() => Ticket)

@@ -45,6 +45,7 @@ type IsCompletedQuestByUserIdResponse {
 
 type Mutation {
   checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
+  claimAptosNFT(ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
   clearParticipatedAllEvents: Boolean!
   clearParticipatedAllEventsByUserId(userId: String!): Boolean!
   completeQuestOfUser(questId: String!, ticketId: String!, userId: String!): Quest!
@@ -57,7 +58,6 @@ type Mutation {
   removeProject(projectId: String!): Project!
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
-  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!, ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
@@ -107,7 +107,6 @@ input ProjectSocialInputType {
 type Query {
   auth(userId: String!): AuthResponse!
   availableTickets: [Ticket!]!
-  checkTokenBalanceByWalletAddress(collectionName: String!, receiverAddress: String!, tokenName: String!): Float!
   completedTickets: [Ticket!]!
   findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!

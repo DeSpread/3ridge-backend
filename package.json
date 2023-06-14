@@ -34,7 +34,7 @@
     "@nestjs/platform-express": "^9.2.0",
     "@nestjs/terminus": "^9.1.4",
     "apollo-server-express": "^3.11.1",
-    "aptos": "^1.6.0",
+    "aptos": "^1.10.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "graphql": "^16.6.0",
