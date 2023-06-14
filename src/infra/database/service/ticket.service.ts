@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { FilterQuery, Model } from 'mongoose';
+import mongoose, { FilterQuery, Model, startSession } from 'mongoose';
 import { Ticket } from '../../schema/ticket.schema';
 import {
   TicketCreateInput,
@@ -343,33 +343,44 @@ export class TicketService {
     }
 
     // 2. Check if user participate ticket and update
+    const session = await startSession();
     const isAlreadyParticiaptedUser: User = await ticket.participants.find(
       (x) => StringUtil.isEqualsIgnoreCase(x._id, userId),
     );
 
-    if (ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
-      // Check if this user completed all quests & if then, update winner list
-      await this.ticketModel.findByIdAndUpdate(
-        { _id: ticketId },
-        {
-          $push: {
-            participants: user,
+    try {
+      if (ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
+        // Check if this user completed all quests & if then, update winner list
+        await this.ticketModel.findByIdAndUpdate(
+          { _id: ticketId },
+          {
+            $push: {
+              participants: user,
+            },
+            $inc: {
+              participantCount: 1,
+            },
           },
-          $inc: {
-            participantCount: 1,
-          },
-        },
-        { new: true },
-      );
+          { new: true },
+        );
 
-      this.logger.debug(
-        `This quest is first in user's participating ticket. Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
-      );
-    } else {
-      this.logger.debug(
-        `Already user's participating ticket include this ticket. ticketId: ${ticketId}, userId: ${userId}`,
-      );
+        this.logger.debug(
+          `This quest is first in user's participating ticket. Successful to participate ticket. ticketId: ${ticketId}, userId: ${userId}`,
+        );
+      } else {
+        this.logger.debug(
+          `Already user's participating ticket include this ticket. ticketId: ${ticketId}, userId: ${userId}`,
+        );
+      }
+      await session.commitTransaction();
+    } catch (err) {
+      await session.abortTransaction();
+      console.log(err);
+      throw err;
+    } finally {
+      await session.endSession();
     }
+
     // 3. Check if user's participatingTicket list has this ticket and update list
     await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
 
