@@ -344,11 +344,11 @@ export class TicketService {
 
     // 2. Check if user participate ticket and update
     const session = await startSession();
-    const isAlreadyParticiaptedUser: User = await ticket.participants.find(
-      (x) => StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
     try {
+      const isAlreadyParticiaptedUser: User = await ticket.participants.find(
+        (x) => StringUtil.isEqualsIgnoreCase(x._id, userId),
+      );
+
       if (ObjectUtil.isNull(isAlreadyParticiaptedUser)) {
         // Check if this user completed all quests & if then, update winner list
         await this.ticketModel.findByIdAndUpdate(
@@ -377,8 +377,6 @@ export class TicketService {
       await session.abortTransaction();
       console.log(err);
       throw err;
-    } finally {
-      await session.endSession();
     }
 
     // 3. Check if user's participatingTicket list has this ticket and update list
