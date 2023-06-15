@@ -56,7 +56,7 @@ export class AptosService {
 
       this.faucetClient.fundAccount(userWallet.address, 100_000_000);
 
-      const txnHash = await this.tokenClient.offerToken(
+      const txHash = await this.tokenClient.offerToken(
         this.nftCreator,
         HexString.ensure(userWallet.address),
         this.nftCreator.address(),
@@ -65,8 +65,12 @@ export class AptosService {
         1,
         aptosNFT.tokenPropertyVersion,
       );
-      await this.client.waitForTransaction(txnHash, { checkSuccess: true });
-      return txnHash;
+      await this.client.waitForTransaction(txHash, { checkSuccess: true });
+
+      this.logger.debug(
+        `Successful to requested claim transaction of Aptos NFT. txnHash: ${txHash}`,
+      );
+      return txHash;
     } catch (e) {
       this.logger.error(`Failed to offer nft token. error: [${e.message}]`);
       throw new ApolloError(e.message, 'BAD_REQUEST_CLAIM_NFT');

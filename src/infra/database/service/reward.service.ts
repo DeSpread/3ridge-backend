@@ -97,7 +97,7 @@ export class RewardService {
         case ChainType.APTOS:
           if (rewardContext.rewardUnit === RewardUnitType.NFT) {
             const aptosNFT: AptosNFT = rewardContext.rewardDesp;
-            await this.aptosService.claimAptosNFT(userWallet, aptosNFT);
+            await this.aptosService.claimAptosNFT(userWallet, aptosNFT); // TODO: 실패 되는 케이스를 위해서 통계 집계가 필요함
           }
           break;
         default:
