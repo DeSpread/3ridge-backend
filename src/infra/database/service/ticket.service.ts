@@ -34,6 +34,7 @@ export class TicketService {
     private questModel: Model<Quest>,
     @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
+    @Inject(forwardRef(() => RewardService))
     private rewardService: RewardService,
     private userService: UserService,
   ) {}
@@ -437,32 +438,6 @@ export class TicketService {
     }
 
     return ticket;
-  }
-
-  async checkRewardClaimableUser(ticketId: string, userId: string) {
-    const ticket: Ticket = await this.findById(ticketId);
-
-    const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
-      StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
-    if (isRewardClaimed) {
-      this.logger.error(
-        `user already claimed reward. ticketId: [${ticketId}], userId: [${userId}]`,
-      );
-      throw ErrorCode.ALREADY_CLAIMED_REWARD;
-    }
-
-    const isWinner: boolean = ticket.winners.some((x) =>
-      StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
-    if (!isWinner) {
-      this.logger.error(
-        `user is not winner of this ticket. ticketId: [${ticketId}], userId: [${userId}]`,
-      );
-      throw ErrorCode.DOES_NOT_WIN_TICKET;
-    }
   }
 
   async checkAndUpdateRewardClaimedUser(

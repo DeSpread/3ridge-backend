@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AptosRequestClaimNFTResponse {
-  txHash: String!
-}
-
 type AuthResponse {
   accessToken: String
 }
@@ -45,7 +41,7 @@ type IsCompletedQuestByUserIdResponse {
 
 type Mutation {
   checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
-  claimAptosNFT(ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
+  claimReward(ticketId: String!, userId: String!): Boolean!
   clearParticipatedAllEvents: Boolean!
   clearParticipatedAllEventsByUserId(userId: String!): Boolean!
   completeQuestOfUser(questId: String!, ticketId: String!, userId: String!): Quest!
@@ -117,7 +113,6 @@ type Query {
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRegisteredWallet(address: String!, chain: ChainType!): Boolean!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
-  isRewardClaimed(ticketId: String!, userId: String!): Boolean!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
   projects(limit: Int = 25, skip: Int = 0): [Project!]!

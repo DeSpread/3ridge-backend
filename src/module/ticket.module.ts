@@ -5,11 +5,10 @@ import { TicketResolver } from '../infra/graphql/resolver/ticket.resolver';
 import { TicketService } from '../infra/database/service/ticket.service';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
-import { QuestService } from '../infra/database/service/quest.service';
-import { RewardService } from '../infra/database/service/reward.service';
 import { QuestModule } from './quest.module';
 import { UserModule } from './user.module';
 import { ProjectModule } from './project.module';
+import { RewardModule } from './reward.module';
 
 @Module({
   imports: [
@@ -20,9 +19,10 @@ import { ProjectModule } from './project.module';
     ConfigModule,
     UserModule,
     ProjectModule,
+    forwardRef(() => RewardModule),
     forwardRef(() => QuestModule),
   ],
-  providers: [TicketResolver, TicketService, RewardService],
+  providers: [TicketResolver, TicketService],
   exports: [TicketService],
 })
 export class TicketModule {}

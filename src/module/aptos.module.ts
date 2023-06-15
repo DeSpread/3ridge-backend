@@ -2,11 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AptosService } from '../infra/database/service/aptos.service';
 import { AptosResolver } from '../infra/graphql/resolver/aptos.resolver';
-import { TicketModule } from './ticket.module';
-import { UserModule } from './user.module';
 
 @Module({
-  imports: [ConfigModule, TicketModule, UserModule],
+  imports: [ConfigModule],
   providers: [AptosResolver, AptosService],
   exports: [AptosService],
 })

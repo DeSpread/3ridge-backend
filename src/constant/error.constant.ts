@@ -73,6 +73,14 @@ export const ErrorCode = {
     'receiver already claimed reward',
     'ALREADY_CLAIMED_REWARD',
   ),
+  DOES_NOT_CONNECTED_WALLET: new ApolloError(
+    "receiver'wallet does not connected wallet ",
+    'DOES_NOT_CONNECTED_WALLET',
+  ),
+  DOES_NOT_HAVE_REWARD_CONTEXT: new ApolloError(
+    'ticket does not have a reward context',
+    'DOES_NOT_HAVE_REWARD_CONTEXT',
+  ),
   DOES_NOT_CLAIMABLE: new ApolloError(
     'receiver does not claimable',
     'DOES_NOT_CLAIMABLE',

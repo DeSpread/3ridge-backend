@@ -9,14 +9,9 @@ import {
   HexString,
   TokenClient,
 } from 'aptos';
-import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
-import { TicketService } from './ticket.service';
-import { Ticket } from '../../schema/ticket.schema';
-import { AptosNFT, RewardContext } from '../../../model/reward.model';
-import { UserService } from './user.service';
-import { User, UserWallet } from '../../schema/user.schema';
-import { ChainType } from '../../../constant/chain.type';
+import { AptosNFT } from '../../../model/reward.model';
+import { UserWallet } from '../../schema/user.schema';
 
 @Injectable()
 export class AptosService {
@@ -29,8 +24,6 @@ export class AptosService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     private configService: ConfigService,
-    private ticketService: TicketService,
-    private userService: UserService,
   ) {
     this.nftCreator = new AptosAccount(
       HexString.ensure(
@@ -51,36 +44,21 @@ export class AptosService {
   }
 
   async claimAptosNFT(
-    ticketId: string,
-    userId: string,
-  ): Promise<AptosRequestClaimNFTResponse> {
-    await this.ticketService.checkRewardClaimableUser(ticketId, userId);
-
-    const ticket: Ticket = await this.ticketService.findById(ticketId);
-    const user: User = await this.userService.findById(userId);
-    const userWallet: UserWallet = user.wallets.find(
-      (wallet: UserWallet) => wallet.chain === ChainType.APTOS,
-    );
-    const rewardContext: RewardContext = JSON.parse(
-      ticket.rewardPolicy.context,
-    );
-    const aptosNFT: AptosNFT = rewardContext.rewardDesp;
-
-    console.log(this.nftCreator);
-    console.log(userWallet);
-    console.log(rewardContext);
-    console.log(aptosNFT);
-
-    // return {
-    //   txHash: 'test',
-    // };
-
+    userWallet: UserWallet,
+    aptosNFT: AptosNFT,
+  ): Promise<string> {
     try {
+      this.logger.debug(
+        `user try to claim Aptos NFT.userWallet: [${JSON.stringify(
+          userWallet,
+        )}], Aptos NFT: [${JSON.stringify(aptosNFT)}]`,
+      );
+
       this.faucetClient.fundAccount(userWallet.address, 100_000_000);
 
-      const txnHash = await this.tokenClient.directTransferToken(
+      const txnHash = await this.tokenClient.offerToken(
         this.nftCreator,
-        new AptosAccount(HexString.ensure(userWallet.address).toUint8Array()),
+        HexString.ensure(userWallet.address),
         this.nftCreator.address(),
         aptosNFT.collectionName,
         aptosNFT.tokenName,
@@ -88,14 +66,7 @@ export class AptosService {
         aptosNFT.tokenPropertyVersion,
       );
       await this.client.waitForTransaction(txnHash, { checkSuccess: true });
-      await this.ticketService.checkAndUpdateRewardClaimedUser(
-        ticketId,
-        userId,
-      );
-
-      return {
-        txHash: txnHash,
-      } as AptosRequestClaimNFTResponse;
+      return txnHash;
     } catch (e) {
       this.logger.error(`Failed to offer nft token. error: [${e.message}]`);
       throw new ApolloError(e.message, 'BAD_REQUEST_CLAIM_NFT');

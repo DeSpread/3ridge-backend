@@ -62,15 +62,6 @@ export class TicketResolver {
     return this.ticketService.findMissedTickets();
   }
 
-  @Query(() => Boolean)
-  async isRewardClaimed(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    await this.ticketService.checkRewardClaimableUser(ticketId, userId);
-    return true;
-  }
-
   @Mutation(() => Ticket)
   async createTicket(@Args() ticketCreateInput: TicketCreateInput) {
     return this.ticketService.create(ticketCreateInput);

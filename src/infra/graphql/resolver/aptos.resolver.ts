@@ -19,12 +19,4 @@ export class AptosResolver {
   //     0,
   //   );
   // }
-
-  @Mutation(() => AptosRequestClaimNFTResponse)
-  async claimAptosNFT(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    return this.aptosService.claimAptosNFT(ticketId, userId);
-  }
 }

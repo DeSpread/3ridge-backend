@@ -7,6 +7,7 @@ import { QuestModule } from './module/quest.module';
 import { VerifierModule } from './module/verifier.module';
 import { AptosModule } from './module/aptos.module';
 import { TestModule } from './module/test.module';
+import { RewardModule } from './module/reward.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TestModule } from './module/test.module';
     VerifierModule,
     AptosModule,
     TestModule,
+    RewardModule,
   ],
 })
 export class AppModule {}
