@@ -85,6 +85,15 @@ export class UserService {
       .exec();
   }
 
+  async findById(id: string): Promise<User> {
+    return await this.userModel
+      .findById(id)
+      .populate('userSocial')
+      .populate('managedProjects')
+      .populate('participatingTickets')
+      .exec();
+  }
+
   async findAllOrderByRewardPointDesc(
     queryOptions: QueryOptions = { skip: 0, limit: 25 },
   ): Promise<User[]> {

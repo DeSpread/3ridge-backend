@@ -22,7 +22,7 @@ import {
 } from '../../../constant/ticket.type';
 import { QueryOptions } from '../../graphql/dto/argument.dto';
 import { RewardPolicyType } from '../../../constant/reward.type';
-import { FcfsReward } from '../../../model/reward.model';
+import { RewardContext } from '../../../model/reward.model';
 
 @Injectable()
 export class TicketService {
@@ -34,6 +34,7 @@ export class TicketService {
     private questModel: Model<Quest>,
     @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
+    @Inject(forwardRef(() => RewardService))
     private rewardService: RewardService,
     private userService: UserService,
   ) {}
@@ -334,7 +335,9 @@ export class TicketService {
     }
 
     // 1. Check if the ticket exceed limit of participants
-    const fcfsRewardInput: FcfsReward = JSON.parse(ticket.rewardPolicy.context);
+    const fcfsRewardInput: RewardContext = JSON.parse(
+      ticket.rewardPolicy.context,
+    );
     const isExceedLimitOfParticipants =
       ticket.participantCount >= fcfsRewardInput.limitNumber;
 
@@ -436,23 +439,6 @@ export class TicketService {
     }
 
     return ticket;
-  }
-
-  async isRewardClaimed(ticketId: string, userId: string): Promise<boolean> {
-    const ticket: Ticket = await this.findById(ticketId);
-
-    const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
-      StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
-    if (isRewardClaimed) {
-      this.logger.error(
-        `user already claimed reward. ticketId: [${ticketId}], userId: [${userId}]`,
-      );
-      return true;
-    }
-
-    return false;
   }
 
   async checkAndUpdateRewardClaimedUser(

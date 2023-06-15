@@ -14,6 +14,7 @@ import { Module } from '@nestjs/common';
           format: winston.format.combine(
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike('3ridge-backend', {
+              colors: true,
               prettyPrint: true,
             }),
           ),

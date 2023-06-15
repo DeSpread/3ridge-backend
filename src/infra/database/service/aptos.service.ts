@@ -9,10 +9,9 @@ import {
   HexString,
   TokenClient,
 } from 'aptos';
-import { AptosRequestClaimNFTResponse } from '../../graphql/dto/response.dto';
 import { ApolloError } from 'apollo-server-express';
-import { ErrorCode } from '../../../constant/error.constant';
-import { TicketService } from './ticket.service';
+import { AptosNFT } from '../../../model/reward.model';
+import { UserWallet } from '../../schema/user.schema';
 
 @Injectable()
 export class AptosService {
@@ -25,7 +24,6 @@ export class AptosService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
     private configService: ConfigService,
-    private ticketService: TicketService,
   ) {
     this.nftCreator = new AptosAccount(
       HexString.ensure(
@@ -45,42 +43,34 @@ export class AptosService {
     this.coinClient = new CoinClient(this.client);
   }
 
-  async requestClaimNFT(
-    ticketId: string,
-    userId: string,
-    collectionName: string,
-    tokenName: string,
-    receiverAddress: string,
-    tokenAmount: number,
-    tokenPropertyVersion: number,
-  ): Promise<AptosRequestClaimNFTResponse> {
-    const isClaimable = await this.isClaimable(ticketId, userId);
-
-    if (!isClaimable) {
-      throw ErrorCode.DOES_NOT_CLAIMABLE;
-    }
-
+  async claimAptosNFT(
+    userWallet: UserWallet,
+    aptosNFT: AptosNFT,
+  ): Promise<string> {
     try {
-      const txnHash = await this.tokenClient.offerToken(
+      this.logger.debug(
+        `user try to claim Aptos NFT.userWallet: [${JSON.stringify(
+          userWallet,
+        )}], Aptos NFT: [${JSON.stringify(aptosNFT)}]`,
+      );
+
+      this.faucetClient.fundAccount(userWallet.address, 100_000_000);
+
+      const txHash = await this.tokenClient.offerToken(
         this.nftCreator,
-        HexString.ensure(receiverAddress),
+        HexString.ensure(userWallet.address),
         this.nftCreator.address(),
-        collectionName,
-        tokenName,
-        tokenAmount,
-        tokenPropertyVersion,
+        aptosNFT.collectionName,
+        aptosNFT.tokenName,
+        1,
+        aptosNFT.tokenPropertyVersion,
       );
-      await this.client.waitForTransaction(txnHash, { checkSuccess: true });
-      this.faucetClient.fundAccount(receiverAddress, 100_000_000);
+      await this.client.waitForTransaction(txHash, { checkSuccess: true });
 
-      await this.ticketService.checkAndUpdateRewardClaimedUser(
-        ticketId,
-        userId,
+      this.logger.debug(
+        `Successful to requested claim transaction of Aptos NFT. txnHash: ${txHash}`,
       );
-
-      return {
-        txHash: txnHash,
-      } as AptosRequestClaimNFTResponse;
+      return txHash;
     } catch (e) {
       this.logger.error(`Failed to offer nft token. error: [${e.message}]`);
       throw new ApolloError(e.message, 'BAD_REQUEST_CLAIM_NFT');
@@ -113,20 +103,5 @@ export class AptosService {
       this.logger.error(`Check token balance. resource not found`);
     }
     return 0;
-  }
-
-  private async isClaimable(
-    ticketId: string,
-    userId: string,
-  ): Promise<boolean> {
-    const isRewardClaimed = await this.ticketService.isRewardClaimed(
-      ticketId,
-      userId,
-    );
-    if (isRewardClaimed) {
-      return false;
-    }
-
-    return true;
   }
 }

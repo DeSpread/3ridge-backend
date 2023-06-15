@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AptosRequestClaimNFTResponse } from '../dto/response.dto';
 import { AptosService } from '../../database/service/aptos.service';
 
@@ -6,36 +6,17 @@ import { AptosService } from '../../database/service/aptos.service';
 export class AptosResolver {
   constructor(private aptosService: AptosService) {}
 
-  @Query(() => Number)
-  async checkTokenBalanceByWalletAddress(
-    @Args('collectionName') collectionName: string,
-    @Args('tokenName') tokenName: string,
-    @Args('receiverAddress') receiverAddress: string,
-  ) {
-    return this.aptosService.checkTokenBalance(
-      collectionName,
-      tokenName,
-      receiverAddress,
-      0,
-    );
-  }
-
-  @Mutation(() => AptosRequestClaimNFTResponse)
-  async requestClaimNFT(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-    @Args('collectionName') collectionName: string,
-    @Args('nftTokenName') tokenName: string,
-    @Args('receiverAddress') receiverAddress: string,
-  ) {
-    return this.aptosService.requestClaimNFT(
-      ticketId,
-      userId,
-      collectionName,
-      tokenName,
-      receiverAddress,
-      1,
-      0,
-    );
-  }
+  // @Query(() => Number)
+  // async checkTokenBalanceByWalletAddress(
+  //   @Args('collectionName') collectionName: string,
+  //   @Args('tokenName') tokenName: string,
+  //   @Args('receiverAddress') receiverAddress: string,
+  // ) {
+  //   return this.aptosService.checkTokenBalance(
+  //     collectionName,
+  //     tokenName,
+  //     receiverAddress,
+  //     0,
+  //   );
+  // }
 }
