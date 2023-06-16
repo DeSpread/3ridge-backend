@@ -26,7 +26,7 @@ jobs:
         with:
           context: .
           push: true
-          file: ./Dockerfile.dev
+          file: ./docker/Dockerfile.dev
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
           build-args: |
             DATABASE_MONGODB_ENDPOINT=${{ secrets.DEV_DATABASE_MONGODB_ENDPOINT }}
