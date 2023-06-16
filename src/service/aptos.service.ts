@@ -13,6 +13,11 @@ import { AptosNFT } from '../model/reward.model';
 import { UserWallet } from '../infra/schema/user.schema';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
+/*
+ * Treasury Wallet
+ * Testnet: 0x6a2b453dae13354acb55c57077b2abdb09990581dac1c3492a8dbb7e0eddf632
+ * Mainnet: 0x281c7c340a31adf97c5f26b80cc2cc94bb047da101653c1a118453aa37c3fee7
+ * */
 @Injectable()
 export class AptosService {
   private nftCreator: AptosAccount;
@@ -25,24 +30,31 @@ export class AptosService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     private configService: ConfigService,
   ) {
+    const className = 'AptosService';
+    const aptosNodeEndpoint =
+      this.configService.get<string>('aptos.nodeEndpoint');
+
     this.nftCreator = new AptosAccount(
       HexString.ensure(
         this.configService.get<string>('APTOS_PRIVATE_KEY') as string,
       ).toUint8Array(),
     );
-    this.client = new AptosClient(
-      this.configService.get<string>('global.aptos.nodeUrl'),
-    );
+    this.client = new AptosClient(aptosNodeEndpoint);
 
     this.faucetClient = new FaucetClient(
-      this.configService.get<string>('global.aptos.nodeUrl'),
+      aptosNodeEndpoint,
       this.configService.get<string>('global.aptos.faucetUrl'),
     );
 
     this.tokenClient = new TokenClient(this.client);
     this.coinClient = new CoinClient(this.client);
 
-    this.logger.debug(`Our NFT creator address: ${this.nftCreator.address()}`);
+    this.logger.verbose(
+      `[${className}] Our NFT creator address: ${this.nftCreator.address()}`,
+    );
+    this.logger.verbose(
+      `[${className}] Aptos node endpoint: ${aptosNodeEndpoint}`,
+    );
   }
 
   async claimAptosNFT(
@@ -51,16 +63,14 @@ export class AptosService {
   ): Promise<string> {
     const funcName = this.claimAptosNFT.name;
     try {
-      this.logger.debug(
+      this.logger.verbose(
         `[${funcName}] Our NFT creator address: ${this.nftCreator.address()}`,
       );
-      this.logger.debug(
+      this.logger.verbose(
         `[${funcName}] user try to claim Aptos NFT.userWallet: ${JSON.stringify(
           userWallet,
         )}, Aptos NFT: ${JSON.stringify(aptosNFT)}`,
       );
-
-      this.faucetClient.fundAccount(userWallet.address, 100_000_000);
 
       const txHash = await this.tokenClient.offerToken(
         this.nftCreator,
