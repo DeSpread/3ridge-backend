@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { TestService } from '../../database/service/test.service';
+import { TestService } from '../../../service/test.service';
 
 @Resolver()
 export class TestResolver {

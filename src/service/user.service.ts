@@ -1,17 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { User, UserWallet } from '../../schema/user.schema';
+import { User, UserWallet } from '../infra/schema/user.schema';
 import {
   UserCreateByGmailInput,
   UserUpdateInput,
-} from '../../graphql/dto/user.dto';
-import { Project } from '../../schema/project.schema';
-import { ErrorCode } from '../../../constant/error.constant';
-import { StringUtil } from '../../../util/string.util';
-import { Ticket } from '../../schema/ticket.schema';
-import { ObjectUtil } from '../../../util/object.util';
-import { QueryOptions } from '../../graphql/dto/argument.dto';
+} from '../infra/graphql/dto/user.dto';
+import { Project } from '../infra/schema/project.schema';
+import { ErrorCode } from '../constant/error.constant';
+import { StringUtil } from '../util/string.util';
+import { Ticket } from '../infra/schema/ticket.schema';
+import { ObjectUtil } from '../util/object.util';
+import { QueryOptions } from '../infra/graphql/dto/argument.dto';
+import { LoggerService } from './logger.service';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 const { ObjectId } = mongoose.Types;
@@ -19,7 +20,7 @@ const { ObjectId } = mongoose.Types;
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Project.name)

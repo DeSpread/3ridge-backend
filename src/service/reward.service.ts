@@ -1,19 +1,16 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
-import { RewardPolicy } from '../../graphql/dto/policy.dto';
-import { AptosNFT, RewardContext } from '../../../model/reward.model';
-import {
-  RewardPolicyType,
-  RewardUnitType,
-} from '../../../constant/reward.type';
+import { RewardPolicy } from '../infra/graphql/dto/policy.dto';
+import { AptosNFT, RewardContext } from '../model/reward.model';
+import { RewardPolicyType, RewardUnitType } from '../constant/reward.type';
 import { TicketService } from './ticket.service';
 import { AptosService } from './aptos.service';
-import { Ticket } from '../../schema/ticket.schema';
-import { User, UserWallet } from '../../schema/user.schema';
-import { ChainType } from '../../../constant/chain.type';
+import { Ticket } from '../infra/schema/ticket.schema';
+import { User, UserWallet } from '../infra/schema/user.schema';
+import { ChainType } from '../constant/chain.type';
 import { UserService } from './user.service';
-import { StringUtil } from '../../../util/string.util';
-import { ErrorCode } from '../../../constant/error.constant';
+import { StringUtil } from '../util/string.util';
+import { ErrorCode } from '../constant/error.constant';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class RewardService {

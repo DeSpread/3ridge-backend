@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { RewardService } from '../../database/service/reward.service';
+import { RewardService } from '../../../service/reward.service';
 
 @Resolver()
 export class RewardResolver {
