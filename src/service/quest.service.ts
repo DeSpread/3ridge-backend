@@ -136,7 +136,7 @@ export class QuestService {
     const quest: Quest = await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -198,7 +198,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -245,7 +245,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -292,7 +292,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -376,7 +376,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -423,7 +423,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },

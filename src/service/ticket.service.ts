@@ -233,7 +233,7 @@ export class TicketService {
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -280,7 +280,7 @@ export class TicketService {
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           winners: user,
         },
       },
@@ -352,7 +352,7 @@ export class TicketService {
       await this.ticketModel.findByIdAndUpdate(
         { _id: ticketId },
         {
-          $push: {
+          $addToSet: {
             participants: user,
           },
           $inc: {
@@ -465,13 +465,13 @@ export class TicketService {
     );
 
     if (!ObjectUtil.isNull(isAlreadyClaimed)) {
-      throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
+      throw ErrorCode.ALREADY_CLAIMED_REWARD;
     }
 
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           rewardClaimedUsers: user,
         },
       },
@@ -479,7 +479,7 @@ export class TicketService {
     );
 
     this.logger.debug(
-      `Successful to add winner to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+      `[${this.checkAndUpdateRewardClaimedUser.name}] Successful to add this user to claimed user list of ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
 
     return ticket0;

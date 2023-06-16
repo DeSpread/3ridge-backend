@@ -238,7 +238,7 @@ export class UserService {
     await this.userModel.findOneAndUpdate(
       { _id: user._id },
       {
-        $push: {
+        $addToSet: {
           participatingTickets: ticket,
         },
       },

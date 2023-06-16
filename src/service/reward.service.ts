@@ -63,6 +63,7 @@ export class RewardService {
       throw ErrorCode.DOES_NOT_WIN_TICKET;
     }
 
+    // Check if the user has a wallet on the required network to receive the reward
     const userWallet: UserWallet[] = user.wallets.filter(
       (wallet: UserWallet) => wallet.chain === ChainType.APTOS,
     );
@@ -78,6 +79,10 @@ export class RewardService {
   }
 
   async claimReward(ticketId: string, userId: string): Promise<boolean> {
+    this.logger.debug(
+      `[${this.claimReward.name}] request to claim reward. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
     await this.checkRewardClaimableUser(ticketId, userId);
 
     const ticket: Ticket = await this.ticketService.findById(ticketId);

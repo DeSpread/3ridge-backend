@@ -32,7 +32,7 @@ jobs:
             DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
             AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
             TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}
-            APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}
+            APTOS_PRIVATE_KEY=${{ secrets.PROD_APTOS_PRIVATE_KEY }}
             ELASTICSEARCH_ENDPOINT=${{ secrets.ELASTICSEARCH_ENDPOINT }}
             ELASTICSEARCH_AUTH_USERNAME=${{ secrets.ELASTICSEARCH_AUTH_USERNAME }}
             ELASTICSEARCH_AUTH_PASSWORD=${{ secrets.ELASTICSEARCH_AUTH_PASSWORD }}
@@ -45,6 +45,8 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
+          sync: true
+          script_stop: true
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}

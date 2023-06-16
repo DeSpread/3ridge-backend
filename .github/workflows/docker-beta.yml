@@ -41,10 +41,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: ssh connect & restart docker - beta1, beta2
+      - name: ssh connect - dev1 (temporary)
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
+          host: ${{ secrets.DEV_HOST1 }}
+          debug: true
           sync: true
           script_stop: true
           username: ${{ secrets.USERNAME }}

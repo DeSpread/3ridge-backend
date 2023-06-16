@@ -45,6 +45,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEV_HOST1 }}
+          debug: true
+          sync: true
+          script_stop: true
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}

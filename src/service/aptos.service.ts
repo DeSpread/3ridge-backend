@@ -41,17 +41,23 @@ export class AptosService {
 
     this.tokenClient = new TokenClient(this.client);
     this.coinClient = new CoinClient(this.client);
+
+    this.logger.debug(`Our NFT creator address: ${this.nftCreator.address()}`);
   }
 
   async claimAptosNFT(
     userWallet: UserWallet,
     aptosNFT: AptosNFT,
   ): Promise<string> {
+    const funcName = this.claimAptosNFT.name;
     try {
       this.logger.debug(
-        `user try to claim Aptos NFT.userWallet: [${JSON.stringify(
+        `[${funcName}] Our NFT creator address: ${this.nftCreator.address()}`,
+      );
+      this.logger.debug(
+        `[${funcName}] user try to claim Aptos NFT.userWallet: ${JSON.stringify(
           userWallet,
-        )}], Aptos NFT: [${JSON.stringify(aptosNFT)}]`,
+        )}, Aptos NFT: ${JSON.stringify(aptosNFT)}`,
       );
 
       this.faucetClient.fundAccount(userWallet.address, 100_000_000);
@@ -68,11 +74,13 @@ export class AptosService {
       await this.client.waitForTransaction(txHash, { checkSuccess: true });
 
       this.logger.debug(
-        `Successful to requested claim transaction of Aptos NFT. txnHash: ${txHash}`,
+        `[${funcName}] Successful to requested claim transaction of Aptos NFT. txHash: ${txHash}`,
       );
       return txHash;
     } catch (e) {
-      this.logger.error(`Failed to offer nft token. error: [${e.message}]`);
+      this.logger.error(
+        `[${funcName}] Failed to offer nft token. error: ${e.message}`,
+      );
       throw new ApolloError(e.message, 'BAD_REQUEST_CLAIM_NFT');
     }
   }
