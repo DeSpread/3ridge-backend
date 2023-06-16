@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../../schema/user.schema';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { User } from '../infra/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
-import { Quest } from '../../schema/quest.schema';
+import { Model } from 'mongoose';
+import { Ticket } from '../infra/schema/ticket.schema';
+import { Quest } from '../infra/schema/quest.schema';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class TestService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Ticket.name)
@@ -84,5 +84,10 @@ export class TestService {
       console.error(e);
       return false;
     }
+  }
+
+  async testLogMessage(message: string) {
+    this.logger.debug(message);
+    return true;
   }
 }

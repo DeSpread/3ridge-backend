@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import {
   AptosAccount,
@@ -10,8 +9,9 @@ import {
   TokenClient,
 } from 'aptos';
 import { ApolloError } from 'apollo-server-express';
-import { AptosNFT } from '../../../model/reward.model';
-import { UserWallet } from '../../schema/user.schema';
+import { AptosNFT } from '../model/reward.model';
+import { UserWallet } from '../infra/schema/user.schema';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class AptosService {
@@ -22,7 +22,7 @@ export class AptosService {
   private coinClient;
 
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     private configService: ConfigService,
   ) {
     this.nftCreator = new AptosAccount(

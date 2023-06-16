@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
-import { TicketService } from '../../database/service/ticket.service';
+import { TicketService } from '../../../service/ticket.service';
 import {
   TicketCreateInput,
   TicketStatusInputType,

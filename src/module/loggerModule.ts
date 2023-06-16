@@ -3,7 +3,10 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { RequestIdModule } from './request.id.module';
+import { SearchModule } from './search.module';
+import { LoggerService } from '../service/logger.service';
 
 @Module({
   imports: [
@@ -21,6 +24,10 @@ import { Module } from '@nestjs/common';
         }),
       ],
     }),
+    RequestIdModule,
+    forwardRef(() => SearchModule),
   ],
+  providers: [LoggerService],
+  exports: [LoggerService],
 })
 export class LoggerModule {}
