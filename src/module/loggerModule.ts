@@ -13,7 +13,7 @@ import { LoggerService } from '../service/logger.service';
     WinstonModule.forRoot({
       transports: [
         new winston.transports.Console({
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+          level: process.env.NODE_ENV === 'production' ? 'silly' : 'silly',
           format: winston.format.combine(
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike('3ridge-backend', {

@@ -106,7 +106,8 @@ export class RewardService {
           throw ErrorCode.DOES_NOT_HAVE_REWARD_CONTEXT;
       }
     } catch (e) {
-      throw e;
+      this.logger.error(e);
+      return false;
     }
 
     await this.ticketService.checkAndUpdateRewardClaimedUser(ticketId, userId);
