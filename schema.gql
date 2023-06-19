@@ -88,6 +88,7 @@ input ProjectInputType {
 
 type ProjectSocial {
   discordUrl: String
+  mediumUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
@@ -95,6 +96,7 @@ type ProjectSocial {
 
 input ProjectSocialInputType {
   discordUrl: String
+  mediumUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
