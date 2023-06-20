@@ -186,6 +186,7 @@ enum QuestPolicyType {
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING
   VERIFY_TWITTER_RETWEET
+  VERIFY_VISIT_WEBSITE
   VERIFY_WALLET_ADDRESS
 }
 
@@ -202,6 +203,7 @@ input RewardPolicyInputType {
 }
 
 enum RewardPolicyType {
+  ALL
   FCFS
   LUCKY_DRAW
 }

@@ -31,7 +31,7 @@ jobs:
           build-args: |
             DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
             AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
-            TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}
+            TWITTER_BEARER=${{ secrets.PROD_TWITTER_BEARER }}
             APTOS_PRIVATE_KEY=${{ secrets.PROD_APTOS_PRIVATE_KEY }}
             ELASTICSEARCH_ENDPOINT=${{ secrets.ELASTICSEARCH_ENDPOINT }}
             ELASTICSEARCH_AUTH_USERNAME=${{ secrets.ELASTICSEARCH_AUTH_USERNAME }}
@@ -44,7 +44,7 @@ jobs:
       - name: ssh connect & restart docker - beta1, beta2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
+          host: ${{ secrets.PROD_HOST1 }},${{ secrets.PROD_HOST2 }}
           sync: true
           script_stop: true
           username: ${{ secrets.USERNAME }}
