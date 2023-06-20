@@ -44,7 +44,7 @@ jobs:
       - name: ssh connect & restart docker - beta1, beta2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.BETA_HOST1 }},${{ secrets.BETA_HOST2 }}
+          host: ${{ secrets.PROD_HOST1 }},${{ secrets.PROD_HOST2 }}
           sync: true
           script_stop: true
           username: ${{ secrets.USERNAME }}
