@@ -1,27 +1,28 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ErrorCode } from '../../../constant/error.constant';
-import { Quest } from '../../schema/quest.schema';
-import { QuestPolicy } from '../../graphql/dto/policy.dto';
-import { QuizQuestInput } from '../../../model/quiz.quest.model';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
-import { QuestPolicyType } from '../../../constant/quest.policy';
+import { ErrorCode } from '../constant/error.constant';
+import { Quest } from '../infra/schema/quest.schema';
+import { QuestPolicy } from '../infra/graphql/dto/policy.dto';
+import { QuizQuestInput } from '../model/quiz.quest.model';
+import { QuestPolicyType } from '../constant/quest.policy';
 import { UserService } from './user.service';
-import { User, UserWallet } from '../../schema/user.schema';
+import { User, UserWallet } from '../infra/schema/user.schema';
 import { VerifierService } from './verifier.service';
-import { ObjectUtil } from '../../../util/object.util';
+import { ObjectUtil } from '../util/object.util';
 import {
   Verify3ridgePoint,
   VerifyAptosExistTxQuest,
   VerifyTwitterFollowQuest,
   VerifyTwitterLikingQuest,
   VerifyTwitterRetweetQuest,
-} from '../../../model/verify.quest.model';
-import { StringUtil } from '../../../util/string.util';
-import { IsCompletedQuestByUserIdResponse } from '../../graphql/dto/response.dto';
+} from '../model/verify.quest.model';
+import { StringUtil } from '../util/string.util';
+import { IsCompletedQuestByUserIdResponse } from '../infra/graphql/dto/response.dto';
 import { TicketService } from './ticket.service';
-import { ChainType } from '../../../constant/chain.type';
+import { ChainType } from '../constant/chain.type';
+import { LoggerService } from './logger.service';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class QuestService {
@@ -135,7 +136,7 @@ export class QuestService {
     const quest: Quest = await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -197,7 +198,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -244,7 +245,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -291,7 +292,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -375,7 +376,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -422,7 +423,7 @@ export class QuestService {
     await this.questModel.findByIdAndUpdate(
       { _id: questId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },

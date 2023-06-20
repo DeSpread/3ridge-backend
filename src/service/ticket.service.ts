@@ -1,39 +1,37 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery, Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
+import { Ticket } from '../infra/schema/ticket.schema';
 import {
   TicketCreateInput,
   TicketStatusInputType,
   TicketUpdateInput,
-} from '../../graphql/dto/ticket.dto';
-import { ErrorCode } from '../../../constant/error.constant';
-import { Quest } from '../../schema/quest.schema';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+} from '../infra/graphql/dto/ticket.dto';
+import { ErrorCode } from '../constant/error.constant';
+import { Quest } from '../infra/schema/quest.schema';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
-import { ObjectUtil } from '../../../util/object.util';
-import { User } from '../../schema/user.schema';
+import { ObjectUtil } from '../util/object.util';
+import { User } from '../infra/schema/user.schema';
 import { UserService } from './user.service';
-import { StringUtil } from '../../../util/string.util';
-import {
-  TicketSortType,
-  TicketStatusType,
-} from '../../../constant/ticket.type';
-import { QueryOptions } from '../../graphql/dto/argument.dto';
-import { RewardPolicyType } from '../../../constant/reward.type';
-import { FcfsReward } from '../../../model/reward.model';
+import { StringUtil } from '../util/string.util';
+import { TicketSortType, TicketStatusType } from '../constant/ticket.type';
+import { QueryOptions } from '../infra/graphql/dto/argument.dto';
+import { RewardPolicyType } from '../constant/reward.type';
+import { RewardContext } from '../model/reward.model';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class TicketService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(Ticket.name)
     private ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private questModel: Model<Quest>,
     @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
+    @Inject(forwardRef(() => RewardService))
     private rewardService: RewardService,
     private userService: UserService,
   ) {}
@@ -185,7 +183,7 @@ export class TicketService {
       ticketCreateInput.quests,
     );
 
-    this.logger.log(ticketCreateInput);
+    this.logger.debug(ticketCreateInput);
     return ticketModel.save();
   }
 
@@ -235,7 +233,7 @@ export class TicketService {
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           completedUsers: user,
         },
       },
@@ -282,7 +280,7 @@ export class TicketService {
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           winners: user,
         },
       },
@@ -334,7 +332,9 @@ export class TicketService {
     }
 
     // 1. Check if the ticket exceed limit of participants
-    const fcfsRewardInput: FcfsReward = JSON.parse(ticket.rewardPolicy.context);
+    const fcfsRewardInput: RewardContext = JSON.parse(
+      ticket.rewardPolicy.context,
+    );
     const isExceedLimitOfParticipants =
       ticket.participantCount >= fcfsRewardInput.limitNumber;
 
@@ -352,7 +352,7 @@ export class TicketService {
       await this.ticketModel.findByIdAndUpdate(
         { _id: ticketId },
         {
-          $push: {
+          $addToSet: {
             participants: user,
           },
           $inc: {
@@ -370,6 +370,7 @@ export class TicketService {
         `Already user's participating ticket include this ticket. ticketId: ${ticketId}, userId: ${userId}`,
       );
     }
+
     // 3. Check if user's participatingTicket list has this ticket and update list
     await this.userService.checkParticipatedTicketAndUpdate(user, ticket);
 
@@ -437,23 +438,6 @@ export class TicketService {
     return ticket;
   }
 
-  async isRewardClaimed(ticketId: string, userId: string): Promise<boolean> {
-    const ticket: Ticket = await this.findById(ticketId);
-
-    const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
-      StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
-    if (isRewardClaimed) {
-      this.logger.error(
-        `user already claimed reward. ticketId: [${ticketId}], userId: [${userId}]`,
-      );
-      return true;
-    }
-
-    return false;
-  }
-
   async checkAndUpdateRewardClaimedUser(
     ticketId: string,
     userId: string,
@@ -481,13 +465,13 @@ export class TicketService {
     );
 
     if (!ObjectUtil.isNull(isAlreadyClaimed)) {
-      throw ErrorCode.ALREADY_INCLUDED_WINNER_USER;
+      throw ErrorCode.ALREADY_CLAIMED_REWARD;
     }
 
     const ticket0 = await this.ticketModel.findByIdAndUpdate(
       { _id: ticketId },
       {
-        $push: {
+        $addToSet: {
           rewardClaimedUsers: user,
         },
       },
@@ -495,7 +479,7 @@ export class TicketService {
     );
 
     this.logger.debug(
-      `Successful to add winner to ticket. ticketId: ${ticketId}, userId: ${userId}`,
+      `[${this.checkAndUpdateRewardClaimedUser.name}] Successful to add this user to claimed user list of ticket. ticketId: ${ticketId}, userId: ${userId}`,
     );
 
     return ticket0;

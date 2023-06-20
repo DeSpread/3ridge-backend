@@ -1,5 +1,10 @@
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
+import {
+  FieldMiddleware,
+  GraphQLModule,
+  MiddlewareContext,
+  NextFn,
+} from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({

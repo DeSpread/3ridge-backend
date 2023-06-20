@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AptosRequestClaimNFTResponse {
-  txHash: String!
-}
-
 type AuthResponse {
   accessToken: String
 }
@@ -45,6 +41,7 @@ type IsCompletedQuestByUserIdResponse {
 
 type Mutation {
   checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
+  claimReward(ticketId: String!, userId: String!): Boolean!
   clearParticipatedAllEvents: Boolean!
   clearParticipatedAllEventsByUserId(userId: String!): Boolean!
   completeQuestOfUser(questId: String!, ticketId: String!, userId: String!): Quest!
@@ -57,7 +54,6 @@ type Mutation {
   removeProject(projectId: String!): Project!
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
-  requestClaimNFT(collectionName: String!, nftTokenName: String!, receiverAddress: String!, ticketId: String!, userId: String!): AptosRequestClaimNFTResponse!
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
   updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
@@ -92,6 +88,7 @@ input ProjectInputType {
 
 type ProjectSocial {
   discordUrl: String
+  mediumUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
@@ -99,6 +96,7 @@ type ProjectSocial {
 
 input ProjectSocialInputType {
   discordUrl: String
+  mediumUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
@@ -107,7 +105,6 @@ input ProjectSocialInputType {
 type Query {
   auth(userId: String!): AuthResponse!
   availableTickets: [Ticket!]!
-  checkTokenBalanceByWalletAddress(collectionName: String!, receiverAddress: String!, tokenName: String!): Float!
   completedTickets: [Ticket!]!
   findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
@@ -118,7 +115,6 @@ type Query {
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRegisteredWallet(address: String!, chain: ChainType!): Boolean!
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
-  isRewardClaimed(ticketId: String!, userId: String!): Boolean!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
   projects(limit: Int = 25, skip: Int = 0): [Project!]!
@@ -182,6 +178,10 @@ enum QuestPolicyType {
   VERIFY_APTOS_HAS_NFT
   VERIFY_DISCORD
   VERIFY_EMAIL
+  VERIFY_HAS_EMAIL
+  VERIFY_HAS_TELEGRAM
+  VERIFY_HAS_TWITTER
+  VERIFY_HAS_WALLET_ADDRESS
   VERIFY_TELEGRAM
   VERIFY_TWITTER_FOLLOW
   VERIFY_TWITTER_LIKING

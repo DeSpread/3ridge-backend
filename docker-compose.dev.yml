@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: ./docker/Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:

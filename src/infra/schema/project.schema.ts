@@ -25,6 +25,10 @@ export class ProjectSocial {
   @Prop()
   @Field({ nullable: true })
   telegramUrl: string;
+
+  @Prop()
+  @Field({nullable: true})
+  mediumUrl: string;
 }
 
 @Schema({ timestamps: true })

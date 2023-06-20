@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
-import { TicketService } from '../../database/service/ticket.service';
+import { TicketService } from '../../../service/ticket.service';
 import {
   TicketCreateInput,
   TicketStatusInputType,
@@ -60,14 +60,6 @@ export class TicketResolver {
   @Query(() => [Ticket])
   async findMissedTickets() {
     return this.ticketService.findMissedTickets();
-  }
-
-  @Query(() => Boolean)
-  async isRewardClaimed(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    return this.ticketService.isRewardClaimed(ticketId, userId);
   }
 
   @Mutation(() => Ticket)
