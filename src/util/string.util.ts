@@ -7,9 +7,6 @@ export class StringUtil {
     const wrappedStringSource = String(source);
     const wrappedStringTarget = String(target);
 
-    console.log(
-      `check if equal string source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
-    );
     if (this.trim(wrappedStringSource) === this.trim(wrappedStringTarget)) {
       console.log(
         `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,

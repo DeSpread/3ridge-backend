@@ -7,12 +7,18 @@ import { ConfigService } from '@nestjs/config';
 import { ErrorCode } from '../constant/error.constant';
 import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
 import { gql, GraphQLClient } from 'graphql-request';
+import { RoundRobinItem, SequentialRoundRobin } from 'round-robin-js';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { retryAsyncUntilDefined } from 'ts-retry/lib/cjs/retry';
 
 @Injectable()
 export class VerifierService {
-  private twitterClient;
-  private readOnlyClient;
+  private static SEPARATOR = ',';
+  private static TWITTER_CLIENT_RETRY_OPTIONS = { delay: 100, maxTry: 5 };
+
+  private _twitterClientPool: SequentialRoundRobin<TwitterApi> =
+    new SequentialRoundRobin();
+  private _twitterClient?: RoundRobinItem<TwitterApi>;
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
@@ -20,10 +26,24 @@ export class VerifierService {
     private configService: ConfigService,
     private userService: UserService,
   ) {
-    const bearer = configService.get<string>('TWITTER_BEARER');
+    configService
+      .get<string>('TWITTER_BEARER')
+      .split(VerifierService.SEPARATOR)
+      .map((twitterBearerKey) => {
+        this._twitterClientPool.add(new TwitterApi(twitterBearerKey));
+        this.logger.debug(
+          `add twitterBearerKey to Twitter client pool: [${twitterBearerKey}]`,
+        );
+      });
+    this._twitterClient = this._twitterClientPool.next();
+  }
 
-    this.twitterClient = new TwitterApi(bearer);
-    this.readOnlyClient = this.twitterClient.readOnly;
+  get twitterReadOnlyClient() {
+    const readOnlyClient = this._twitterClient.value.readOnly;
+    this.logger.debug(
+      `We use Twitter client: [${JSON.stringify(readOnlyClient)}]`,
+    );
+    return readOnlyClient;
   }
 
   async hasEnough3ridgePoint(
@@ -114,12 +134,16 @@ export class VerifierService {
     sourceTwitterUsername: string,
     targetTweetId: string,
   ): Promise<boolean> {
-    const usersPaginated = await this.readOnlyClient.v2.tweetLikedBy(
-      targetTweetId,
-      {
-        asPaginator: true,
-      },
-    );
+    const usersPaginated = await retryAsyncUntilDefined(async () => {
+      try {
+        return await this.twitterReadOnlyClient.v2.tweetLikedBy(targetTweetId, {
+          asPaginator: true,
+        });
+      } catch (e) {
+        this.logger.error(`Failed to fetch Twitter API. error: [${e.message}`);
+        this._twitterClient = this._twitterClientPool.next();
+      }
+    }, VerifierService.TWITTER_CLIENT_RETRY_OPTIONS);
 
     let paginatorIdx = 0;
     while (!usersPaginated.done) {
@@ -140,14 +164,26 @@ export class VerifierService {
     sourceTwitterUsername: string,
     targetTwitterUsername: string,
   ): Promise<boolean> {
-    const source = await this.readOnlyClient.v2.userByUsername(
-      sourceTwitterUsername,
-    );
+    const followingPaginated = await retryAsyncUntilDefined(async () => {
+      try {
+        const source = await this.twitterReadOnlyClient.v2.userByUsername(
+          sourceTwitterUsername,
+        );
 
-    const followingPaginated = await this.readOnlyClient.v2.following(
-      source.data.id,
-      { asPaginator: true },
-    );
+        this.logger.debug(
+          `Successful to fetch userByUserName of Twitter API. data: [${JSON.stringify(
+            source,
+          )}]`,
+        );
+
+        return await this.twitterReadOnlyClient.v2.following(source.data.id, {
+          asPaginator: true,
+        });
+      } catch (e) {
+        this.logger.error(`Failed to fetch Twitter API. error: [${e.message}`);
+        this._twitterClient = this._twitterClientPool.next();
+      }
+    }, VerifierService.TWITTER_CLIENT_RETRY_OPTIONS);
 
     let paginatorIdx = 0;
     do {
@@ -174,12 +210,19 @@ export class VerifierService {
     sourceTwitterUsername: string,
     targetTweetId: string,
   ): Promise<boolean> {
-    const usersPaginated = await this.readOnlyClient.v2.tweetRetweetedBy(
-      targetTweetId,
-      {
-        asPaginator: true,
-      },
-    );
+    const usersPaginated = await retryAsyncUntilDefined(async () => {
+      try {
+        return await this.twitterReadOnlyClient.v2.tweetRetweetedBy(
+          targetTweetId,
+          {
+            asPaginator: true,
+          },
+        );
+      } catch (e) {
+        this.logger.error(`Failed to fetch Twitter API. error: [${e.message}`);
+        this._twitterClient = this._twitterClientPool.next();
+      }
+    }, VerifierService.TWITTER_CLIENT_RETRY_OPTIONS);
 
     let paginatorIdx = 0;
     while (!usersPaginated.done) {
