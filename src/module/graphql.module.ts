@@ -7,6 +7,14 @@ import {
 } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
+const loggerMiddleware: FieldMiddleware = async (
+  ctx: MiddlewareContext,
+  next: NextFn,
+) => {
+  const value = await next();
+  return value;
+};
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -17,6 +25,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       playground: true,
       buildSchemaOptions: {
         dateScalarMode: 'isoDate',
+        fieldMiddleware: [loggerMiddleware],
       },
       context: ({ req, connection }) => {
         if (req) {

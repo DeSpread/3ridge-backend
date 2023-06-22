@@ -60,4 +60,19 @@ export class LoggerService {
     );
     this.insertLogToES(log);
   }
+
+  errorWithES(message?: any, requestContext?: any) {
+    const log = new LogSearchData(
+      this.requestId,
+      message,
+      LogLevel.ERROR,
+      requestContext,
+    );
+    this.logger.error(
+      `${this.getMessageWithRequestId(log.message)} > ${JSON.stringify(
+        log.requestContext,
+      )}`,
+    );
+    this.insertLogToES(log);
+  }
 }
