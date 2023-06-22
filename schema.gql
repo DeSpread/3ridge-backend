@@ -109,6 +109,7 @@ type Query {
   findMissedTickets: [Ticket!]!
   findQuestById(questId: String!): Quest!
   findRankByUserId(limit: Int = 25, skip: Int = 0, userId: String!): Float!
+  getWalletAddressOfWinner(chainType: String!, ticketId: String!): [String!]!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
   isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
