@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../infra/schema/user.schema';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
+import { TicketModule } from './ticket.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Quest, QuestSchema } from '../infra/schema/quest.schema';
       { name: User.name, schema: UserSchema },
       { name: Quest.name, schema: QuestSchema },
     ]),
+    TicketModule,
     ConfigModule,
   ],
   providers: [TestResolver, TestService],
