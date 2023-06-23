@@ -23,4 +23,21 @@ export class StringUtil {
       String(targetB).toUpperCase(),
     );
   }
+
+  static isEqualsIgnoreCaseAny(
+    targetA: string,
+    ...comparedList: string[]
+  ): boolean {
+    for (const target of comparedList) {
+      if (
+        this.trimAndEqual(
+          String(targetA).toUpperCase(),
+          String(target).toUpperCase(),
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
