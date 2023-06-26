@@ -1,4 +1,4 @@
-name: Docker Image CI/CD with arguments - Develop environment
+name: Develop - Docker Image CI/CD with arguments
 
 on:
   push:

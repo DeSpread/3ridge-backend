@@ -1,4 +1,4 @@
-name: Docker Image CI/CD with arguments - Production environment
+name: Production - Docker Image CI/CD with arguments
 
 on:
   push:

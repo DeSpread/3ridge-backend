@@ -1,4 +1,4 @@
-name: Docker Image CI/CD with arguments - Staging environment
+name: Staging - Docker Image CI/CD with arguments
 
 on:
   push:
