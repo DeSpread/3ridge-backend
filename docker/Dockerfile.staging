@@ -32,4 +32,4 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD [ "yarn", "start:beta" ]
+CMD [ "yarn", "start:staging" ]

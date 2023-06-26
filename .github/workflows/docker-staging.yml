@@ -1,13 +1,13 @@
-name: Beta - Docker Image CI/CD with arguments
+name: Docker Image CI/CD with arguments - Staging environment
 
 on:
   push:
-    branches: [ beta ]
+    branches: [ staging ]
 
 env:
   VERSION: ${{ github.sha }}
   DOCKER_IMAGE_NAME: 3ridge-backend
-  DOCKER_IMAGE_TAG: beta
+  DOCKER_IMAGE_TAG: staging
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,25 +26,25 @@ jobs:
         with:
           context: .
           push: true
-          file: ./docker/Dockerfile.beta
+          file: ./docker/Dockerfile.staging
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
           build-args: |
-            DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
-            AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
-            TWITTER_BEARER=${{ secrets.BETA_TWITTER_BEARER }}
-            APTOS_PRIVATE_KEY=${{ secrets.BETA_APTOS_PRIVATE_KEY }}
+            DATABASE_MONGODB_ENDPOINT=${{ secrets.STAGING_DATABASE_MONGODB_ENDPOINT }}
+            AUTH_JWT_SECRET=${{ secrets.STAGING_AUTH_JWT_SECRET }}
+            TWITTER_BEARER=${{ secrets.STAGING_TWITTER_BEARER }}
+            APTOS_PRIVATE_KEY=${{ secrets.STAGING_APTOS_PRIVATE_KEY }}
             ELASTICSEARCH_ENDPOINT=${{ secrets.ELASTICSEARCH_ENDPOINT }}
             ELASTICSEARCH_AUTH_USERNAME=${{ secrets.ELASTICSEARCH_AUTH_USERNAME }}
             ELASTICSEARCH_AUTH_PASSWORD=${{ secrets.ELASTICSEARCH_AUTH_PASSWORD }}
-            ELASTICSEARCH_LOG_INDEX=${{ secrets.BETA_ELASTICSEARCH_LOG_INDEX }}
+            ELASTICSEARCH_LOG_INDEX=${{ secrets.STAGING_ELASTICSEARCH_LOG_INDEX }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: ssh connect & restart docker - beta1
+      - name: ssh connect & restart docker - staging1
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.BETA_HOST1 }}
+          host: ${{ secrets.STAGING_HOST1 }}
           debug: true
           sync: true
           script_stop: true
