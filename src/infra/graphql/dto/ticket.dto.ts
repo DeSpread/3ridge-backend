@@ -44,6 +44,9 @@ export class TicketUpdateInput extends PartialType(TicketCreateInput) {
 
   @Field({ nullable: true })
   completed: boolean;
+
+  @Field({nullable: true})
+  visible: boolean;
 }
 
 @ArgsType()
