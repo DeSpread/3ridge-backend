@@ -10,14 +10,15 @@ import { ChainType } from '../constant/chain.type';
 import { UserService } from './user.service';
 import { StringUtil } from '../util/string.util';
 import { ErrorCode } from '../constant/error.constant';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { LoggerService } from './logger.service';
 
 @Injectable()
 export class RewardService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @Inject(forwardRef(() => TicketService))
     private readonly ticketService: TicketService,
+
+    private readonly logger: LoggerService,
     private readonly aptosService: AptosService,
     private readonly userService: UserService,
   ) {}

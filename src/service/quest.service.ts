@@ -22,12 +22,11 @@ import { IsCompletedQuestByUserIdResponse } from '../infra/graphql/dto/response.
 import { TicketService } from './ticket.service';
 import { ChainType } from '../constant/chain.type';
 import { LoggerService } from './logger.service';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class QuestService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
+    private readonly logger: LoggerService,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
     private userService: UserService,

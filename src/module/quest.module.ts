@@ -9,6 +9,7 @@ import { UserModule } from './user.module';
 import { Project, ProjectSchema } from '../infra/schema/project.schema';
 import { VerifierModule } from './verifier.module';
 import { TicketModule } from './ticket.module';
+import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TicketModule } from './ticket.module';
     ConfigModule,
     UserModule,
     VerifierModule,
+    LoggerModule,
     forwardRef(() => TicketModule),
   ],
   providers: [QuestResolver, QuestService],
