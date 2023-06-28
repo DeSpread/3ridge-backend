@@ -7,6 +7,7 @@ import { User, UserSchema } from '../infra/schema/user.schema';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
 import { TicketModule } from './ticket.module';
+import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TicketModule } from './ticket.module';
     ]),
     TicketModule,
     ConfigModule,
+    LoggerModule,
   ],
   providers: [TestResolver, TestService],
   exports: [TestService],

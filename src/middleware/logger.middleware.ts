@@ -29,7 +29,7 @@ export class LoggerMiddleware implements NestMiddleware {
       return;
     }
 
-    this.loggerService.debugWithES(_service, {
+    this.loggerService.accessLogWithES(_service, {
       service: _service,
       url: _url,
       headers: _headers,
