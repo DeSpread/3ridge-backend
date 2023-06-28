@@ -29,8 +29,8 @@ jobs:
           file: ./docker/Dockerfile.prod
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
           build-args: |
-            DATABASE_MONGODB_ENDPOINT=${{ secrets.BETA_DATABASE_MONGODB_ENDPOINT }}
-            AUTH_JWT_SECRET=${{ secrets.BETA_AUTH_JWT_SECRET }}
+            DATABASE_MONGODB_ENDPOINT=${{ secrets.PROD_DATABASE_MONGODB_ENDPOINT }}
+            AUTH_JWT_SECRET=${{ secrets.PROD_AUTH_JWT_SECRET }}
             TWITTER_BEARER=${{ secrets.PROD_TWITTER_BEARER }}
             APTOS_PRIVATE_KEY=${{ secrets.PROD_APTOS_PRIVATE_KEY }}
             ELASTICSEARCH_ENDPOINT=${{ secrets.ELASTICSEARCH_ENDPOINT }}
