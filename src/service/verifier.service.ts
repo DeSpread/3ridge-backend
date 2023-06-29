@@ -36,6 +36,7 @@ export class VerifierService {
         );
       });
     this._twitterClient = this._twitterClientPool.next();
+    console.log(client);
   }
 
   get twitterReadOnlyClient() {
