@@ -19,17 +19,13 @@ export class LoggerMiddleware implements NestMiddleware {
 
     // Dev 환경에서 GraphQL playground을 켜놓았을때 주기적으로 요청되어 필터링이 필요함
     if (
-      StringUtil.isEqualsIgnoreCaseAny(_service, 'health') ||
-      StringUtil.isEqualsIgnoreCaseAny(
-        _body?.operationName,
-        'IntrospectionQuery',
-      )
+      StringUtil.isEqualsIgnoreCaseAny(_service, 'IntrospectionQuery', 'health')
     ) {
       next();
       return;
     }
 
-    this.loggerService.accessLogWithES(_service, {
+    this.loggerService.debugWithES(_service, {
       service: _service,
       url: _url,
       headers: _headers,

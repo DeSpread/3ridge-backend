@@ -8,9 +8,9 @@ export class StringUtil {
     const wrappedStringTarget = String(target);
 
     if (this.trim(wrappedStringSource) === this.trim(wrappedStringTarget)) {
-      // console.log(
-      //   `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
-      // );
+      console.log(
+        `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
+      );
       return true;
     }
 

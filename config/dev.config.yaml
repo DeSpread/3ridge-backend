@@ -1,3 +1,2 @@
 aptos:
   nodeEndpoint: "https://fullnode.testnet.aptoslabs.com"
-  indexerEndpoint: "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql"

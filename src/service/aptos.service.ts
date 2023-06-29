@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   AptosAccount,
@@ -11,7 +11,7 @@ import {
 import { ApolloError } from 'apollo-server-express';
 import { AptosNFT } from '../model/reward.model';
 import { UserWallet } from '../infra/schema/user.schema';
-import { LoggerService } from './logger.service';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 /*
  * Treasury Wallet
@@ -27,7 +27,7 @@ export class AptosService {
   private coinClient;
 
   constructor(
-    private readonly logger: LoggerService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     private configService: ConfigService,
   ) {
     const className = 'AptosService';
@@ -49,10 +49,10 @@ export class AptosService {
     this.tokenClient = new TokenClient(this.client);
     this.coinClient = new CoinClient(this.client);
 
-    this.logger.debug(
+    this.logger.verbose(
       `[${className}] Our NFT creator address: ${this.nftCreator.address()}`,
     );
-    this.logger.debug(
+    this.logger.verbose(
       `[${className}] Aptos node endpoint: ${aptosNodeEndpoint}`,
     );
   }
@@ -63,10 +63,10 @@ export class AptosService {
   ): Promise<string> {
     const funcName = this.claimAptosNFT.name;
     try {
-      this.logger.debug(
+      this.logger.verbose(
         `[${funcName}] Our NFT creator address: ${this.nftCreator.address()}`,
       );
-      this.logger.debug(
+      this.logger.verbose(
         `[${funcName}] user try to claim Aptos NFT.userWallet: ${JSON.stringify(
           userWallet,
         )}, Aptos NFT: ${JSON.stringify(aptosNFT)}`,

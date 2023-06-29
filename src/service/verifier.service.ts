@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../infra/schema/user.schema';
 import { TwitterApi } from 'twitter-api-v2';
 import { StringUtil } from '../util/string.util';
@@ -8,8 +8,8 @@ import { ErrorCode } from '../constant/error.constant';
 import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
 import { gql, GraphQLClient } from 'graphql-request';
 import { RoundRobinItem, SequentialRoundRobin } from 'round-robin-js';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { retryAsyncUntilDefined } from 'ts-retry/lib/cjs/retry';
-import { LoggerService } from './logger.service';
 
 @Injectable()
 export class VerifierService {
@@ -21,7 +21,7 @@ export class VerifierService {
   private _twitterClient?: RoundRobinItem<TwitterApi>;
 
   constructor(
-    private readonly logger: LoggerService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectGraphQLClient() private readonly client: GraphQLClient,
     private configService: ConfigService,
     private userService: UserService,
