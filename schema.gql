@@ -40,7 +40,6 @@ type IsCompletedQuestByUserIdResponse {
 }
 
 type Mutation {
-  checkAndUpdateWinner(ticketId: String!, userId: String!): Ticket!
   claimReward(ticketId: String!, userId: String!): Boolean!
   clearParticipatedAllEvents: Boolean!
   clearParticipatedAllEventsByUserId(userId: String!): Boolean!
@@ -50,7 +49,6 @@ type Mutation {
   createUserByEmail(email: String!): User!
   createUserByGmail(gmail: String!, profileImageUrl: String): User!
   createUserByWallet(address: String!, chain: ChainType!): User!
-  participateTicketOfUser(ticketId: String!, userId: String!): Ticket!
   removeProject(projectId: String!): Project!
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
@@ -111,7 +109,6 @@ type Query {
   findRankByUserId(limit: Int = 25, skip: Int = 0, userId: String!): Float!
   getWalletAddressOfWinner(chainType: String!, ticketId: String!): [String!]!
   isCompletedQuestByUserId(questId: String!, userId: String!): IsCompletedQuestByUserIdResponse!
-  isCompletedTicket(ticketId: String!, userId: String!): Boolean!
   isFollowTwitterByUserId(targetTwitterUsername: String!, userId: String!): User!
   isLikingTweetByUserId(targetTweetId: String!, userId: String!): User!
   isRegisteredWallet(address: String!, chain: ChainType!): Boolean!

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { User, UserWallet } from '../infra/schema/user.schema';
@@ -13,18 +13,18 @@ import { Ticket } from '../infra/schema/ticket.schema';
 import { ObjectUtil } from '../util/object.util';
 import { QueryOptions } from '../infra/graphql/dto/argument.dto';
 import { LoggerService } from './logger.service';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 const { ObjectId } = mongoose.Types;
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Project.name)
     private readonly projectModel: Model<Project>,
+
+    private readonly logger: LoggerService,
   ) {}
 
   async createByWallet(walletInput: UserWallet): Promise<User> {

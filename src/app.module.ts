@@ -27,6 +27,9 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .forRoutes(
+        { path: '*', method: RequestMethod.GET },
+        { path: '*', method: RequestMethod.POST },
+      );
   }
 }

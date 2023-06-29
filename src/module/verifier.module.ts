@@ -4,11 +4,10 @@ import { VerifierResolver } from '../infra/graphql/resolver/verifier.resolver';
 import { UserModule } from './user.module';
 import { GraphQLRequestModule } from '@golevelup/nestjs-graphql-request';
 import { VerifierService } from '../service/verifier.service';
+import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
-    ConfigModule,
-    UserModule,
     GraphQLRequestModule.forRootAsync(GraphQLRequestModule, {
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -21,6 +20,9 @@ import { VerifierService } from '../service/verifier.service';
       }),
       inject: [ConfigService],
     }),
+    ConfigModule,
+    UserModule,
+    LoggerModule,
   ],
   providers: [VerifierResolver, VerifierService],
   exports: [VerifierService],
