@@ -3,7 +3,7 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { RequestIdModule } from './request.id.module';
 import { SearchModule } from './search.module';
 import { LoggerService } from '../service/logger.service';
@@ -25,7 +25,7 @@ import { LoggerService } from '../service/logger.service';
       ],
     }),
     RequestIdModule,
-    SearchModule,
+    forwardRef(() => SearchModule),
   ],
   providers: [LoggerService],
   exports: [LoggerService],
