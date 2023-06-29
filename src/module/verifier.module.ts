@@ -5,7 +5,6 @@ import { VerifierService } from '../service/verifier.service';
 import { UserModule } from './user.module';
 import { GraphQLRequestModule } from '@golevelup/nestjs-graphql-request';
 
-
 @Module({
   imports: [
     ConfigModule,
