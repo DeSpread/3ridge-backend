@@ -8,6 +8,7 @@ import {
   TicketUpdateInput,
 } from '../infra/graphql/dto/ticket.dto';
 import { ErrorCode } from '../constant/error.constant';
+import { Quest } from '../infra/schema/quest.schema';
 import { QuestService } from './quest.service';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../util/object.util';
@@ -18,21 +19,21 @@ import { TicketSortType, TicketStatusType } from '../constant/ticket.type';
 import { QueryOptions } from '../infra/graphql/dto/argument.dto';
 import { RewardPolicyType } from '../constant/reward.type';
 import { RewardContext } from '../model/reward.model';
-import { LoggerService } from './logger.service';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class TicketService {
   constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(Ticket.name)
     private ticketModel: Model<Ticket>,
-
-    @Inject(forwardRef(() => RewardService))
-    private rewardService: RewardService,
+    @InjectModel(Quest.name)
+    private questModel: Model<Quest>,
     @Inject(forwardRef(() => QuestService))
     private questService: QuestService,
-
+    @Inject(forwardRef(() => RewardService))
+    private rewardService: RewardService,
     private userService: UserService,
-    private readonly logger: LoggerService,
   ) {}
 
   async find(
