@@ -11,13 +11,14 @@ import { LoggerService } from './logger.service';
 @Injectable()
 export class TestService {
   constructor(
-    private readonly logger: LoggerService,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
+
+    private readonly logger: LoggerService,
     private readonly ticketService: TicketService,
   ) {}
 

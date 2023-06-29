@@ -6,7 +6,7 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class LoggerService {
-  requestId: string;
+  readonly requestId: string;
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,

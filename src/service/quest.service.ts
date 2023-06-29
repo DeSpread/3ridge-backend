@@ -34,8 +34,8 @@ export class QuestService {
     private readonly ticketModel: Model<Ticket>,
 
     private readonly logger: LoggerService,
-    private userService: UserService,
-    private verifierService: VerifierService,
+    private readonly userService: UserService,
+    private readonly verifierService: VerifierService,
   ) {}
 
   async participateTicketOfUser(

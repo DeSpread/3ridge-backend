@@ -1,8 +1,7 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RewardPolicy } from '../infra/graphql/dto/policy.dto';
 import { AptosNFT, RewardContext } from '../model/reward.model';
 import { RewardPolicyType, RewardUnitType } from '../constant/reward.type';
-import { TicketService } from './ticket.service';
 import { AptosService } from './aptos.service';
 import { Ticket } from '../infra/schema/ticket.schema';
 import { User, UserWallet } from '../infra/schema/user.schema';
@@ -11,12 +10,15 @@ import { UserService } from './user.service';
 import { StringUtil } from '../util/string.util';
 import { ErrorCode } from '../constant/error.constant';
 import { LoggerService } from './logger.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ObjectUtil } from '../util/object.util';
 
 @Injectable()
 export class RewardService {
   constructor(
-    @Inject(forwardRef(() => TicketService))
-    private readonly ticketService: TicketService,
+    @InjectModel(Ticket.name)
+    private readonly ticketModel: Model<Ticket>,
 
     private readonly logger: LoggerService,
     private readonly aptosService: AptosService,
@@ -37,7 +39,7 @@ export class RewardService {
   }
 
   async checkRewardClaimableUser(ticketId: string, userId: string) {
-    const ticket: Ticket = await this.ticketService.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
     const user: User = await this.userService.findById(userId);
 
     const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
@@ -86,7 +88,7 @@ export class RewardService {
 
     await this.checkRewardClaimableUser(ticketId, userId);
 
-    const ticket: Ticket = await this.ticketService.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
     const user: User = await this.userService.findById(userId);
     const rewardContext: RewardContext = JSON.parse(
       ticket.rewardPolicy.context,
@@ -111,7 +113,54 @@ export class RewardService {
       return false;
     }
 
-    await this.ticketService.checkAndUpdateRewardClaimedUser(ticketId, userId);
+    await this.checkAndUpdateRewardClaimedUser(ticketId, userId);
     return true;
+  }
+
+  async checkAndUpdateRewardClaimedUser(
+    ticketId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    let user: User;
+    try {
+      user = await this.userService.findUserById(userId);
+    } catch (e) {
+      this.logger.error(e.message);
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    if (ObjectUtil.isNull(user)) {
+      throw ErrorCode.NOT_FOUND_USER;
+    }
+
+    const ticket: Ticket = await this.ticketModel.findById(ticketId);
+
+    if (ObjectUtil.isNull(ticket)) {
+      throw ErrorCode.NOT_FOUND_TICKET;
+    }
+
+    const isAlreadyClaimed: User = await ticket.rewardClaimedUsers.find((x) =>
+      StringUtil.isEqualsIgnoreCase(x._id, userId),
+    );
+
+    if (!ObjectUtil.isNull(isAlreadyClaimed)) {
+      throw ErrorCode.ALREADY_CLAIMED_REWARD;
+    }
+
+    const ticket0 = await this.ticketModel.findByIdAndUpdate(
+      { _id: ticketId },
+      {
+        $addToSet: {
+          rewardClaimedUsers: user,
+        },
+      },
+      { new: true },
+    );
+
+    this.logger.debug(
+      `[checkAndUpdateRewardClaimedUser] Successful to add this user to claimed user list of ticket. ticketId: ${ticketId}, userId: ${userId}`,
+    );
+
+    return ticket0;
   }
 }

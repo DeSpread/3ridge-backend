@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery, Model } from 'mongoose';
 import { Ticket } from '../infra/schema/ticket.schema';
@@ -10,9 +10,7 @@ import {
 import { ErrorCode } from '../constant/error.constant';
 import { RewardService } from './reward.service';
 import { ObjectUtil } from '../util/object.util';
-import { User } from '../infra/schema/user.schema';
 import { UserService } from './user.service';
-import { StringUtil } from '../util/string.util';
 import { TicketSortType, TicketStatusType } from '../constant/ticket.type';
 import { QueryOptions } from '../infra/graphql/dto/argument.dto';
 import { LoggerService } from './logger.service';
@@ -24,12 +22,10 @@ export class TicketService {
     @InjectModel(Ticket.name)
     private ticketModel: Model<Ticket>,
 
-    @Inject(forwardRef(() => RewardService))
-    private rewardService: RewardService,
-
     private readonly logger: LoggerService,
-    private userService: UserService,
-    private questService: QuestService,
+    private readonly userService: UserService,
+    private readonly questService: QuestService,
+    private readonly rewardService: RewardService,
   ) {}
 
   async find(
@@ -207,52 +203,5 @@ export class TicketService {
     ) {
       throw ErrorCode.BAD_REQUEST_TICKET_MANDATORY;
     }
-  }
-
-  async checkAndUpdateRewardClaimedUser(
-    ticketId: string,
-    userId: string,
-  ): Promise<Ticket> {
-    let user: User;
-    try {
-      user = await this.userService.findUserById(userId);
-    } catch (e) {
-      this.logger.error(e.message);
-      throw ErrorCode.NOT_FOUND_USER;
-    }
-
-    if (ObjectUtil.isNull(user)) {
-      throw ErrorCode.NOT_FOUND_USER;
-    }
-
-    const ticket: Ticket = await this.ticketModel.findById(ticketId);
-
-    if (ObjectUtil.isNull(ticket)) {
-      throw ErrorCode.NOT_FOUND_TICKET;
-    }
-
-    const isAlreadyClaimed: User = await ticket.rewardClaimedUsers.find((x) =>
-      StringUtil.isEqualsIgnoreCase(x._id, userId),
-    );
-
-    if (!ObjectUtil.isNull(isAlreadyClaimed)) {
-      throw ErrorCode.ALREADY_CLAIMED_REWARD;
-    }
-
-    const ticket0 = await this.ticketModel.findByIdAndUpdate(
-      { _id: ticketId },
-      {
-        $addToSet: {
-          rewardClaimedUsers: user,
-        },
-      },
-      { new: true },
-    );
-
-    this.logger.debug(
-      `[${this.checkAndUpdateRewardClaimedUser.name}] Successful to add this user to claimed user list of ticket. ticketId: ${ticketId}, userId: ${userId}`,
-    );
-
-    return ticket0;
   }
 }

@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TicketResolver } from '../infra/graphql/resolver/ticket.resolver';
@@ -13,7 +13,7 @@ import { LoggerModule } from './loggerModule';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Ticket.name, schema: TicketSchema }]),
-    forwardRef(() => RewardModule),
+    RewardModule,
     QuestModule,
     ConfigModule,
     UserModule,

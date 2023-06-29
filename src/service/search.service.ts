@@ -10,7 +10,7 @@ export class SearchService {
   debugLogIndex: string;
 
   constructor(
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly elasticsearchService: ElasticsearchService,
   ) {
     this.accessLogIndex =

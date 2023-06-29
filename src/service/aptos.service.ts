@@ -20,15 +20,15 @@ import { LoggerService } from './logger.service';
  * */
 @Injectable()
 export class AptosService {
-  private nftCreator: AptosAccount;
-  private client;
+  private readonly nftCreator: AptosAccount;
+  private readonly client;
   private faucetClient;
   private tokenClient;
   private coinClient;
 
   constructor(
     private readonly logger: LoggerService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
   ) {
     const className = 'AptosService';
     const aptosNodeEndpoint =

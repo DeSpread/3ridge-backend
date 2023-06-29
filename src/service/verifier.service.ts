@@ -21,10 +21,11 @@ export class VerifierService {
   private _twitterClient?: RoundRobinItem<TwitterApi>;
 
   constructor(
-    private readonly logger: LoggerService,
     @InjectGraphQLClient() private readonly client: GraphQLClient,
-    private configService: ConfigService,
-    private userService: UserService,
+
+    private readonly logger: LoggerService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {
     configService
       .get<string>('TWITTER_BEARER')
