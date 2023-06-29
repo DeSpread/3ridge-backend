@@ -20,17 +20,15 @@ export class LoggerService {
     return `${this.requestId} > ${message}`;
   }
 
-  private async insertAccessLogToES(
-    logSearchData: LogSearchData,
-  ): Promise<boolean> {
+  private async insertLogToES(logSearchData: LogSearchData): Promise<boolean> {
     try {
       this.logger.debug(
-        this.getMessageWithRequestId('Try to indexing access log data.'),
+        this.getMessageWithRequestId('Try to indexing log data.'),
       );
-      await this.searchService.indexAccessLogData(logSearchData);
+      await this.searchService.indexToLogData(logSearchData);
       this.logger.debug(
         this.getMessageWithRequestId(
-          'Successful indexing to access log data is completed',
+          'Successful indexing to log data is completed',
         ),
       );
       return true;
@@ -40,48 +38,19 @@ export class LoggerService {
     return false;
   }
 
-  private async insertDebugLogToES(
-    logSearchData: LogSearchData,
-  ): Promise<boolean> {
-    try {
-      this.logger.debug(
-        this.getMessageWithRequestId('Try to indexing debug log data.'),
-      );
-      await this.searchService.indexDebugLogData(logSearchData);
-      this.logger.debug(
-        this.getMessageWithRequestId(
-          'Successful indexing to debug log data is completed',
-        ),
-      );
-      return true;
-    } catch (e) {
-      this.logger.error(this.getMessageWithRequestId(e.message));
-    }
-    return false;
-  }
-
-  debug(message?: any, withES = true, requestContext?: any) {
+  debug(message?: any) {
     this.logger.debug(this.getMessageWithRequestId(message));
-    if (withES) {
-      const log = new LogSearchData(
-        this.requestId,
-        message,
-        LogLevel.DEBUG,
-        requestContext,
-      );
-      this.insertDebugLogToES(log);
-    }
   }
 
   error(message?: any) {
     this.logger.error(this.getMessageWithRequestId(message));
   }
 
-  accessLogWithES(message?: any, requestContext?: any) {
+  debugWithES(message?: any, requestContext?: any) {
     const log = new LogSearchData(
       this.requestId,
       message,
-      LogLevel.INFO,
+      LogLevel.DEBUG,
       requestContext,
     );
     this.logger.debug(
@@ -89,7 +58,7 @@ export class LoggerService {
         log.requestContext,
       )}`,
     );
-    this.insertAccessLogToES(log);
+    this.insertLogToES(log);
   }
 
   errorWithES(message?: any, requestContext?: any) {
@@ -104,6 +73,6 @@ export class LoggerService {
         log.requestContext,
       )}`,
     );
-    this.insertAccessLogToES(log);
+    this.insertLogToES(log);
   }
 }
