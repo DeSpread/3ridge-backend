@@ -1,0 +1,3 @@
+aptos:
+  nodeEndpoint: "https://fullnode.mainnet.aptoslabs.com"
+  indexerEndpoint: "https://indexer.mainnet.aptoslabs.com/v1/graphql"

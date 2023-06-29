@@ -4,7 +4,7 @@ export enum ChainType {
   EVM = 'EVM',
   APTOS = 'APTOS',
   SUI = 'SUI',
-  STACKS = 'STACKS'
+  STACKS = 'STACKS',
 }
 
 registerEnumType(ChainType, { name: 'ChainType' });

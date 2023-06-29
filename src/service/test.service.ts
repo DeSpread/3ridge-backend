@@ -1,21 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../../schema/user.schema';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { User } from '../infra/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
-import { Ticket } from '../../schema/ticket.schema';
-import { Quest } from '../../schema/quest.schema';
+import { Model } from 'mongoose';
+import { Ticket } from '../infra/schema/ticket.schema';
+import { Quest } from '../infra/schema/quest.schema';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { ChainType } from '../constant/chain.type';
+import { TicketService } from './ticket.service';
 
 @Injectable()
 export class TestService {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<Ticket>,
     @InjectModel(Quest.name)
     private readonly questModel: Model<Quest>,
+    private readonly ticketService: TicketService,
   ) {}
 
   async clearParticipatedAllEvents(): Promise<boolean> {
@@ -84,5 +87,29 @@ export class TestService {
       console.error(e);
       return false;
     }
+  }
+
+  async testLogMessage(message: string) {
+    this.logger.debug(message);
+    return true;
+  }
+
+  async getWalletAddressOfWinner(ticketId: string, chainType: ChainType) {
+    const ticket = await this.ticketService.findById(ticketId);
+    const winners: User[] = ticket.winners;
+
+    const walletAddress = [];
+    for (const user of winners) {
+      console.log(user._id);
+      if (user && user.wallets) {
+        user.wallets.map((value) => {
+          if (value.chain === chainType) {
+            walletAddress.push(value.address);
+          }
+        });
+      }
+    }
+
+    return walletAddress;
   }
 }

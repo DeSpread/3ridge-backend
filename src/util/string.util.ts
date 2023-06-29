@@ -7,9 +7,6 @@ export class StringUtil {
     const wrappedStringSource = String(source);
     const wrappedStringTarget = String(target);
 
-    console.log(
-      `check if equal string source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
-    );
     if (this.trim(wrappedStringSource) === this.trim(wrappedStringTarget)) {
       console.log(
         `source and target is equal. source: ${wrappedStringSource}, target: ${wrappedStringTarget}`,
@@ -25,5 +22,22 @@ export class StringUtil {
       String(targetA).toUpperCase(),
       String(targetB).toUpperCase(),
     );
+  }
+
+  static isEqualsIgnoreCaseAny(
+    targetA: string,
+    ...comparedList: string[]
+  ): boolean {
+    for (const target of comparedList) {
+      if (
+        this.trimAndEqual(
+          String(targetA).toUpperCase(),
+          String(target).toUpperCase(),
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
