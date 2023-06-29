@@ -26,14 +26,6 @@ export class TicketResolver {
     );
   }
 
-  @Query(() => Boolean)
-  async isCompletedTicket(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    return this.ticketService.isCompletedTicket(ticketId, userId);
-  }
-
   @Query(() => Ticket)
   async ticketById(@Args('ticketId') ticketId: string) {
     return this.ticketService.findById(ticketId);
@@ -78,21 +70,5 @@ export class TicketResolver {
   @Mutation(() => Ticket)
   async removeTicketById(@Args('ticketId') ticketId: string) {
     return this.ticketService.removeById(ticketId);
-  }
-
-  @Mutation(() => Ticket)
-  async participateTicketOfUser(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    return this.ticketService.participateTicketOfUser(ticketId, userId);
-  }
-
-  @Mutation(() => Ticket)
-  async checkAndUpdateWinner(
-    @Args('ticketId') ticketId: string,
-    @Args('userId') userId: string,
-  ) {
-    return this.ticketService.checkAndUpdateCompleteTicket(ticketId, userId);
   }
 }

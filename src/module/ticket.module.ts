@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TicketResolver } from '../infra/graphql/resolver/ticket.resolver';
 import { TicketService } from '../service/ticket.service';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
-import { Quest, QuestSchema } from '../infra/schema/quest.schema';
 import { QuestModule } from './quest.module';
 import { UserModule } from './user.module';
 import { ProjectModule } from './project.module';
@@ -13,12 +12,9 @@ import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Ticket.name, schema: TicketSchema },
-      { name: Quest.name, schema: QuestSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Ticket.name, schema: TicketSchema }]),
     forwardRef(() => RewardModule),
-    forwardRef(() => QuestModule),
+    QuestModule,
     ConfigModule,
     UserModule,
     LoggerModule,
