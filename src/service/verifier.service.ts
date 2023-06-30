@@ -261,6 +261,7 @@ export class VerifierService {
       if (!collection || collection.length === 0) return false;
       return true;
     } catch (e) {
+      this.logger.error(`Failed to fetch hasAtosAns API. error: [${e.message}`);
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -290,6 +291,7 @@ export class VerifierService {
       if (!collection || collection.length < transactionCount) return false;
       return true;
     } catch (e) {
+      this.logger.error(`Failed to fetch hasAptosTransactions API. error: [${e.message}`);
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -318,6 +320,7 @@ export class VerifierService {
         if (count > 0) return true;
       }
     } catch (e) {
+      this.logger.error(`Failed to fetch hasAptosNft API. error: [${e.message}`);
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -350,6 +353,7 @@ export class VerifierService {
         }
       }
     } catch (e) {
+      this.logger.error(`Failed to fetch isBridgeToAptos API. error: [${e.message}`);
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
