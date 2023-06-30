@@ -6,7 +6,7 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class LoggerService {
-  requestId: string;
+  readonly requestId: string;
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
@@ -20,15 +20,17 @@ export class LoggerService {
     return `${this.requestId} > ${message}`;
   }
 
-  private async insertLogToES(logSearchData: LogSearchData): Promise<boolean> {
+  private async insertAccessLogToES(
+    logSearchData: LogSearchData,
+  ): Promise<boolean> {
     try {
       this.logger.debug(
-        this.getMessageWithRequestId('Try to indexing log data.'),
+        this.getMessageWithRequestId('Try to indexing access log data.'),
       );
-      await this.searchService.indexToLogData(logSearchData);
+      await this.searchService.indexAccessLogData(logSearchData);
       this.logger.debug(
         this.getMessageWithRequestId(
-          'Successful indexing to log data is completed',
+          'Successful indexing to access log data is completed',
         ),
       );
       return true;
@@ -38,19 +40,48 @@ export class LoggerService {
     return false;
   }
 
-  debug(message?: any) {
+  private async insertDebugLogToES(
+    logSearchData: LogSearchData,
+  ): Promise<boolean> {
+    try {
+      this.logger.debug(
+        this.getMessageWithRequestId('Try to indexing debug log data.'),
+      );
+      await this.searchService.indexDebugLogData(logSearchData);
+      this.logger.debug(
+        this.getMessageWithRequestId(
+          'Successful indexing to debug log data is completed',
+        ),
+      );
+      return true;
+    } catch (e) {
+      this.logger.error(this.getMessageWithRequestId(e.message));
+    }
+    return false;
+  }
+
+  debug(message?: any, withES = true, requestContext?: any) {
     this.logger.debug(this.getMessageWithRequestId(message));
+    if (withES) {
+      const log = new LogSearchData(
+        this.requestId,
+        message,
+        LogLevel.DEBUG,
+        requestContext,
+      );
+      this.insertDebugLogToES(log);
+    }
   }
 
   error(message?: any) {
     this.logger.error(this.getMessageWithRequestId(message));
   }
 
-  debugWithES(message?: any, requestContext?: any) {
+  accessLogWithES(message?: any, requestContext?: any) {
     const log = new LogSearchData(
       this.requestId,
       message,
-      LogLevel.DEBUG,
+      LogLevel.INFO,
       requestContext,
     );
     this.logger.debug(
@@ -58,7 +89,7 @@ export class LoggerService {
         log.requestContext,
       )}`,
     );
-    this.insertLogToES(log);
+    this.insertAccessLogToES(log);
   }
 
   errorWithES(message?: any, requestContext?: any) {
@@ -73,6 +104,6 @@ export class LoggerService {
         log.requestContext,
       )}`,
     );
-    this.insertLogToES(log);
+    this.insertAccessLogToES(log);
   }
 }
