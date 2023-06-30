@@ -7,10 +7,14 @@ import {
   TicketUpdateInput,
 } from '../dto/ticket.dto';
 import { QueryOptions } from '../dto/argument.dto';
+import { QuestService } from '../../../service/quest.service';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
-  constructor(private readonly ticketService: TicketService) {}
+  constructor(
+    private readonly ticketService: TicketService,
+    private readonly questService: QuestService,
+  ) {}
 
   @Query(() => [Ticket])
   async tickets(
@@ -24,6 +28,14 @@ export class TicketResolver {
       queryOptions,
       isVisibleOnly,
     );
+  }
+
+  @Query(() => Boolean)
+  async isCompletedTicket(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.isCompletedTicket(ticketId, userId);
   }
 
   @Query(() => Ticket)
@@ -70,5 +82,21 @@ export class TicketResolver {
   @Mutation(() => Ticket)
   async removeTicketById(@Args('ticketId') ticketId: string) {
     return this.ticketService.removeById(ticketId);
+  }
+
+  @Mutation(() => Ticket)
+  async participateTicketOfUser(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.participateTicketOfUser(ticketId, userId);
+  }
+
+  @Mutation(() => Ticket)
+  async checkAndUpdateWinner(
+    @Args('ticketId') ticketId: string,
+    @Args('userId') userId: string,
+  ) {
+    return this.questService.checkAndUpdateCompleteTicket(ticketId, userId);
   }
 }
