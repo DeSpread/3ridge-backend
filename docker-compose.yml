@@ -19,7 +19,7 @@ services:
         - ELASTICSEARCH_AUTH_USERNAME=${ELASTICSEARCH_AUTH_USERNAME}
         - ELASTICSEARCH_AUTH_PASSWORD=${ELASTICSEARCH_AUTH_PASSWORD}
         - ELASTICSEARCH_LOG_INDEX=${ELASTICSEARCH_LOG_INDEX}
-      dockerfile: ./docker/Dockerfile.prod
+      dockerfile: ./docker/Dockerfile.${DOCKER_ENV}
     ports:
       - "3000:3000"
     volumes:

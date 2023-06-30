@@ -21,4 +21,4 @@ if [[ "$last_element" = 'scripts' ]]; then
   cd ..
 fi
 docker-compose-v1 -f docker-compose.yml down
-docker-compose-v1 -f docker-compose.yml --env-file .env.$fa up --build -d
+docker-compose-v1 -f docker-compose.yml --env-file .env.$fa up --build
