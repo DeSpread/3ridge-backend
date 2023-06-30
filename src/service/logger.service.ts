@@ -6,7 +6,7 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 @Injectable()
 export class LoggerService {
-  requestId: string;
+  readonly requestId: string;
 
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
@@ -25,7 +25,7 @@ export class LoggerService {
       this.logger.debug(
         this.getMessageWithRequestId('Try to indexing log data.'),
       );
-      await this.searchService.indexToLogData(logSearchData);
+      await this.searchService.indexAccessLogData(logSearchData);
       this.logger.debug(
         this.getMessageWithRequestId(
           'Successful indexing to log data is completed',

@@ -7,10 +7,14 @@ import {
   TicketUpdateInput,
 } from '../dto/ticket.dto';
 import { QueryOptions } from '../dto/argument.dto';
+import { QuestService } from '../../../service/quest.service';
 
 @Resolver(() => Ticket)
 export class TicketResolver {
-  constructor(private readonly ticketService: TicketService) {}
+  constructor(
+    private readonly ticketService: TicketService,
+    private readonly questService: QuestService,
+  ) {}
 
   @Query(() => [Ticket])
   async tickets(
@@ -31,7 +35,7 @@ export class TicketResolver {
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.isCompletedTicket(ticketId, userId);
+    return this.questService.isCompletedTicket(ticketId, userId);
   }
 
   @Query(() => Ticket)
@@ -85,7 +89,7 @@ export class TicketResolver {
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.participateTicketOfUser(ticketId, userId);
+    return this.questService.participateTicketOfUser(ticketId, userId);
   }
 
   @Mutation(() => Ticket)
@@ -93,6 +97,6 @@ export class TicketResolver {
     @Args('ticketId') ticketId: string,
     @Args('userId') userId: string,
   ) {
-    return this.ticketService.checkAndUpdateCompleteTicket(ticketId, userId);
+    return this.questService.checkAndUpdateCompleteTicket(ticketId, userId);
   }
 }
