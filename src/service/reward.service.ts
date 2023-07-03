@@ -13,7 +13,6 @@ import { LoggerService } from './logger.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ObjectUtil } from '../util/object.util';
-import { TicketRepository } from '../repository/ticket.repository';
 
 @Injectable()
 export class RewardService {
@@ -24,7 +23,6 @@ export class RewardService {
     private readonly logger: LoggerService,
     private readonly aptosService: AptosService,
     private readonly userService: UserService,
-    private readonly ticketRepository: TicketRepository,
   ) {}
 
   async isInvalidReward(rewardPolicy: RewardPolicy): Promise<boolean> {
@@ -41,7 +39,12 @@ export class RewardService {
   }
 
   async checkRewardClaimableUser(ticketId: string, userId: string) {
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('rewardClaimedUsers')
+      .populate('winners')
+      .exec();
+
     const user: User = await this.userService.findUserById(userId);
 
     const isRewardClaimed: boolean = ticket.rewardClaimedUsers.some((x) =>
@@ -90,7 +93,7 @@ export class RewardService {
 
     await this.checkRewardClaimableUser(ticketId, userId);
 
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel.findById(ticketId).exec();
     const user: User = await this.userService.findUserById(userId);
     const rewardContext: RewardContext = JSON.parse(
       ticket.rewardPolicy.context,
@@ -135,7 +138,10 @@ export class RewardService {
       throw ErrorCode.NOT_FOUND_USER;
     }
 
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('rewardClaimedUsers')
+      .exec();
 
     if (ObjectUtil.isNull(ticket)) {
       throw ErrorCode.NOT_FOUND_TICKET;

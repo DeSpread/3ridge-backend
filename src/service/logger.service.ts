@@ -1,23 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RequestIdService } from './request.id.service';
 import { SearchService } from './search.service';
 import { LogLevel, LogSearchData } from '../model/search.model';
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { RequestContextProvider } from '../common/request.context';
 
 @Injectable()
 export class LoggerService {
-  readonly requestId: string;
-
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: WinstonLogger,
-    private readonly requestIdService: RequestIdService,
     private readonly searchService: SearchService,
-  ) {
-    this.requestId = requestIdService.getRequestId();
-  }
+    private requestContextProvider: RequestContextProvider,
+  ) {}
 
   private getMessageWithRequestId(message: string) {
-    return `${this.requestId} > ${message}`;
+    return `${this.requestContextProvider.getRequestId()} > ${message}`;
   }
 
   private async insertAccessLogToES(
@@ -44,9 +40,6 @@ export class LoggerService {
     logSearchData: LogSearchData,
   ): Promise<boolean> {
     try {
-      this.logger.debug(
-        this.getMessageWithRequestId('Try to indexing debug log data.'),
-      );
       await this.searchService.indexDebugLogData(logSearchData);
       this.logger.debug(
         this.getMessageWithRequestId(
@@ -64,7 +57,7 @@ export class LoggerService {
     this.logger.debug(this.getMessageWithRequestId(message));
     if (withES) {
       const log = new LogSearchData(
-        this.requestId,
+        this.requestContextProvider.getRequestId(),
         message,
         LogLevel.DEBUG,
         requestContext,
@@ -73,13 +66,16 @@ export class LoggerService {
     }
   }
 
-  error(message?: any) {
+  error(message?: any, withES = true, requestContext?: any) {
+    if (withES) {
+      this.errorWithES(message);
+    }
     this.logger.error(this.getMessageWithRequestId(message));
   }
 
   accessLogWithES(message?: any, requestContext?: any) {
     const log = new LogSearchData(
-      this.requestId,
+      this.requestContextProvider.getRequestId(),
       message,
       LogLevel.INFO,
       requestContext,
@@ -94,7 +90,7 @@ export class LoggerService {
 
   errorWithES(message?: any, requestContext?: any) {
     const log = new LogSearchData(
-      this.requestId,
+      this.requestContextProvider.getRequestId(),
       message,
       LogLevel.ERROR,
       requestContext,
