@@ -7,6 +7,7 @@ import { RewardResolver } from '../infra/graphql/resolver/reward.resolver';
 import { LoggerModule } from './loggerModule';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
+import { TicketRepository } from '../repository/ticket.repository';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
     UserModule,
     LoggerModule,
   ],
-  providers: [RewardResolver, RewardService],
+  providers: [RewardResolver, TicketRepository, RewardService],
   exports: [RewardService],
 })
 export class RewardModule {}

@@ -21,8 +21,6 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
-    @InjectModel(Project.name)
-    private readonly projectModel: Model<Project>,
 
     private readonly logger: LoggerService,
   ) {}
@@ -80,15 +78,6 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.userModel
       .find()
-      .populate('userSocial')
-      .populate('managedProjects')
-      .populate('participatingTickets')
-      .exec();
-  }
-
-  async findById(id: string): Promise<User> {
-    return await this.userModel
-      .findById(id)
       .populate('userSocial')
       .populate('managedProjects')
       .populate('participatingTickets')
@@ -179,7 +168,7 @@ export class UserService {
     if (!ObjectId.isValid(userId)) {
       throw ErrorCode.NOT_FOUND_USER;
     }
-    return await this.userModel.findById(userId).exec();
+    return await this.findUserById(userId);
   }
 
   async update(name: string, userUpdateInput: UserUpdateInput) {

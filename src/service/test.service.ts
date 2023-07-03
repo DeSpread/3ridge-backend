@@ -5,8 +5,8 @@ import { Model } from 'mongoose';
 import { Ticket } from '../infra/schema/ticket.schema';
 import { Quest } from '../infra/schema/quest.schema';
 import { ChainType } from '../constant/chain.type';
-import { TicketService } from './ticket.service';
 import { LoggerService } from './logger.service';
+import { TicketRepository } from '../repository/ticket.repository';
 
 @Injectable()
 export class TestService {
@@ -19,7 +19,7 @@ export class TestService {
     private readonly questModel: Model<Quest>,
 
     private readonly logger: LoggerService,
-    private readonly ticketService: TicketService,
+    private readonly ticketRepository: TicketRepository,
   ) {}
 
   async clearParticipatedAllEvents(): Promise<boolean> {
@@ -96,7 +96,7 @@ export class TestService {
   }
 
   async getWalletAddressOfWinner(ticketId: string, chainType: ChainType) {
-    const ticket = await this.ticketService.findById(ticketId);
+    const ticket = await this.ticketRepository.findById(ticketId);
     const winners: User[] = ticket.winners;
 
     const walletAddress = [];

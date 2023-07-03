@@ -8,6 +8,7 @@ import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
 import { Quest, QuestSchema } from '../infra/schema/quest.schema';
 import { TicketModule } from './ticket.module';
 import { LoggerModule } from './loggerModule';
+import { TicketRepository } from '../repository/ticket.repository';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { LoggerModule } from './loggerModule';
     ConfigModule,
     LoggerModule,
   ],
-  providers: [TestResolver, TestService],
+  providers: [TestResolver, TicketRepository, TestService],
   exports: [TestService],
 })
 export class TestModule {}

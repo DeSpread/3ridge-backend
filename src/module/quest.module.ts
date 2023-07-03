@@ -8,6 +8,7 @@ import { UserModule } from './user.module';
 import { VerifierModule } from './verifier.module';
 import { LoggerModule } from './loggerModule';
 import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
+import { TicketRepository } from '../repository/ticket.repository';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
     VerifierModule,
     LoggerModule,
   ],
-  providers: [QuestResolver, QuestService],
+  providers: [QuestResolver, TicketRepository, QuestService],
   exports: [QuestService],
 })
 export class QuestModule {}
