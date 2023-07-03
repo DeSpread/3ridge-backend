@@ -6,7 +6,6 @@ import { Ticket } from '../infra/schema/ticket.schema';
 import { Quest } from '../infra/schema/quest.schema';
 import { ChainType } from '../constant/chain.type';
 import { LoggerService } from './logger.service';
-import { TicketRepository } from '../repository/ticket.repository';
 
 @Injectable()
 export class TestService {
@@ -19,7 +18,6 @@ export class TestService {
     private readonly questModel: Model<Quest>,
 
     private readonly logger: LoggerService,
-    private readonly ticketRepository: TicketRepository,
   ) {}
 
   async clearParticipatedAllEvents(): Promise<boolean> {
@@ -96,7 +94,10 @@ export class TestService {
   }
 
   async getWalletAddressOfWinner(ticketId: string, chainType: ChainType) {
-    const ticket = await this.ticketRepository.findById(ticketId);
+    const ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('winners')
+      .exec();
     const winners: User[] = ticket.winners;
 
     const walletAddress = [];
