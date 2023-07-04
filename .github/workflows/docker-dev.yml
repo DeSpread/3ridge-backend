@@ -52,6 +52,10 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            image=$(docker images -q | tail -n 1)
+            if [ -n "$image" ]; then
+              docker rmi $image
+            fi
             containers=$(docker ps -a -q)
             if [ -n "$containers" ]; then
               docker stop $containers
