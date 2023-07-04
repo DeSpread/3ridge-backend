@@ -52,6 +52,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            containers=$(docker ps -a -q)
             if [ -n "$containers" ]; then
               docker stop $containers
               docker rm $containers
