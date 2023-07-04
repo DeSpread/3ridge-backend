@@ -50,6 +50,7 @@ export class TestService {
   }
 
   async clearParticipatedAllEventsByUserId(userId: string): Promise<boolean> {
+    const methodName = 'clearParticipatedAllEventsByUserId';
     // Reward 포인트 초기화는 skip
     // await this.userModel.updateMany({}, { $set: { participatingTickets: [] } });
     try {
@@ -80,17 +81,12 @@ export class TestService {
         ),
       ]);
 
-      console.log(results);
+      this.logger.debug(`[${methodName}] > ${JSON.stringify(results)}`);
       return true;
     } catch (e) {
-      console.error(e);
+      this.logger.error(`[${methodName}] > ${e}`);
       return false;
     }
-  }
-
-  async testLogMessage(message: string) {
-    this.logger.debug(message);
-    return true;
   }
 
   async getWalletAddressOfWinner(ticketId: string, chainType: ChainType) {
@@ -102,7 +98,7 @@ export class TestService {
 
     const walletAddress = [];
     for (const user of winners) {
-      console.log(user._id);
+      this.logger.debug(`[getWalletAddressOfWinner] > ${user._id}`);
       if (user && user.wallets) {
         user.wallets.map((value) => {
           if (value.chain === chainType) {

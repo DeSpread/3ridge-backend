@@ -563,7 +563,7 @@ export class QuestService {
 
     const quest: Quest = await this.findQuestById(questId);
 
-    console.log(quest.questPolicy.context);
+    this.logger.debug(`[verifyAptosQuest] > ${quest.questPolicy.context}`);
     if (await this.isInvalidQuest(quest.questPolicy)) {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }

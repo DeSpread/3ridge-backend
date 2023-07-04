@@ -6,7 +6,6 @@ import { CustomConfigModule } from './custom.config.module';
 import { AuthModule } from './auth.module';
 import { LoggerModule } from './loggerModule';
 import { SearchModule } from './search.module';
-import { RequestIdModule } from './request.id.module';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { RequestIdModule } from './request.id.module';
     AuthModule,
     LoggerModule,
     SearchModule,
-    RequestIdModule,
   ],
   exports: [
     CustomConfigModule,
@@ -27,7 +25,6 @@ import { RequestIdModule } from './request.id.module';
     AuthModule,
     LoggerModule,
     SearchModule,
-    RequestIdModule,
   ],
 })
 export class CommonModule {}
