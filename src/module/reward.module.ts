@@ -5,19 +5,17 @@ import { AptosModule } from './aptos.module';
 import { UserModule } from './user.module';
 import { RewardResolver } from '../infra/graphql/resolver/reward.resolver';
 import { LoggerModule } from './loggerModule';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
-import { TicketRepository } from '../repository/ticket.repository';
+import { DatabaseModule } from './database.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Ticket.name, schema: TicketSchema }]),
+    DatabaseModule,
     ConfigModule,
     AptosModule,
     UserModule,
     LoggerModule,
   ],
-  providers: [RewardResolver, TicketRepository, RewardService],
+  providers: [RewardResolver, RewardService],
   exports: [RewardService],
 })
 export class RewardModule {}

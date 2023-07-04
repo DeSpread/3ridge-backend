@@ -37,7 +37,7 @@ export class VerifierService {
         );
       });
     this._twitterClient = this._twitterClientPool.next();
-    console.log(client);
+    this.logger.debug(`[Init] > Twitter Client ${JSON.stringify(client)}`);
   }
 
   get twitterReadOnlyClient() {
@@ -291,7 +291,9 @@ export class VerifierService {
       if (!collection || collection.length < transactionCount) return false;
       return true;
     } catch (e) {
-      this.logger.error(`Failed to fetch hasAptosTransactions API. error: [${e.message}`);
+      this.logger.error(
+        `Failed to fetch hasAptosTransactions API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -320,7 +322,9 @@ export class VerifierService {
         if (count > 0) return true;
       }
     } catch (e) {
-      this.logger.error(`Failed to fetch hasAptosNft API. error: [${e.message}`);
+      this.logger.error(
+        `Failed to fetch hasAptosNft API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -353,7 +357,9 @@ export class VerifierService {
         }
       }
     } catch (e) {
-      this.logger.error(`Failed to fetch isBridgeToAptos API. error: [${e.message}`);
+      this.logger.error(
+        `Failed to fetch isBridgeToAptos API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;

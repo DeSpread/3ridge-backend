@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectResolver } from '../infra/graphql/resolver/project.resolver';
 import { ProjectService } from '../service/project.service';
-import { Project, ProjectSchema } from '../infra/schema/project.schema';
-import { Ticket, TicketSchema } from '../infra/schema/ticket.schema';
+import { DatabaseModule } from './database.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Project.name, schema: ProjectSchema },
-      { name: Ticket.name, schema: TicketSchema },
-    ]),
-    ConfigModule,
-  ],
+  imports: [DatabaseModule, ConfigModule],
   providers: [ProjectResolver, ProjectService],
   exports: [ProjectService],
 })
