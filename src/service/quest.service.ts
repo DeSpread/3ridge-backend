@@ -24,7 +24,6 @@ import { LoggerService } from './logger.service';
 import { Ticket } from '../infra/schema/ticket.schema';
 import { RewardContext } from '../model/reward.model';
 import { RewardPolicyType } from '../constant/reward.type';
-import { TicketRepository } from '../repository/ticket.repository';
 
 @Injectable()
 export class QuestService {
@@ -37,7 +36,6 @@ export class QuestService {
     private readonly logger: LoggerService,
     private readonly userService: UserService,
     private readonly verifierService: VerifierService,
-    private readonly ticketRepository: TicketRepository,
   ) {}
 
   async participateTicketOfUser(
@@ -56,7 +54,14 @@ export class QuestService {
       throw ErrorCode.NOT_FOUND_USER;
     }
 
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('quests')
+      .populate('participants')
+      .populate('completedUsers')
+      .populate('winners')
+      .populate('project')
+      .exec();
 
     if (ObjectUtil.isNull(ticket)) {
       throw ErrorCode.NOT_FOUND_TICKET;
@@ -163,7 +168,10 @@ export class QuestService {
       throw ErrorCode.NOT_FOUND_USER;
     }
 
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('completedUsers')
+      .exec();
 
     if (ObjectUtil.isNull(ticket)) {
       throw ErrorCode.NOT_FOUND_TICKET;
@@ -212,7 +220,10 @@ export class QuestService {
       throw ErrorCode.NOT_FOUND_USER;
     }
 
-    const ticket: Ticket = await this.ticketRepository.findById(ticketId);
+    const ticket: Ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('winners')
+      .exec();
 
     if (ObjectUtil.isNull(ticket)) {
       throw ErrorCode.NOT_FOUND_TICKET;
@@ -244,7 +255,11 @@ export class QuestService {
   }
 
   async isCompletedTicket(ticketId: string, userId: string): Promise<boolean> {
-    const ticket = await this.ticketRepository.findById(ticketId);
+    const ticket = await this.ticketModel
+      .findById(ticketId)
+      .populate('quests')
+      .exec();
+
     for (const quest of ticket.quests) {
       const completedUsers: User[] = quest.completedUsers.filter((x) => {
         if (StringUtil.isEqualsIgnoreCase(x._id, userId)) {
@@ -548,7 +563,7 @@ export class QuestService {
 
     const quest: Quest = await this.findQuestById(questId);
 
-    console.log(quest.questPolicy.context);
+    this.logger.debug(`[verifyAptosQuest] > ${quest.questPolicy.context}`);
     if (await this.isInvalidQuest(quest.questPolicy)) {
       throw ErrorCode.BAD_REQUEST_QUIZ_QUEST_COLLECTION;
     }

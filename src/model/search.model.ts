@@ -22,10 +22,10 @@ export class SearchData {
 }
 
 export class LogSearchData extends SearchData {
-  requestId: string;
-  logLevel: LogLevel;
-  message: string;
-  requestContext: string;
+  requestId?: string;
+  logLevel?: LogLevel;
+  message?: string;
+  requestContext?: string;
 
   constructor(
     requestId?: string,
