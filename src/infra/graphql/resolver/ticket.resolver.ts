@@ -47,9 +47,12 @@ export class TicketResolver {
   @Query(() => [Ticket])
   async ticketsByProjectId(
     @Args() ticketStatus: TicketStatusInputType,
+    @Args() queryOptions: QueryOptions,
+    @Args() ticketFilter: TicketFilterInputType,
+    @Args('isVisibleOnly', { defaultValue: true }) isVisibleOnly: boolean,
     @Args('projectId') projectId: string,
   ) {
-    return this.ticketService.ticketsByProjectId(projectId, ticketStatus);
+    return this.ticketService.ticketsByProjectId(projectId, ticketStatus, ticketFilter.eventTypes ? {eventTypes: {$all: ticketFilter.eventTypes}} : {}, queryOptions, isVisibleOnly);
   }
 
   @Query(() => [Ticket])

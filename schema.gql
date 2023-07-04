@@ -140,7 +140,7 @@ type Query {
   projects(limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
   tickets(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
-  ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  ticketsByProjectId(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, projectId: String!, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
@@ -242,6 +242,7 @@ type Ticket {
   completed: Boolean
   completedUsers: [User!]
   description: String
+  description_v2: ContentMetadata
   eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
@@ -263,6 +264,7 @@ input TicketInputType {
   completed: Boolean
   completedUsers: [UserInputType!]
   description: String
+  description_v2: ContentMetadataInputType
   eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
