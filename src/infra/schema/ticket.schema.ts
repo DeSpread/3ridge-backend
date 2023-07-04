@@ -5,6 +5,7 @@ import { Quest } from './quest.schema';
 import { User } from './user.schema';
 import { RewardPolicy } from '../graphql/dto/policy.dto';
 import { Project } from './project.schema';
+import {EventType} from "../../constant/event.type";
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -79,8 +80,8 @@ export class Ticket {
   priority: number;
 
   @Prop()
-  @Field({ nullable: true })
-  recommended: boolean;
+  @Field(() => [EventType], { nullable: true })
+  eventTypes: EventType[];
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);

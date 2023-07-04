@@ -2,7 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Ticket } from '../../schema/ticket.schema';
 import { TicketService } from '../../../service/ticket.service';
 import {
-  TicketCreateInput,
+  TicketCreateInput, TicketFilterInputType,
   TicketStatusInputType,
   TicketUpdateInput,
 } from '../dto/ticket.dto';
@@ -20,11 +20,12 @@ export class TicketResolver {
   async tickets(
     @Args() ticketStatus: TicketStatusInputType,
     @Args() queryOptions: QueryOptions,
+    @Args() ticketFilter: TicketFilterInputType,
     @Args('isVisibleOnly', { defaultValue: true }) isVisibleOnly: boolean,
   ) {
     return this.ticketService.find(
       ticketStatus,
-      {},
+      ticketFilter.eventTypes ? {eventTypes: {$all: ticketFilter.eventTypes}} : {},
       queryOptions,
       isVisibleOnly,
     );

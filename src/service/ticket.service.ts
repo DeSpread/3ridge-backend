@@ -34,10 +34,12 @@ export class TicketService {
     queryOptions: QueryOptions = new QueryOptions(),
     isVisibleOnly = true,
   ): Promise<Ticket[]> {
-    let filter0;
+    let filter0 = {
+      ...filter
+    };
     if (isVisibleOnly) {
       filter0 = {
-        ...filter,
+        ...filter0,
         visible: true,
       };
     }

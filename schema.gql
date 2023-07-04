@@ -48,6 +48,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum EventType {
+  MAIN
+  RECOMMENDED
+}
+
 type IsCompletedQuestByUserIdResponse {
   isCompleted: Boolean!
   questId: String!
@@ -134,7 +139,7 @@ type Query {
   projectByName(projectName: String!): [Project!]!
   projects(limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets(isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  tickets(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
@@ -237,13 +242,13 @@ type Ticket {
   completed: Boolean
   completedUsers: [User!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
   participants: [User!]
   priority: Float
   project: Project
   quests: [Quest!]
-  recommended: Boolean
   rewardClaimedUsers: [User!]
   rewardPolicy: RewardPolicy
   title: String
@@ -258,13 +263,13 @@ input TicketInputType {
   completed: Boolean
   completedUsers: [UserInputType!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
   participants: [UserInputType!]
   priority: Float
   project: ProjectInputType
   quests: [QuestInputType!]
-  recommended: Boolean
   rewardClaimedUsers: [UserInputType!]
   rewardPolicy: RewardPolicyInputType
   title: String
