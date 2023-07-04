@@ -22,11 +22,25 @@ enum ChainType {
 
 enum ContentEncodingType {
   BASE64
+  NONE
 }
 
 enum ContentFormatType {
   HTML
   MARKDOWN_V2
+  TEXT
+}
+
+type ContentMetadata {
+  content: String!
+  contentEncodingType: ContentEncodingType!
+  contentFormatType: ContentFormatType!
+}
+
+input ContentMetadataInputType {
+  content: String!
+  contentEncodingType: ContentEncodingType = BASE64
+  contentFormatType: ContentFormatType = HTML
 }
 
 """
@@ -134,30 +148,20 @@ type Quest {
   _id: String
   completedUsers: [User!]
   description: String
-  questGuides: [QuestGuide!]
+  questGuides: [ContentMetadata!]
   questPolicy: QuestPolicy
   title: String
-}
-
-type QuestGuide {
-  content: String!
-  contentEncodingType: ContentEncodingType!
-  contentFormatType: ContentFormatType!
-}
-
-input QuestGuideInputType {
-  content: String!
-  contentEncodingType: ContentEncodingType = BASE64
-  contentFormatType: ContentFormatType = HTML
+  title_v2: ContentMetadata
 }
 
 input QuestInputType {
   _id: String
   completedUsers: [UserInputType!]
   description: String
-  questGuides: [QuestGuideInputType!]
+  questGuides: [ContentMetadataInputType!]
   questPolicy: QuestPolicyInputType
   title: String
+  title_v2: ContentMetadataInputType
 }
 
 type QuestPolicy {
@@ -236,8 +240,10 @@ type Ticket {
   imageUrl: String
   participantCount: Float
   participants: [User!]
+  priority: Float
   project: Project
   quests: [Quest!]
+  recommended: Boolean
   rewardClaimedUsers: [User!]
   rewardPolicy: RewardPolicy
   title: String
@@ -255,8 +261,10 @@ input TicketInputType {
   imageUrl: String
   participantCount: Float
   participants: [UserInputType!]
+  priority: Float
   project: ProjectInputType
   quests: [QuestInputType!]
+  recommended: Boolean
   rewardClaimedUsers: [UserInputType!]
   rewardPolicy: RewardPolicyInputType
   title: String

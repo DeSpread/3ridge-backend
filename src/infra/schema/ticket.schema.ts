@@ -73,6 +73,14 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   untilTime: Date;
+
+  @Prop()
+  @Field({ nullable: true })
+  priority: number;
+
+  @Prop()
+  @Field({ nullable: true })
+  recommended: boolean;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
