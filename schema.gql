@@ -87,9 +87,11 @@ type Project {
   _id: String
   categories: [CategoryType!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   managedUsers: [User!]
   name: String!
+  priority: Float
   projectSocial: ProjectSocial
   tickets: [Ticket!]
 }
@@ -98,9 +100,11 @@ input ProjectInputType {
   _id: String
   categories: [CategoryType!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   managedUsers: [UserInputType!]
   name: String!
+  priority: Float
   projectSocial: ProjectSocialInputType
   tickets: [TicketInputType!]
 }
@@ -137,7 +141,7 @@ type Query {
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
-  projects(limit: Int = 25, skip: Int = 0): [Project!]!
+  projects(eventTypes: [EventType!], limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
   tickets(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   ticketsByProjectId(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, projectId: String!, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
