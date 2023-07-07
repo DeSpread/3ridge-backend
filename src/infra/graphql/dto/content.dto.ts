@@ -7,9 +7,9 @@ import {
 
 @Schema({ timestamps: true })
 @ArgsType()
-@InputType('QuestGuideInputType', { isAbstract: true })
+@InputType('ContentMetadataInputType', { isAbstract: true })
 @ObjectType()
-export class QuestGuide {
+export class ContentMetadata {
   @Prop({ type: String, enum: ContentFormatType })
   @Field(() => ContentFormatType)
   contentFormatType: ContentFormatType = ContentFormatType.HTML;

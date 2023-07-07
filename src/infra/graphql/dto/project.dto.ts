@@ -3,6 +3,7 @@ import { CategoryType } from '../../../constant/category.enum';
 import { Ticket } from '../../schema/ticket.schema';
 import { Prop } from '@nestjs/mongoose';
 import { ProjectSocial } from '../../schema/project.schema';
+import {EventType} from "../../../constant/event.type";
 
 @ArgsType()
 @InputType()
@@ -29,4 +30,12 @@ export class ProjectCreateInput {
 export class ProjectUpdateInput extends PartialType(ProjectCreateInput) {
   @Field(() => [Ticket], { nullable: true })
   tickets: Ticket[];
+}
+
+
+@ArgsType()
+@InputType()
+export class ProjectFilterInputType {
+  @Field(()=>[EventType], {nullable: true})
+  eventTypes: EventType[];
 }

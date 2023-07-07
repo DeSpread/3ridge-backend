@@ -7,6 +7,8 @@ import {
   TicketStatusType,
 } from '../../../constant/ticket.type';
 import { IsEnum, Max, Min } from 'class-validator';
+import {EventType} from "../../../constant/event.type";
+
 
 @ArgsType()
 @InputType()
@@ -44,6 +46,9 @@ export class TicketUpdateInput extends PartialType(TicketCreateInput) {
 
   @Field({ nullable: true })
   completed: boolean;
+
+  @Field({nullable: true})
+  visible: boolean;
 }
 
 @ArgsType()
@@ -56,4 +61,11 @@ export class TicketStatusInputType {
   @IsEnum(TicketSortType)
   @Field(() => TicketSortType, { nullable: true })
   sort: TicketSortType = TicketSortType.TRENDING;
+}
+
+@ArgsType()
+@InputType()
+export class TicketFilterInputType {
+  @Field(()=>[EventType], {nullable: true})
+  eventTypes: EventType[];
 }

@@ -3,7 +3,7 @@ import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { User } from './user.schema';
 import { QuestPolicy } from '../graphql/dto/policy.dto';
-import { QuestGuide } from '../graphql/dto/guide.dto';
+import { ContentMetadata } from '../graphql/dto/content.dto';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -19,6 +19,10 @@ export class Quest {
 
   @Prop()
   @Field({ nullable: true })
+  title_v2: ContentMetadata;
+
+  @Prop()
+  @Field({ nullable: true })
   description: string;
 
   @Prop()
@@ -30,8 +34,8 @@ export class Quest {
   completedUsers: User[];
 
   @Prop()
-  @Field(() => [QuestGuide], { nullable: true })
-  questGuides: QuestGuide[];
+  @Field(() => [ContentMetadata], { nullable: true })
+  questGuides: ContentMetadata[];
 }
 
 export const QuestSchema = SchemaFactory.createForClass(Quest);

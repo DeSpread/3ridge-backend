@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   AptosAccount,
@@ -11,7 +11,7 @@ import {
 import { ApolloError } from 'apollo-server-express';
 import { AptosNFT } from '../model/reward.model';
 import { UserWallet } from '../infra/schema/user.schema';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
+import { LoggerService } from './logger.service';
 
 /*
  * Treasury Wallet
@@ -20,15 +20,15 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
  * */
 @Injectable()
 export class AptosService {
-  private nftCreator: AptosAccount;
-  private client;
+  private readonly nftCreator: AptosAccount;
+  private readonly client;
   private faucetClient;
   private tokenClient;
   private coinClient;
 
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
-    private configService: ConfigService,
+    private readonly logger: LoggerService,
+    private readonly configService: ConfigService,
   ) {
     const className = 'AptosService';
     const aptosNodeEndpoint =
@@ -49,10 +49,10 @@ export class AptosService {
     this.tokenClient = new TokenClient(this.client);
     this.coinClient = new CoinClient(this.client);
 
-    this.logger.verbose(
+    this.logger.debug(
       `[${className}] Our NFT creator address: ${this.nftCreator.address()}`,
     );
-    this.logger.verbose(
+    this.logger.debug(
       `[${className}] Aptos node endpoint: ${aptosNodeEndpoint}`,
     );
   }
@@ -63,10 +63,10 @@ export class AptosService {
   ): Promise<string> {
     const funcName = this.claimAptosNFT.name;
     try {
-      this.logger.verbose(
+      this.logger.debug(
         `[${funcName}] Our NFT creator address: ${this.nftCreator.address()}`,
       );
-      this.logger.verbose(
+      this.logger.debug(
         `[${funcName}] user try to claim Aptos NFT.userWallet: ${JSON.stringify(
           userWallet,
         )}, Aptos NFT: ${JSON.stringify(aptosNFT)}`,

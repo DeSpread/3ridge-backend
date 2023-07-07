@@ -16,6 +16,8 @@ Next plan is supporting multi chain
 - Email: support@3ridge.xyz
 - Discord : https://discord.gg/3ridge
 
+## Requirements
+you should have .dev.dev, .dev.staging, .dev.prod files
 
 ## Getting Started
 For running the development server:
@@ -33,4 +35,25 @@ yarn run build
 For running the production server:
 ```bash
 yarn start:prod
+```
+
+### Run in docker env
+For start
+- your path root 
+```
+sh scripts/restart.sh [dev | staging | prod]
+```
+- in scripts folder
+```
+sh restart.sh [dev | staging | prod]
+```
+
+For down
+- your path root
+```
+sh scripts/down.sh
+```
+- in scripts folder
+```
+sh down.sh
 ```

@@ -4,6 +4,7 @@ import { ArgsType, Field, InputType, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { Ticket } from './ticket.schema';
 import { CategoryType } from '../../constant/category.enum';
+import {EventType} from "../../constant/event.type";
 
 @Schema()
 @ArgsType()
@@ -66,6 +67,14 @@ export class Project {
   @Prop()
   @Field({ nullable: true })
   projectSocial: ProjectSocial;
+
+  @Prop()
+  @Field({ nullable: true })
+  priority: number;
+
+  @Prop()
+  @Field(() => [EventType], { nullable: true })
+  eventTypes: EventType[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

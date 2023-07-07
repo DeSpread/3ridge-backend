@@ -22,17 +22,36 @@ enum ChainType {
 
 enum ContentEncodingType {
   BASE64
+  NONE
 }
 
 enum ContentFormatType {
   HTML
   MARKDOWN_V2
+  TEXT
+}
+
+type ContentMetadata {
+  content: String!
+  contentEncodingType: ContentEncodingType!
+  contentFormatType: ContentFormatType!
+}
+
+input ContentMetadataInputType {
+  content: String!
+  contentEncodingType: ContentEncodingType = BASE64
+  contentFormatType: ContentFormatType = HTML
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+enum EventType {
+  MAIN
+  RECOMMENDED
+}
 
 type IsCompletedQuestByUserIdResponse {
   isCompleted: Boolean!
@@ -55,7 +74,7 @@ type Mutation {
   removeTicketById(ticketId: String!): Ticket!
   removeUserByName(name: String!): User!
   updateProject(categories: [CategoryType!], description: String, imageUrl: String, name: String, projectId: String!, projectSocial: ProjectSocialInputType, tickets: [TicketInputType!]): Project!
-  updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, winners: [UserInputType!]): Ticket!
+  updateTicketById(completed: Boolean, description: String, imageUrl: String, participants: [UserInputType!], project: String, quests: [QuestInputType!], rewardPolicy: RewardPolicyInputType, ticketId: String!, title: String, untilTime: DateTime, visible: Boolean, winners: [UserInputType!]): Ticket!
   updateUserByName(name: String!, userUpdateInput: UserUpdateInput!): User!
   verify3ridgePoint(questId: String!, ticketId: String!, userId: String!): Quest!
   verifyAptosQuest(questId: String!, ticketId: String!, userId: String!): Quest!
@@ -68,9 +87,11 @@ type Project {
   _id: String
   categories: [CategoryType!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   managedUsers: [User!]
   name: String!
+  priority: Float
   projectSocial: ProjectSocial
   tickets: [Ticket!]
 }
@@ -79,9 +100,11 @@ input ProjectInputType {
   _id: String
   categories: [CategoryType!]
   description: String
+  eventTypes: [EventType!]
   imageUrl: String
   managedUsers: [UserInputType!]
   name: String!
+  priority: Float
   projectSocial: ProjectSocialInputType
   tickets: [TicketInputType!]
 }
@@ -118,10 +141,10 @@ type Query {
   isRetweetedTwitterByUserId(targetTweetId: String!, userId: String!): User!
   projectById(projectId: String!): Project!
   projectByName(projectName: String!): [Project!]!
-  projects(limit: Int = 25, skip: Int = 0): [Project!]!
+  projects(eventTypes: [EventType!], limit: Int = 25, skip: Int = 0): [Project!]!
   ticketById(ticketId: String!): Ticket!
-  tickets(isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
-  ticketsByProjectId(projectId: String!, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  tickets(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
+  ticketsByProjectId(eventTypes: [EventType!], isVisibleOnly: Boolean = true, limit: Int = 25, projectId: String!, skip: Int = 0, sort: TicketSortType = TRENDING, status: TicketStatusType = ALL): [Ticket!]!
   userByEmail(email: String!): User!
   userByGmail(gmail: String!): User!
   userByName(name: String!): User!
@@ -134,30 +157,20 @@ type Quest {
   _id: String
   completedUsers: [User!]
   description: String
-  questGuides: [QuestGuide!]
+  questGuides: [ContentMetadata!]
   questPolicy: QuestPolicy
   title: String
-}
-
-type QuestGuide {
-  content: String!
-  contentEncodingType: ContentEncodingType!
-  contentFormatType: ContentFormatType!
-}
-
-input QuestGuideInputType {
-  content: String!
-  contentEncodingType: ContentEncodingType = BASE64
-  contentFormatType: ContentFormatType = HTML
+  title_v2: ContentMetadata
 }
 
 input QuestInputType {
   _id: String
   completedUsers: [UserInputType!]
   description: String
-  questGuides: [QuestGuideInputType!]
+  questGuides: [ContentMetadataInputType!]
   questPolicy: QuestPolicyInputType
   title: String
+  title_v2: ContentMetadataInputType
 }
 
 type QuestPolicy {
@@ -233,9 +246,12 @@ type Ticket {
   completed: Boolean
   completedUsers: [User!]
   description: String
+  description_v2: ContentMetadata
+  eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
   participants: [User!]
+  priority: Float
   project: Project
   quests: [Quest!]
   rewardClaimedUsers: [User!]
@@ -252,9 +268,12 @@ input TicketInputType {
   completed: Boolean
   completedUsers: [UserInputType!]
   description: String
+  description_v2: ContentMetadataInputType
+  eventTypes: [EventType!]
   imageUrl: String
   participantCount: Float
   participants: [UserInputType!]
+  priority: Float
   project: ProjectInputType
   quests: [QuestInputType!]
   rewardClaimedUsers: [UserInputType!]

@@ -1,8 +1,7 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SearchService } from '../service/search.service';
-import { LoggerModule } from './loggerModule';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { LoggerModule } from './loggerModule';
       inject: [ConfigService],
     }),
     ConfigModule,
-    forwardRef(() => LoggerModule),
   ],
   providers: [SearchService],
   exports: [SearchService],

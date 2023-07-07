@@ -9,9 +9,12 @@ import { AptosModule } from './module/aptos.module';
 import { TestModule } from './module/test.module';
 import { RewardModule } from './module/reward.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { RequestContextModule } from './module/request.context.module';
+import { RequestContextMiddleware } from './middleware/request.context.middleware';
 
 @Module({
   imports: [
+    RequestContextModule,
     CommonModule,
     TicketModule,
     UserModule,
@@ -26,7 +29,10 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .apply(RequestContextMiddleware, LoggerMiddleware)
+      .forRoutes(
+        { path: '*', method: RequestMethod.GET },
+        { path: '*', method: RequestMethod.POST },
+      );
   }
 }
