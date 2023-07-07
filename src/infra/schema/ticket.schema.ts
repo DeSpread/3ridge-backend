@@ -5,6 +5,8 @@ import { Quest } from './quest.schema';
 import { User } from './user.schema';
 import { RewardPolicy } from '../graphql/dto/policy.dto';
 import { Project } from './project.schema';
+import {EventType} from "../../constant/event.type";
+import {ContentMetadata} from "../graphql/dto/content.dto";
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -21,6 +23,10 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   description: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  description_v2: ContentMetadata;
 
   @Prop()
   @Field({ nullable: true })
@@ -73,6 +79,14 @@ export class Ticket {
   @Prop()
   @Field({ nullable: true })
   untilTime: Date;
+
+  @Prop()
+  @Field({ nullable: true })
+  priority: number;
+
+  @Prop()
+  @Field(() => [EventType], { nullable: true })
+  eventTypes: EventType[];
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);

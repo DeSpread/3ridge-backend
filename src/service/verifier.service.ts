@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '../infra/schema/user.schema';
 import { TwitterApi } from 'twitter-api-v2';
 import { StringUtil } from '../util/string.util';
@@ -8,8 +8,8 @@ import { ErrorCode } from '../constant/error.constant';
 import { InjectGraphQLClient } from '@golevelup/nestjs-graphql-request';
 import { gql, GraphQLClient } from 'graphql-request';
 import { RoundRobinItem, SequentialRoundRobin } from 'round-robin-js';
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { retryAsyncUntilDefined } from 'ts-retry/lib/cjs/retry';
+import { LoggerService } from './logger.service';
 
 @Injectable()
 export class VerifierService {
@@ -21,10 +21,11 @@ export class VerifierService {
   private _twitterClient?: RoundRobinItem<TwitterApi>;
 
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     @InjectGraphQLClient() private readonly client: GraphQLClient,
-    private configService: ConfigService,
-    private userService: UserService,
+
+    private readonly logger: LoggerService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {
     configService
       .get<string>('TWITTER_BEARER')
@@ -36,6 +37,7 @@ export class VerifierService {
         );
       });
     this._twitterClient = this._twitterClientPool.next();
+    this.logger.debug(`[Init] > Twitter Client ${JSON.stringify(client)}`);
   }
 
   get twitterReadOnlyClient() {
@@ -259,6 +261,7 @@ export class VerifierService {
       if (!collection || collection.length === 0) return false;
       return true;
     } catch (e) {
+      this.logger.error(`Failed to fetch hasAtosAns API. error: [${e.message}`);
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -288,6 +291,9 @@ export class VerifierService {
       if (!collection || collection.length < transactionCount) return false;
       return true;
     } catch (e) {
+      this.logger.error(
+        `Failed to fetch hasAptosTransactions API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -316,6 +322,9 @@ export class VerifierService {
         if (count > 0) return true;
       }
     } catch (e) {
+      this.logger.error(
+        `Failed to fetch hasAptosNft API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;
@@ -348,6 +357,9 @@ export class VerifierService {
         }
       }
     } catch (e) {
+      this.logger.error(
+        `Failed to fetch isBridgeToAptos API. error: [${e.message}`,
+      );
       throw ErrorCode.APTOS_INDEXER_ERROR;
     }
     return false;

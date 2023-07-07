@@ -1,17 +1,19 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TicketModule } from './ticket.module';
 import { RewardService } from '../service/reward.service';
 import { AptosModule } from './aptos.module';
 import { UserModule } from './user.module';
 import { RewardResolver } from '../infra/graphql/resolver/reward.resolver';
+import { LoggerModule } from './loggerModule';
+import { DatabaseModule } from './database.module';
 
 @Module({
   imports: [
+    DatabaseModule,
     ConfigModule,
     AptosModule,
     UserModule,
-    forwardRef(() => TicketModule),
+    LoggerModule,
   ],
   providers: [RewardResolver, RewardService],
   exports: [RewardService],

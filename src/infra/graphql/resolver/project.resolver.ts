@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProjectService } from '../../../service/project.service';
 import { Project } from '../../schema/project.schema';
-import { ProjectCreateInput, ProjectUpdateInput } from '../dto/project.dto';
+import {ProjectCreateInput, ProjectFilterInputType, ProjectUpdateInput} from '../dto/project.dto';
 import { QueryOptions } from '../dto/argument.dto';
 
 @Resolver(() => Project)
@@ -9,8 +9,8 @@ export class ProjectResolver {
   constructor(private readonly projectService: ProjectService) {}
 
   @Query(() => [Project])
-  async projects(@Args() queryOptions: QueryOptions) {
-    return this.projectService.findAll(queryOptions);
+  async projects(@Args() queryOptions: QueryOptions, @Args() projectFilter: ProjectFilterInputType) {
+    return this.projectService.findAll(projectFilter.eventTypes ? {eventTypes: {$all: projectFilter.eventTypes}} : {}, queryOptions);
   }
 
   @Query(() => Project)
