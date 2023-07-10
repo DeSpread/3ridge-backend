@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { Project } from '../infra/schema/project.schema';
 import {
   ProjectCreateInput,
@@ -31,7 +31,7 @@ export class ProjectService {
   ): Promise<Project[]> {
     return await this.projectModel
       .find(filter, null, queryOptions)
-      .sort({ priority: -1 })
+      .sort({ priority: -1, updatedAt: -1 })
       .populate('managedUsers')
       .populate('tickets')
       .populate('projectSocial')

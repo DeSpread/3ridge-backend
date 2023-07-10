@@ -5,8 +5,9 @@ import { Quest } from './quest.schema';
 import { User } from './user.schema';
 import { RewardPolicy } from '../graphql/dto/policy.dto';
 import { Project } from './project.schema';
-import {EventType} from "../../constant/event.type";
-import {ContentMetadata} from "../graphql/dto/content.dto";
+import { EventType } from '../../constant/event.type';
+import { ContentMetadata } from '../graphql/dto/content.dto';
+import { PointUpdateType } from '../../constant/point.type';
 
 @Schema({ timestamps: true })
 @ArgsType()
@@ -70,7 +71,7 @@ export class Ticket {
 
   @Prop()
   @Field({ nullable: true })
-  visible: boolean = false;
+  visible = false;
 
   @Prop()
   @Field({ nullable: true })
@@ -87,6 +88,10 @@ export class Ticket {
   @Prop()
   @Field(() => [EventType], { nullable: true })
   eventTypes: EventType[];
+
+  @Prop()
+  @Field({ nullable: true })
+  pointUpdateType: PointUpdateType;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
