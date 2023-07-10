@@ -24,6 +24,7 @@ import { LoggerService } from './logger.service';
 import { Ticket } from '../infra/schema/ticket.schema';
 import { RewardContext } from '../model/reward.model';
 import { RewardPolicyType } from '../constant/reward.type';
+import { PointUpdateType } from '../constant/point.type';
 
 @Injectable()
 export class QuestService {
@@ -133,10 +134,11 @@ export class QuestService {
     }
 
     const ticket = await this.addCompletedUserToTicket(ticketId, userId);
-    await this.userService.rewardPointToUser(
-      userId,
-      ticket.rewardPolicy.rewardPoint,
-    );
+    if (ticket?.pointUpdateType === PointUpdateType.PER_TICKET)
+      await this.userService.rewardPointToUser(
+        userId,
+        ticket.rewardPolicy.rewardPoint,
+      );
 
     if (ticket.rewardPolicy.rewardPolicyType === RewardPolicyType.FCFS) {
       this.logger.debug(
