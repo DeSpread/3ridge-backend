@@ -35,7 +35,7 @@ export class TicketService {
     isVisibleOnly = true,
   ): Promise<Ticket[]> {
     let filter0 = {
-      ...filter
+      ...filter,
     };
     if (isVisibleOnly) {
       filter0 = {
@@ -47,11 +47,11 @@ export class TicketService {
     let sortQuery;
     switch (ticketStatus.sort) {
       case TicketSortType.NEWEST:
-        sortQuery = { updatedAt: -1, priority: -1 };
+        sortQuery = { priority: -1, updatedAt: -1 };
         break;
       case TicketSortType.TRENDING:
       default:
-        sortQuery = { participantCount: -1, priority: -1 };
+        sortQuery = { priority: -1, participantCount: -1 };
         break;
     }
 
@@ -165,10 +165,15 @@ export class TicketService {
     queryOptions: QueryOptions = new QueryOptions(),
     isVisibleOnly = true,
   ): Promise<Ticket[]> {
-    return this.find(ticketStatus, {
-      project: new mongoose.Types.ObjectId(projectId),
-      ...filter
-    }, queryOptions, isVisibleOnly);
+    return this.find(
+      ticketStatus,
+      {
+        project: new mongoose.Types.ObjectId(projectId),
+        ...filter,
+      },
+      queryOptions,
+      isVisibleOnly,
+    );
   }
 
   async create(ticketCreateInput: TicketCreateInput): Promise<Ticket> {
