@@ -176,11 +176,13 @@ input QuestInputType {
 type QuestPolicy {
   context: String!
   questPolicy: QuestPolicyType!
+  rewardPoint: Float
 }
 
 input QuestPolicyInputType {
   context: String!
   questPolicy: QuestPolicyType!
+  rewardPoint: Float
 }
 
 enum QuestPolicyType {
@@ -251,6 +253,7 @@ type Ticket {
   imageUrl: String
   participantCount: Float
   participants: [User!]
+  pointUpdateType: String
   priority: Float
   project: Project
   quests: [Quest!]
@@ -273,6 +276,7 @@ input TicketInputType {
   imageUrl: String
   participantCount: Float
   participants: [UserInputType!]
+  pointUpdateType: String
   priority: Float
   project: ProjectInputType
   quests: [QuestInputType!]
@@ -280,7 +284,7 @@ input TicketInputType {
   rewardPolicy: RewardPolicyInputType
   title: String
   untilTime: DateTime
-  visible: Boolean = false
+  visible: Boolean
   winners: [UserInputType!]
 }
 

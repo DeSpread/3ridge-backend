@@ -71,7 +71,7 @@ export class Ticket {
 
   @Prop()
   @Field({ nullable: true })
-  visible = false;
+  visible: boolean;
 
   @Prop()
   @Field({ nullable: true })
