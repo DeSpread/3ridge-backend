@@ -30,6 +30,10 @@ export class ProjectSocial {
   @Prop()
   @Field({nullable: true})
   mediumUrl: string;
+
+  @Prop()
+  @Field({nullable: true})
+  naverBlogUrl: string;
 }
 
 @Schema({ timestamps: true })
