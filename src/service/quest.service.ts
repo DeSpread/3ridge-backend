@@ -75,7 +75,10 @@ export class QuestService {
     const isExceedLimitOfParticipants =
       ticket.participantCount >= fcfsRewardInput.limitNumber;
 
-    if (isExceedLimitOfParticipants) {
+    if (
+      ticket?.rewardPolicy?.rewardPolicyType === RewardPolicyType.FCFS &&
+      isExceedLimitOfParticipants
+    ) {
       throw ErrorCode.EXCEED_LIMIT_PARTICIPANTS_TICKET;
     }
 
