@@ -44,7 +44,7 @@ jobs:
       - name: ssh connect & restart docker - prod1, prod2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PROD_HOST1 }},${{ secrets.PROD_HOST2 }}
+          host: ${{ secrets.PROD_HOST1 }},${{ secrets.PROD_HOST2 }}, ${{ secrets.PROD_HOST3 }}
           sync: true
           script_stop: true
           username: ${{ secrets.USERNAME }}
