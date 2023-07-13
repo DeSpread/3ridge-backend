@@ -52,9 +52,13 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            image=$(docker images -q | tail -n 1)
-            if [ -n "$image" ]; then
-              docker rmi $image
+            images=$(docker images -q)
+            count=$(echo "$images" | wc -l)
+            if (( count >= 2 )); then
+              image=$(docker images -q | tail -n 1)
+              if [ -n "$image" ]; then
+                docker rmi $image
+              fi
             fi
             containers=$(docker ps -a -q)
             if [ -n "$containers" ]; then

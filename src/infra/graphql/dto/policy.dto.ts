@@ -31,6 +31,10 @@ export class QuestPolicy {
   questPolicy: QuestPolicyType;
 
   @Prop()
+  @Field({ nullable: true })
+  rewardPoint: number;
+
+  @Prop()
   @Field()
   context: string;
 }

@@ -51,8 +51,19 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker stop $(docker ps -a -q) 
-            docker rm $(docker ps -a -q) 
+            images=$(docker images -q)
+            count=$(echo "$images" | wc -l)
+            if (( count >= 2 )); then
+              image=$(docker images -q | tail -n 1)
+              if [ -n "$image" ]; then
+                docker rmi $image
+              fi
+            fi
+            containers=$(docker ps -a -q)
+            if [ -n "$containers" ]; then
+              docker stop $containers
+              docker rm $containers
+            fi
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker run -d -p 3000:3000 --name ${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_IMAGE_TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
             docker system prune --volumes

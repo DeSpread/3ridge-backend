@@ -112,6 +112,7 @@ input ProjectInputType {
 type ProjectSocial {
   discordUrl: String
   mediumUrl: String
+  naverBlogUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
@@ -120,6 +121,7 @@ type ProjectSocial {
 input ProjectSocialInputType {
   discordUrl: String
   mediumUrl: String
+  naverBlogUrl: String
   officialUrl: String
   telegramUrl: String
   twitterUrl: String
@@ -176,16 +178,19 @@ input QuestInputType {
 type QuestPolicy {
   context: String!
   questPolicy: QuestPolicyType!
+  rewardPoint: Float
 }
 
 input QuestPolicyInputType {
   context: String!
   questPolicy: QuestPolicyType!
+  rewardPoint: Float
 }
 
 enum QuestPolicyType {
   QUIZ
   VERIFY_3RIDGE_POINT
+  VERIFY_AGREEMENT
   VERIFY_APTOS_BRIDGE_TO_APTOS
   VERIFY_APTOS_EXIST_TX
   VERIFY_APTOS_HAS_ANS
@@ -251,6 +256,7 @@ type Ticket {
   imageUrl: String
   participantCount: Float
   participants: [User!]
+  pointUpdateType: String
   priority: Float
   project: Project
   quests: [Quest!]
@@ -273,6 +279,7 @@ input TicketInputType {
   imageUrl: String
   participantCount: Float
   participants: [UserInputType!]
+  pointUpdateType: String
   priority: Float
   project: ProjectInputType
   quests: [QuestInputType!]
@@ -280,7 +287,7 @@ input TicketInputType {
   rewardPolicy: RewardPolicyInputType
   title: String
   untilTime: DateTime
-  visible: Boolean = false
+  visible: Boolean
   winners: [UserInputType!]
 }
 
